@@ -15,17 +15,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageButton main_btn = findViewById(R.id.main_btn);
-        main_btn.setImageResource(R.drawable.main_btn);
-        main_btn.setOnClickListener(new View.OnClickListener() {
+        ImageButton make_alarm_btn = findViewById(R.id.make_alarm_btn);
+        make_alarm_btn.setImageResource(R.drawable.make_alarm_btn);
+        make_alarm_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
 
-        ImageButton setting_btn = findViewById(R.id.setting_btn);
-        setting_btn.setImageResource(R.drawable.setting_btn);
+        ImageButton main_btn = findViewById(R.id.main_btn);
+        main_btn.setImageResource(R.drawable.main_btn);
+        main_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
+
+        ImageButton setting_btn = findViewById(R.id.configuration_btn);
+        setting_btn.setImageResource(R.drawable.configuration_btn);
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
