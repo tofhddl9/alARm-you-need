@@ -28,27 +28,28 @@
 
                 <TextView
                     android:id="@+id/remain_time_view"
-                    android:layout_width="355dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="20dp"
                     android:text="@string/remain_time" />
-
-                <ImageButton
-                    android:id="@+id/make_alarm_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/make_alarm_btn"
-                    android:background="#FFFFFF" />
 
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/alarm_list_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@android:drawable/ic_input_add" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,11 +64,11 @@
                 android:contentDescription="Move to main activity" />
 
             <ImageButton
-                android:id="@+id/configuration_btn"
+                android:id="@+id/setting_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/configuration_btn"
+                android:src="@drawable/setting_btn"
                 android:contentDescription="Move to setting activity" />
         </LinearLayout>
     </LinearLayout>
