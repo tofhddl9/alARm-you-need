@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         make_alarm_btn.setOnClickListener {
-            val intent = Intent(this, ConfigurationActivity::class.java)
+            val intent = Intent(this, AlarmSettingActivity::class.java)
             startActivity(intent)
         }
 

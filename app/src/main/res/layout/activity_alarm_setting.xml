@@ -6,4 +6,175 @@
     android:layout_height="match_parent"
     tools:context=".AlarmSettingActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="hh시 mm분 후에 알람이 울립니다."
+            android:layout_margin="15dp"
+            android:padding="10dp"
+            android:textSize="20sp"/>
+        
+        <TimePicker
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="일"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="월"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="화"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="수"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="목"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="금"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="토"
+                android:textSize="16sp"
+                android:textAlignment="center"
+                android:button="@null"
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/ringtone_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingStart="10dp"
+            android:hint="  벨소리"
+            android:text="기본 벨소리1"
+            android:textAlignment="viewStart"
+            android:background="#FAFAFA"
+            android:textSize="16sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:text="음량"
+                android:textSize="16sp" />
+
+            <SeekBar
+                android:id="@+id/volume_bar"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"/>
+
+            <ImageButton
+                android:id="@+id/play_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#FAFAFA"
+                android:src="@drawable/play_btn"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="30dp"
+                android:textSize="16sp"
+                android:text="진동"
+                android:gravity="center"/>
+
+            <CheckBox
+                android:id="@+id/vibration_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="220dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#FAFAFA"
+                android:layout_weight="1"
+                android:src="@drawable/back_btn" />
+
+            <ImageButton
+                android:id="@+id/cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#FAFAFA"
+                android:layout_weight="1"
+                android:src="@drawable/cancel_btn" />
+
+            <ImageButton
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#FAFAFA"
+                android:layout_weight="1"
+                android:src="@drawable/save_btn" />
+
+        </LinearLayout>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
