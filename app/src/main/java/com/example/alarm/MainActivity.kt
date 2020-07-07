@@ -17,16 +17,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        make_alarm_btn.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
         setting_btn.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
+
         }
 
+        // Example
         val alarmList = listOf(
             AlarmModel("기상","11:30","오후","월,화,목","ON"),
             AlarmModel("일이삼사오육칠팔구십일이삼사","14:30","오후","월,화,금,토","OFF")
