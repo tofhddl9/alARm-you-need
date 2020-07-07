@@ -1,4 +1,30 @@
 <resources>
     <string name="app_name">alARm</string>
     <string name="remain_time">it will show remaining time</string>
+
+    <string name="title_activity_main">alARm</string>
+    <string name="title_activity_settings">설정</string>
+
+    <!-- Preference Titles -->
+    <string name="alarm_header">알람</string>
+    <string name="normal_header">일반</string>
+
+    <!-- Messages Preferences -->
+    <string name="status_bar_title">상단바 알림</string>
+    <string name="disturb_mode_title">방해모드에서도 알람 허용</string>
+
+    <!-- normal Preferences -->
+    <string name="language_title">언어 설정</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>
