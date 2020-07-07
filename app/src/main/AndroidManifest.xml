@@ -27,8 +27,8 @@
             android:value="ca-app-pub-1719157373734547~4794765830" />
 
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:name=".ConfigurationActivity"
+            android:label="@string/title_activity_configuration" />
     </application>
 
 </manifest>
