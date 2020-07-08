@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var alarmList : List<AlarmModel>
+    private var alarmList : List<AlarmModel> = listOf()
     private lateinit var adapter : AlarmDataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         make_alarm_btn.setOnClickListener {
+            //Todo : Need to check at least one day checked
             val intent = Intent(this, AlarmSettingActivity::class.java)
             startActivityForResult(intent, 2)
         }
@@ -33,13 +34,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ConfigurationActivity::class.java)
             startActivity(intent)
         }
-
-
-        // Example
-        alarmList = listOf(
-            AlarmModel("Example1","11:30","오후","월,화,목","ON"),
-            AlarmModel("일이삼사오육칠팔구십일이삼사","14:30","오후","월,화,금,토","OFF")
-        )
 
         adapter = AlarmDataAdapter(alarmList)
         alarm_list_view.adapter = adapter

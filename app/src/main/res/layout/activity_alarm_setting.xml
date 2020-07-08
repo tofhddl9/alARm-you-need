@@ -40,7 +40,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
             <CheckBox
                 android:id="@+id/mon_box"
                 android:layout_width="wrap_content"
@@ -50,7 +51,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
             <CheckBox
                 android:id="@+id/tue_box"
                 android:layout_width="wrap_content"
@@ -60,7 +62,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
             <CheckBox
                 android:id="@+id/wed_box"
                 android:layout_width="wrap_content"
@@ -70,7 +73,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
             <CheckBox
                 android:id="@+id/thur_box"
                 android:layout_width="wrap_content"
@@ -80,7 +84,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
             <CheckBox
                 android:id="@+id/fri_box"
                 android:layout_width="wrap_content"
@@ -90,7 +95,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
             <CheckBox
                 android:id="@+id/sat_box"
                 android:layout_width="wrap_content"
@@ -100,7 +106,8 @@
                 android:textSize="16sp"
                 android:textAlignment="center"
                 android:button="@null"
-                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
+                android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                android:onClick="OnCheckboxClicked"/>
         </LinearLayout>
 
         <EditText

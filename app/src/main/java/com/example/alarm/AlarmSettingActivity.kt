@@ -5,23 +5,30 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.CheckBox
+import android.widget.TextView
+import android.widget.TimePicker
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
 import java.io.Serializable
+import java.time.DayOfWeek
 
 class AlarmSettingActivity : AppCompatActivity() {
 
     private lateinit var alarmData : AlarmModel
+    private var days : BooleanArray = BooleanArray(7)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
 
         //For Test
-        alarmData = AlarmModel("it is for test!","11:00", "pm", "Tue", "On")
+        alarmData = AlarmModel("it is for test!","11:00", "pm", days, "On")
+
+        //Button setOnClickListeners
 
         back_btn.setOnClickListener {
             onBackPressed()
-            //finish()
         }
 
         cancel_btn.setOnClickListener {
@@ -32,14 +39,41 @@ class AlarmSettingActivity : AppCompatActivity() {
             Log.d("AlarmSettingActivity", "save_btn clicked")
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("alarmData", alarmData as Serializable)
-//            startActivityForResult(intent, 2)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
 
-        //OnClickTime()
     }
 
+    fun OnCheckboxClicked(view : View) {
+        if (view is CheckBox) {
+            val checked : Boolean = view.isChecked
+
+            when (view.id) {
+                R.id.sun_box -> {
+                    days[0] = checked
+                }
+                R.id.mon_box -> {
+                    days[1] = checked
+                }
+                R.id.tue_box -> {
+                    days[2] = checked
+                }
+                R.id.wed_box -> {
+                    days[3] = checked
+                }
+                R.id.thur_box -> {
+                    days[4] = checked
+                }
+                R.id.fri_box -> {
+                    days[5] = checked
+                }
+                R.id.sat_box -> {
+                    days[6] = checked
+                }
+            }
+        }
+    }
     /*
     private fun OnClickTime() {
         val remainTimeVew = findViewById<TextView>(R.id.remain_time_view)
@@ -69,6 +103,6 @@ class AlarmSettingActivity : AppCompatActivity() {
                 //textView.visibility = ViewGroup.VISIBLE
             }
         }
-    }*/
-
+    }
+    */
 }

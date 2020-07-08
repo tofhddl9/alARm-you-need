@@ -65,7 +65,7 @@
                     android:id="@+id/alarm_day"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:hint="일, 월, 화, 수, 목, 금, 토"/>
+                    android:hint="요일을 설정해주세요"/>
             </LinearLayout>
 
         </LinearLayout>
