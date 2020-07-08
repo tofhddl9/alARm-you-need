@@ -103,11 +103,17 @@
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/alarm_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="알람의 제목을 입력하세요."/>
+
         <Button
             android:id="@+id/ringtone_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:paddingStart="10dp"
             android:hint="  벨소리"
             android:text="기본 벨소리1"
@@ -157,7 +163,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="220dp"
+            android:layout_marginTop="180dp"
             android:orientation="horizontal">
 
             <ImageButton
