@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/remain_time_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="hh시 mm분 후에 알람이 울립니다."
@@ -20,6 +21,7 @@
             android:textSize="20sp"/>
         
         <TimePicker
+            android:id="@+id/target_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:timePickerMode="spinner"/>
@@ -30,6 +32,7 @@
             android:orientation="horizontal">
 
             <CheckBox
+                android:id="@+id/sun_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -39,6 +42,7 @@
                 android:button="@null"
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
             <CheckBox
+                android:id="@+id/mon_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -48,6 +52,7 @@
                 android:button="@null"
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
             <CheckBox
+                android:id="@+id/tue_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -57,6 +62,7 @@
                 android:button="@null"
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
             <CheckBox
+                android:id="@+id/wed_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -66,6 +72,7 @@
                 android:button="@null"
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
             <CheckBox
+                android:id="@+id/thur_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -75,6 +82,7 @@
                 android:button="@null"
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
             <CheckBox
+                android:id="@+id/fri_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -84,6 +92,7 @@
                 android:button="@null"
                 android:drawableTop="?android:attr/listChoiceIndicatorMultiple"/>
             <CheckBox
+                android:id="@+id/sat_box"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
