@@ -1,5 +1,6 @@
 package com.example.alarm
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ class AlarmDataAdapter(val list : List<AlarmModel>): RecyclerView.Adapter<AlarmD
     }
 
     override fun getItemCount(): Int {
+        Log.d("AlarmAdapter", "list count : "+list.count())
         return list.count()
     }
 

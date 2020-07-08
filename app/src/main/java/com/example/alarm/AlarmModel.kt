@@ -1,5 +1,7 @@
 package com.example.alarm
 
-class AlarmModel(val title:String, val time:String, val apm:String, val day:String, val onoff:String) {
+import java.io.Serializable
+
+class AlarmModel(var title:String, var time:String, var apm:String, var day:String, var onoff:String) : Serializable{
 
 }
