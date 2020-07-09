@@ -15,7 +15,6 @@
             android:id="@+id/remain_time_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="hh시 mm분 후에 알람이 울립니다."
             android:layout_margin="15dp"
             android:padding="10dp"
             android:textSize="20sp"/>
