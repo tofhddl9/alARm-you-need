@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.TimePicker
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
@@ -38,6 +39,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         save_btn.setOnClickListener {
             Log.d("AlarmSettingActivity", "save_btn clicked")
             val intent = Intent(this, MainActivity::class.java)
+            alarmData.title = alarm_title.text.toString()
             intent.putExtra("alarmData", alarmData as Serializable)
             setResult(Activity.RESULT_OK, intent)
             finish()
