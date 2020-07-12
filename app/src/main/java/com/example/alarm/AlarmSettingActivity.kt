@@ -7,25 +7,41 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.TimePicker
+import android.widget.*
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
 import java.io.Serializable
-import java.time.DayOfWeek
 
 class AlarmSettingActivity : AppCompatActivity() {
 
     private lateinit var alarmData : AlarmModel
     private var days : BooleanArray = BooleanArray(7)
+    private lateinit var time : String
+    private lateinit var apm : String
+    private var volume : Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
 
+        time = "" + target_time.hour + ":" + target_time.minute
+        apm = "오후"
+        if (target_time.hour < 12 || target_time.hour == 24)
+            apm = "오전"
+
+        volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                volume = p1
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+
+            }
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+
+            }
+        })
+
         //For Test
-        alarmData = AlarmModel("it is for test!","11:00", "pm", days, "ON")
+        alarmData = AlarmModel("", time, apm, days, true, volume)
 
         //Button setOnClickListeners
 
@@ -100,7 +116,7 @@ class AlarmSettingActivity : AppCompatActivity() {
             if (remainTimeView != null) {
                 //Todo : calculate upcoming time
                 val target_hour = if (hour < 10) "0" + hour else hour
-                val target_min = if (minute < 10) "0" + minute else minute
+                val target_min = if (min < 10) "0" + min else min
                 val msg = "$apm $target_hour 시 $target_min 분에 알람이 울립니다"
                 alarmData.apm = apm
                 alarmData.time = "$target_hour:$target_min"

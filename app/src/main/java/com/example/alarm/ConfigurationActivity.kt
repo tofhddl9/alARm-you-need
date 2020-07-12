@@ -1,8 +1,6 @@
 package com.example.alarm
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.activity_main.*
