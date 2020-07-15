@@ -14,6 +14,7 @@ import java.io.Serializable
 class AlarmSettingActivity : AppCompatActivity() {
 
     private lateinit var alarmData : AlarmModel
+    private var id : Int = 1
     private var days : BooleanArray = BooleanArray(7)
     private lateinit var time : String
     private lateinit var apm : String
@@ -22,11 +23,32 @@ class AlarmSettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
-
         time = "" + target_time.hour + ":" + target_time.minute
         apm = "오후"
         if (target_time.hour < 12 || target_time.hour == 24)
             apm = "오전"
+
+        if (intent.hasExtra("alarmCode")) {
+            val type = intent.getIntExtra("alarmCode", 0)
+            alarmData = initAlarmData(type)
+            Log.d("AlarmData.alarmID", ""+alarmData.alarmId)
+        }
+
+        back_btn.setOnClickListener {
+            onBackPressed()
+        }
+
+        delete_btn.setOnClickListener {
+
+        }
+
+        save_btn.setOnClickListener {
+            Log.d("AlarmSettingActivity", "save_btn clicked")
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("alarmData", alarmData as Serializable)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
 
         volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -40,29 +62,27 @@ class AlarmSettingActivity : AppCompatActivity() {
             }
         })
 
-        //For Test
-        alarmData = AlarmModel("", time, apm, days, true, volume)
-
-        //Button setOnClickListeners
-
-        back_btn.setOnClickListener {
-            onBackPressed()
-        }
-
-        cancel_btn.setOnClickListener {
-
-        }
-
-        save_btn.setOnClickListener {
-            Log.d("AlarmSettingActivity", "save_btn clicked")
-            val intent = Intent(this, MainActivity::class.java)
-            alarmData.title = alarm_title.text.toString()
-            intent.putExtra("alarmData", alarmData as Serializable)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
-
         OnClickTime()
+    }
+
+    private fun initAlarmData(type: Int): AlarmModel {
+        when (type) {
+            /* make new alarm */
+            1 -> {
+                id = intent.getIntExtra("alarmId", 0)
+                alarmData = AlarmModel(id,"new alarm", time, apm, days, true, volume)
+            }
+            /* update alarm*/
+            2 -> {
+                alarmData = getAlarmData()
+            }
+        }
+        return alarmData
+    }
+
+    private fun getAlarmData(): AlarmModel {
+        var alarmModel = intent.getSerializableExtra("updatedData") as AlarmModel
+        return alarmModel
     }
 
     fun OnCheckboxClicked(view : View) {
