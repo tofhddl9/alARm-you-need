@@ -1,14 +1,17 @@
 package com.example.alarm
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
+import kotlinx.android.synthetic.main.activity_alarm_setting.alarm_title
 import java.io.Serializable
 
 class AlarmSettingActivity : AppCompatActivity() {
@@ -18,7 +21,7 @@ class AlarmSettingActivity : AppCompatActivity() {
     private var days : BooleanArray = BooleanArray(7)
     private lateinit var time : String
     private lateinit var apm : String
-    private var volume : Int = 1
+    private var volume : Int = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +42,26 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
 
         delete_btn.setOnClickListener {
+            Log.d("delete button","is clicked")
+            val builder = AlertDialog.Builder(ContextThemeWrapper(this@AlarmSettingActivity, R.style.Theme_AppCompat_Light_Dialog))
+            builder.setTitle("알람 삭제")
+            builder.setMessage("알람을 삭제하시겠습니까?")
 
+            builder.setPositiveButton("확인") { _, _ ->
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("deleteAlarmId", alarmData.alarmId)
+                setResult(Activity.RESULT_CANCELED, intent)
+                finish()
+            }
+            builder.setNegativeButton("취소") { _, _ ->
+
+            }
+            builder.show()
         }
 
         save_btn.setOnClickListener {
             Log.d("AlarmSettingActivity", "save_btn clicked")
+            setAlarmData(alarmData)
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("alarmData", alarmData as Serializable)
             setResult(Activity.RESULT_OK, intent)
@@ -65,6 +83,15 @@ class AlarmSettingActivity : AppCompatActivity() {
         OnClickTime()
     }
 
+    private fun setAlarmData(alarmData: AlarmModel) {
+        alarmData.title = alarm_title.text.toString()
+        alarmData.time = time
+        alarmData.apm = apm
+        alarmData.day = days
+        alarmData.onoff = true
+        alarmData.volume = volume
+    }
+
     private fun initAlarmData(type: Int): AlarmModel {
         when (type) {
             /* make new alarm */
@@ -74,13 +101,13 @@ class AlarmSettingActivity : AppCompatActivity() {
             }
             /* update alarm*/
             2 -> {
-                alarmData = getAlarmData()
+                alarmData = getExistingAlarmData()
             }
         }
         return alarmData
     }
 
-    private fun getAlarmData(): AlarmModel {
+    private fun getExistingAlarmData(): AlarmModel {
         var alarmModel = intent.getSerializableExtra("updatedData") as AlarmModel
         return alarmModel
     }
@@ -121,7 +148,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         timePicker.setOnTimeChangedListener { _, hour, minute ->
             var hour = hour
             var min = minute
-            var apm = ""
+            //var apm = ""
 
             // AM_PM decider logic
             if (hour/12 > 0) {
@@ -138,8 +165,9 @@ class AlarmSettingActivity : AppCompatActivity() {
                 val target_hour = if (hour < 10) "0" + hour else hour
                 val target_min = if (min < 10) "0" + min else min
                 val msg = "$apm $target_hour 시 $target_min 분에 알람이 울립니다"
-                alarmData.apm = apm
-                alarmData.time = "$target_hour:$target_min"
+                //alarmData.apm = apm
+                //alarmData.time = "$target_hour:$target_min"
+                time = "$target_hour:$target_min"
                 remainTimeView.text = msg
                 remainTimeView.visibility = ViewGroup.VISIBLE
             }
