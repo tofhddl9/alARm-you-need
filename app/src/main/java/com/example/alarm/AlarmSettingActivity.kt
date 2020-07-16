@@ -17,51 +17,32 @@ import java.io.Serializable
 class AlarmSettingActivity : AppCompatActivity() {
 
     private lateinit var alarmData : AlarmModel
-    private var id : Int = 1
-    private var days : BooleanArray = BooleanArray(7)
-    private lateinit var time : String
-    private lateinit var apm : String
-    private var volume : Int = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
-        time = "" + target_time.hour + ":" + target_time.minute
-        apm = "오후"
-        if (target_time.hour < 12 || target_time.hour == 24)
-            apm = "오전"
 
-        if (intent.hasExtra("alarmCode")) {
-            val type = intent.getIntExtra("alarmCode", 0)
-            alarmData = initAlarmData(type)
-            Log.d("AlarmData.alarmID", ""+alarmData.alarmId)
-        }
+        loadAlarmSetting()
+
+        alarmData.time = "" + target_time.hour + ":" + target_time.minute
+        alarmData.apm = "오후"
+        if (target_time.hour < 12 || target_time.hour == 24)
+            alarmData.apm = "오전"
 
         back_btn.setOnClickListener {
-            onBackPressed()
+            /*todo : need to debug*/
+            //onBackPressed()
+            finish()
         }
 
         delete_btn.setOnClickListener {
             Log.d("delete button","is clicked")
-            val builder = AlertDialog.Builder(ContextThemeWrapper(this@AlarmSettingActivity, R.style.Theme_AppCompat_Light_Dialog))
-            builder.setTitle("알람 삭제")
-            builder.setMessage("알람을 삭제하시겠습니까?")
-
-            builder.setPositiveButton("확인") { _, _ ->
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("deleteAlarmId", alarmData.alarmId)
-                setResult(Activity.RESULT_CANCELED, intent)
-                finish()
-            }
-            builder.setNegativeButton("취소") { _, _ ->
-
-            }
-            builder.show()
+            showConfirmAlert()
         }
 
         save_btn.setOnClickListener {
             Log.d("AlarmSettingActivity", "save_btn clicked")
-            setAlarmData(alarmData)
+            alarmData.title = alarm_title.text.toString()
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("alarmData", alarmData as Serializable)
             setResult(Activity.RESULT_OK, intent)
@@ -70,7 +51,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                volume = p1
+                alarmData.volume = p1
             }
             override fun onStartTrackingTouch(p0: SeekBar?) {
 
@@ -83,33 +64,68 @@ class AlarmSettingActivity : AppCompatActivity() {
         OnClickTime()
     }
 
-    private fun setAlarmData(alarmData: AlarmModel) {
-        alarmData.title = alarm_title.text.toString()
-        alarmData.time = time
-        alarmData.apm = apm
-        alarmData.day = days
-        alarmData.onoff = true
-        alarmData.volume = volume
+    private fun loadAlarmSetting() {
+        if (intent.hasExtra("alarmCode")) {
+            val type = intent.getIntExtra("alarmCode", 0)
+            alarmData = initAlarmData(type)
+            setAlarmView(alarmData)
+        }
     }
 
     private fun initAlarmData(type: Int): AlarmModel {
         when (type) {
             /* make new alarm */
             1 -> {
-                id = intent.getIntExtra("alarmId", 0)
-                alarmData = AlarmModel(id,"new alarm", time, apm, days, true, volume)
+                val id = intent.getIntExtra("alarmId", 0)
+                alarmData = newAlarmData(id)
             }
             /* update alarm*/
             2 -> {
-                alarmData = getExistingAlarmData()
+                alarmData = loadAlarmData()
             }
         }
         return alarmData
     }
 
-    private fun getExistingAlarmData(): AlarmModel {
-        var alarmModel = intent.getSerializableExtra("updatedData") as AlarmModel
-        return alarmModel
+    private fun newAlarmData(id : Int): AlarmModel {
+        var alarmData = AlarmModel(id, "", "", "", BooleanArray(7), true, 5)
+        return alarmData
+    }
+
+    private fun loadAlarmData(): AlarmModel {
+        var alarmData = intent.getSerializableExtra("updatedData") as AlarmModel
+        return alarmData
+    }
+
+    private fun setAlarmView(alarmData : AlarmModel) {
+        alarm_title.setText(alarmData.title)
+
+        sun_box.isChecked = alarmData.day[0]
+        mon_box.isChecked = alarmData.day[1]
+        tue_box.isChecked = alarmData.day[2]
+        wed_box.isChecked = alarmData.day[3]
+        thur_box.isChecked = alarmData.day[4]
+        fri_box.isChecked = alarmData.day[5]
+        sat_box.isChecked = alarmData.day[6]
+
+        volume_bar.progress = alarmData.volume
+    }
+
+    private fun showConfirmAlert() {
+        val builder = AlertDialog.Builder(ContextThemeWrapper(this@AlarmSettingActivity, R.style.Theme_AppCompat_Light_Dialog))
+        builder.setTitle("알람 삭제")
+        builder.setMessage("알람을 삭제하시겠습니까?")
+
+        builder.setPositiveButton("확인") { _, _ ->
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("deleteAlarmId", alarmData.alarmId)
+            setResult(Activity.RESULT_CANCELED, intent)
+            finish()
+        }
+        builder.setNegativeButton("취소") { _, _ ->
+
+        }
+        builder.show()
     }
 
     fun OnCheckboxClicked(view : View) {
@@ -117,27 +133,13 @@ class AlarmSettingActivity : AppCompatActivity() {
             val checked : Boolean = view.isChecked
 
             when (view.id) {
-                R.id.sun_box -> {
-                    days[0] = checked
-                }
-                R.id.mon_box -> {
-                    days[1] = checked
-                }
-                R.id.tue_box -> {
-                    days[2] = checked
-                }
-                R.id.wed_box -> {
-                    days[3] = checked
-                }
-                R.id.thur_box -> {
-                    days[4] = checked
-                }
-                R.id.fri_box -> {
-                    days[5] = checked
-                }
-                R.id.sat_box -> {
-                    days[6] = checked
-                }
+                R.id.sun_box -> alarmData.day[0] = checked
+                R.id.mon_box -> alarmData.day[1] = checked
+                R.id.tue_box -> alarmData.day[2] = checked
+                R.id.wed_box -> alarmData.day[3] = checked
+                R.id.thur_box -> alarmData.day[4] = checked
+                R.id.fri_box -> alarmData.day[5] = checked
+                R.id.sat_box -> alarmData.day[6] = checked
             }
         }
     }
@@ -148,26 +150,26 @@ class AlarmSettingActivity : AppCompatActivity() {
         timePicker.setOnTimeChangedListener { _, hour, minute ->
             var hour = hour
             var min = minute
-            //var apm = ""
+            var apm = ""
 
             // AM_PM decider logic
             if (hour/12 > 0) {
-                apm = "오후"
+                alarmData.apm = "오후"
                 if (hour != 12) {
                     hour %= 12
                 }
             } else {
-                apm = "오전"
+                alarmData.apm = "오전"
             }
 
             if (remainTimeView != null) {
-                //Todo : calculate upcoming time
+                //Todo [Late] : calculate upcoming time
                 val target_hour = if (hour < 10) "0" + hour else hour
                 val target_min = if (min < 10) "0" + min else min
                 val msg = "$apm $target_hour 시 $target_min 분에 알람이 울립니다"
                 //alarmData.apm = apm
                 //alarmData.time = "$target_hour:$target_min"
-                time = "$target_hour:$target_min"
+                alarmData.time = "$target_hour:$target_min"
                 remainTimeView.text = msg
                 remainTimeView.visibility = ViewGroup.VISIBLE
             }

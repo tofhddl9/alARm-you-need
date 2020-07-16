@@ -61,6 +61,8 @@ class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmMod
     }
 
     fun updateAlarm(requestCode: Int, position: Long) {
+        /*Todo [1]: Add Ringtone status*/
+        /*Todo [late]: Add vibration status*/
         val intent = Intent(context, AlarmSettingActivity::class.java)
         intent.putExtra("alarmCode", requestCode)
         intent.putExtra("alarmId", alarmList.size)
