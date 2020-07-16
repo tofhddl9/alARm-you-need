@@ -20,7 +20,7 @@
             android:textSize="20sp"/>
         
         <TimePicker
-            android:id="@+id/target_time"
+            android:id="@+id/timePicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:timePickerMode="spinner"/>

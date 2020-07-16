@@ -57,7 +57,11 @@ class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmMod
         holder.containerView.alarm_day.text = days
         holder.containerView.alarm_title.text = alarmList[position].title
         holder.containerView.alarm_apm.text = alarmList[position].apm
-        holder.containerView.alarm_time.text = alarmList[position].time
+
+        var time= if(alarmList[position].hour < 10) "0" + alarmList[position].hour else ""+alarmList[position].hour
+        time += ":"
+        time += if(alarmList[position].minute < 10) "0" + alarmList[position].minute else ""+alarmList[position].minute
+        holder.containerView.alarm_time.text = time
     }
 
     fun updateAlarm(requestCode: Int, position: Long) {

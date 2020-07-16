@@ -24,11 +24,6 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         loadAlarmSetting()
 
-        alarmData.time = "" + target_time.hour + ":" + target_time.minute
-        alarmData.apm = "오후"
-        if (target_time.hour < 12 || target_time.hour == 24)
-            alarmData.apm = "오전"
-
         back_btn.setOnClickListener {
             /*todo : need to debug*/
             //onBackPressed()
@@ -88,7 +83,7 @@ class AlarmSettingActivity : AppCompatActivity() {
     }
 
     private fun newAlarmData(id : Int): AlarmModel {
-        var alarmData = AlarmModel(id, "", "", "", BooleanArray(7), true, 5)
+        var alarmData = AlarmModel(id, "", 8, 0,"", BooleanArray(7), true, 5)
         return alarmData
     }
 
@@ -98,6 +93,9 @@ class AlarmSettingActivity : AppCompatActivity() {
     }
 
     private fun setAlarmView(alarmData : AlarmModel) {
+        timePicker.hour = alarmData.hour
+        timePicker.minute = alarmData.minute
+
         alarm_title.setText(alarmData.title)
 
         sun_box.isChecked = alarmData.day[0]
@@ -146,17 +144,16 @@ class AlarmSettingActivity : AppCompatActivity() {
 
     private fun OnClickTime() {
         val remainTimeView = remain_time_view
-        val timePicker = target_time
         timePicker.setOnTimeChangedListener { _, hour, minute ->
-            var hour = hour
-            var min = minute
-            var apm = ""
+
+            alarmData.hour = hour
+            alarmData.minute = minute
 
             // AM_PM decider logic
             if (hour/12 > 0) {
                 alarmData.apm = "오후"
                 if (hour != 12) {
-                    hour %= 12
+                    alarmData.hour %= 12
                 }
             } else {
                 alarmData.apm = "오전"
@@ -164,14 +161,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
             if (remainTimeView != null) {
                 //Todo [Late] : calculate upcoming time
-                val target_hour = if (hour < 10) "0" + hour else hour
-                val target_min = if (min < 10) "0" + min else min
-                val msg = "$apm $target_hour 시 $target_min 분에 알람이 울립니다"
-                //alarmData.apm = apm
-                //alarmData.time = "$target_hour:$target_min"
-                alarmData.time = "$target_hour:$target_min"
-                remainTimeView.text = msg
-                remainTimeView.visibility = ViewGroup.VISIBLE
+                //remainTimeView.visibility = ViewGroup.VISIBLE
             }
         }
     }
