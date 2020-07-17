@@ -3,15 +3,17 @@ package com.example.alarm
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
-import kotlinx.android.synthetic.main.activity_alarm_setting.alarm_title
 import java.io.Serializable
 
 class AlarmSettingActivity : AppCompatActivity() {
@@ -42,6 +44,14 @@ class AlarmSettingActivity : AppCompatActivity() {
             intent.putExtra("alarmData", alarmData as Serializable)
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+
+        ringtone_btn.setOnClickListener {
+            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone")
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, null as Uri?)
+            this.startActivityForResult(intent, 5)
         }
 
         volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -83,7 +93,8 @@ class AlarmSettingActivity : AppCompatActivity() {
     }
 
     private fun newAlarmData(id : Int): AlarmModel {
-        var alarmData = AlarmModel(id, "", 8, 0,"", BooleanArray(7), true, 5)
+        val uriDefault = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        var alarmData = AlarmModel(id, "", 8, 0,"", BooleanArray(7), true, uriDefault.toString(),5)
         return alarmData
     }
 
@@ -105,6 +116,10 @@ class AlarmSettingActivity : AppCompatActivity() {
         thur_box.isChecked = alarmData.day[4]
         fri_box.isChecked = alarmData.day[5]
         sat_box.isChecked = alarmData.day[6]
+
+        val ringtone = RingtoneManager.getRingtone(this, alarmData.uriRingtone.toUri())
+        val ringtoneTitle = ringtone.getTitle(this)
+        ringtone_btn.text = ringtoneTitle
 
         volume_bar.progress = alarmData.volume
     }
@@ -139,6 +154,17 @@ class AlarmSettingActivity : AppCompatActivity() {
                 R.id.fri_box -> alarmData.day[5] = checked
                 R.id.sat_box -> alarmData.day[6] = checked
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
+            val uri = data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            val ringtone = RingtoneManager.getRingtone(this, uri)
+            ringtone_btn.text = ringtone.getTitle(this)
+            alarmData.uriRingtone = uri.toString()
         }
     }
 
