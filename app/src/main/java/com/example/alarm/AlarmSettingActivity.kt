@@ -26,10 +26,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         loadAlarmSetting()
 
-
-
         back_btn.setOnClickListener {
-            /*todo : need to debug*/
             onBackPressed()
         }
 

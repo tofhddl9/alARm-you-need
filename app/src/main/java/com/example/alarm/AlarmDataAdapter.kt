@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_item.view.*
 import java.io.Serializable
@@ -40,22 +41,19 @@ class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmMod
         holder.containerView.tag = getItemId(position)
         selectionList.contains(getItemId(position))
 
-        val checkView = holder.itemView.alarm_on_off
-        checkView.setOnCheckedChangeListener { compoundButton, b ->
-            if (checkView.isChecked) {
-                holder.itemView.item_view.setBackgroundColor(Color.parseColor("#ffccdeff"))
-            } else {
-                holder.itemView.item_view.setBackgroundColor(Color.parseColor("#ffffffff"))
-            }
-            alarmList[position].onoff = checkView.isChecked
-        }
+        val checkBox = holder.itemView.alarm_on_off
+        checkBox.isChecked = alarmList[position].onoff
+        setCheckBoxBackgroundColor(holder, checkBox)
+        registerCheckBoxListener(holder, checkBox, position)
 
         var days = ""
         for (index in 0..6)
             if (alarmList[position].day[index])
                 days += DAY[index]
         holder.containerView.alarm_day.text = days
+
         holder.containerView.alarm_title.text = alarmList[position].title
+
         holder.containerView.alarm_apm.text = alarmList[position].apm
 
         var time= if(alarmList[position].hour < 10) "0" + alarmList[position].hour else ""+alarmList[position].hour
@@ -64,8 +62,21 @@ class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmMod
         holder.containerView.alarm_time.text = time
     }
 
+    private fun setCheckBoxBackgroundColor(holder: AlarmDataViewHolder, checkBox: CheckBox) {
+        if (checkBox.isChecked)
+            holder.itemView.item_view.setBackgroundColor(Color.parseColor("#ffccdeff"))
+        else
+            holder.itemView.item_view.setBackgroundColor(Color.parseColor("#ffffffff"))
+    }
+
+    private fun registerCheckBoxListener(holder: AlarmDataViewHolder, checkBox: CheckBox, position: Int) {
+        checkBox.setOnCheckedChangeListener { _, b ->
+            setCheckBoxBackgroundColor(holder, checkBox)
+            alarmList[position].onoff = checkBox.isChecked
+        }
+    }
+
     fun updateAlarm(requestCode: Int, position: Long) {
-        /*Todo [1]: Add Ringtone status*/
         /*Todo [late]: Add vibration status*/
         val intent = Intent(context, AlarmSettingActivity::class.java)
         intent.putExtra("alarmCode", requestCode)
