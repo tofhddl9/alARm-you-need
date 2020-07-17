@@ -66,8 +66,10 @@ class MainActivity : AppCompatActivity() {
                 2 -> {
                     var deleteId = data?.getIntExtra("deleteAlarmId", 0) as Int
                     Log.d("request : delete", ""+ deleteId)
-                    adapter.alarmList.removeAt(deleteId)
-                    adapter.notifyDataSetChanged()
+                    if (deleteId != -1) {
+                        adapter.alarmList.removeAt(deleteId)
+                        adapter.notifyDataSetChanged()
+                    }
                 }
             }
         }

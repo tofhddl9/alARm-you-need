@@ -26,10 +26,11 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         loadAlarmSetting()
 
+
+
         back_btn.setOnClickListener {
             /*todo : need to debug*/
-            //onBackPressed()
-            finish()
+            onBackPressed()
         }
 
         delete_btn.setOnClickListener {
@@ -67,6 +68,13 @@ class AlarmSettingActivity : AppCompatActivity() {
         })
 
         OnClickTime()
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("deleteAlarmId", -1)
+        setResult(Activity.RESULT_CANCELED, intent)
+        finish()
     }
 
     private fun loadAlarmSetting() {
