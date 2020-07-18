@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_item.view.*
 import java.io.Serializable
 
-class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmModel>): RecyclerView.Adapter<AlarmDataViewHolder>() {
+class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmData>): RecyclerView.Adapter<AlarmDataViewHolder>() {
 
     private val DAY : List<String> = listOf("일 ", "월 ", "화 ", "수 ", "목 ", "금 ", "토 ")
     private val mainActivity = context as MainActivity

@@ -10,7 +10,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var alarmList : ArrayList<AlarmModel> = ArrayList()
+    /*todo : need to introduce realm*/
+
+    private var alarmList : ArrayList<AlarmData> = ArrayList()
     private lateinit var adapter : AlarmDataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         make_alarm_btn.setOnClickListener {
-            //Todo : Need to check at least one day checked
             adapter.updateAlarm(1, 0)
         }
 
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                 /*make new alarm*/
                 1 -> {
                     Log.d("resultCode", "1")
-                    var test_obj = data?.getSerializableExtra("alarmData") as? AlarmModel
+                    var test_obj = data?.getSerializableExtra("alarmData") as? AlarmData
                     if (test_obj != null) {
                         Log.d("newID is assigned", ""+test_obj.alarmId)
                         adapter.alarmList.add(test_obj)
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 /*update new alarm*/
                 2 -> {
                     Log.d("resultCode", "2")
-                    var test_obj = data?.getSerializableExtra("alarmData") as? AlarmModel
+                    var test_obj = data?.getSerializableExtra("alarmData") as? AlarmData
                     if (test_obj != null) {
                         Log.d("updated view id", ""+test_obj.alarmId)
                         adapter.alarmList[test_obj.alarmId] = test_obj

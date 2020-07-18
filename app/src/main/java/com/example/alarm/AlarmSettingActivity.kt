@@ -18,7 +18,7 @@ import java.io.Serializable
 
 class AlarmSettingActivity : AppCompatActivity() {
 
-    private lateinit var alarmData : AlarmModel
+    private lateinit var alarmData : AlarmData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +82,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun initAlarmData(type: Int): AlarmModel {
+    private fun initAlarmData(type: Int): AlarmData {
         when (type) {
             /* make new alarm */
             1 -> {
@@ -97,18 +97,18 @@ class AlarmSettingActivity : AppCompatActivity() {
         return alarmData
     }
 
-    private fun newAlarmData(id : Int): AlarmModel {
+    private fun newAlarmData(id : Int): AlarmData {
         val uriDefault = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        var alarmData = AlarmModel(id, "", 8, 0,"", BooleanArray(7), true, uriDefault.toString(),5)
+        var alarmData = AlarmData(id, "", 8, 0,"", BooleanArray(7), true, uriDefault.toString(),5)
         return alarmData
     }
 
-    private fun loadAlarmData(): AlarmModel {
-        var alarmData = intent.getSerializableExtra("updatedData") as AlarmModel
+    private fun loadAlarmData(): AlarmData {
+        var alarmData = intent.getSerializableExtra("updatedData") as AlarmData
         return alarmData
     }
 
-    private fun setAlarmView(alarmData : AlarmModel) {
+    private fun setAlarmView(alarmData : AlarmData) {
         timePicker.hour = alarmData.hour
         timePicker.minute = alarmData.minute
 
