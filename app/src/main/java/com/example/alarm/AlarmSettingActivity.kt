@@ -99,7 +99,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
     private fun newAlarmData(id : Int): AlarmData {
         val uriDefault = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        var alarmData = AlarmData(id, "", 8, 0,"", BooleanArray(7), true, uriDefault.toString(),5)
+        var alarmData = AlarmData(id, "", 8, 0,"", ByteArray(7), true, uriDefault.toString(),5)
         return alarmData
     }
 
@@ -114,13 +114,13 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         alarm_title.setText(alarmData.title)
 
-        sun_box.isChecked = alarmData.day[0]
-        mon_box.isChecked = alarmData.day[1]
-        tue_box.isChecked = alarmData.day[2]
-        wed_box.isChecked = alarmData.day[3]
-        thur_box.isChecked = alarmData.day[4]
-        fri_box.isChecked = alarmData.day[5]
-        sat_box.isChecked = alarmData.day[6]
+        sun_box.isChecked = alarmData.day[0].equals(1.toByte())
+        mon_box.isChecked = alarmData.day[1].equals(1.toByte())
+        tue_box.isChecked = alarmData.day[2].equals(1.toByte())
+        wed_box.isChecked = alarmData.day[3].equals(1.toByte())
+        thur_box.isChecked = alarmData.day[4].equals(1.toByte())
+        fri_box.isChecked = alarmData.day[5].equals(1.toByte())
+        sat_box.isChecked = alarmData.day[6].equals(1.toByte())
 
         val ringtone = RingtoneManager.getRingtone(this, alarmData.uriRingtone.toUri())
         val ringtoneTitle = ringtone.getTitle(this)
@@ -151,13 +151,13 @@ class AlarmSettingActivity : AppCompatActivity() {
             val checked : Boolean = view.isChecked
 
             when (view.id) {
-                R.id.sun_box -> alarmData.day[0] = checked
-                R.id.mon_box -> alarmData.day[1] = checked
-                R.id.tue_box -> alarmData.day[2] = checked
-                R.id.wed_box -> alarmData.day[3] = checked
-                R.id.thur_box -> alarmData.day[4] = checked
-                R.id.fri_box -> alarmData.day[5] = checked
-                R.id.sat_box -> alarmData.day[6] = checked
+                R.id.sun_box -> if(checked) alarmData.day[0] = 1.toByte() else alarmData.day[0] = 0.toByte()
+                R.id.mon_box -> if(checked) alarmData.day[1] = 1.toByte() else alarmData.day[1] = 0.toByte()
+                R.id.tue_box -> if(checked) alarmData.day[2] = 1.toByte() else alarmData.day[2] = 0.toByte()
+                R.id.wed_box -> if(checked) alarmData.day[3] = 1.toByte() else alarmData.day[3] = 0.toByte()
+                R.id.thur_box -> if(checked) alarmData.day[4] = 1.toByte() else alarmData.day[4] = 0.toByte()
+                R.id.fri_box -> if(checked) alarmData.day[5] = 1.toByte() else alarmData.day[5] = 0.toByte()
+                R.id.sat_box -> if(checked) alarmData.day[6] = 1.toByte() else alarmData.day[6] = 0.toByte()
             }
         }
     }

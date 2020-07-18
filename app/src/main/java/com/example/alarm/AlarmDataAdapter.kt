@@ -48,7 +48,7 @@ class AlarmDataAdapter(val context : Context, val alarmList : ArrayList<AlarmDat
 
         var days = ""
         for (index in 0..6)
-            if (alarmList[position].day[index])
+            if (alarmList[position].day[index]==1.toByte())
                 days += DAY[index]
         holder.containerView.alarm_day.text = days
 
