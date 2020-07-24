@@ -1,5 +1,4 @@
 package com.example.alarm
-
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -8,39 +7,69 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
-import android.view.View
-import android.widget.CheckBox
-import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
-import java.io.Serializable
 
 class AlarmSettingActivity : AppCompatActivity() {
 
-    private lateinit var alarmData : AlarmData
+    private var viewModel: AlarmSettingViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
 
-        loadAlarmSetting()
+        viewModel = application!!.let {
+            ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
+                .get(AlarmSettingViewModel::class.java)
+        }
+
+        viewModel!!.let {
+            it.title.observe(this, Observer { alarm_title.setText(it) })
+            it.hour.observe(this, Observer { timePicker.hour = it })
+            it.minute.observe(this, Observer { timePicker.minute = it })
+
+            it.sun.observe(this, Observer { sun_box.isChecked = it })
+            it.mon.observe(this, Observer { mon_box.isChecked = it })
+            it.tue.observe(this, Observer { tue_box.isChecked = it })
+            it.wed.observe(this, Observer { wed_box.isChecked = it })
+            it.thur.observe(this, Observer { thur_box.isChecked = it })
+            it.fri.observe(this, Observer { fri_box.isChecked = it })
+            it.sat.observe(this, Observer { sat_box.isChecked = it })
+
+            it.uriRingtone.observe(this, Observer { ringtone_btn.text = it })
+            it.volume.observe(this, Observer {volume_bar.progress = it})
+        }
+
+        val alarmId = intent.getStringExtra("ALARM_ID")
+        if (alarmId != null) {
+            viewModel!!.loadAlarm(alarmId)
+            Log.d("@@@alarmID is not null!", "" + alarmId)
+        }
 
         back_btn.setOnClickListener {
             onBackPressed()
         }
 
         delete_btn.setOnClickListener {
-            Log.d("delete button","is clicked")
-            showConfirmAlert()
+            if(alarmId != null)
+                showConfirmAlert(alarmId)
         }
 
         save_btn.setOnClickListener {
-            Log.d("AlarmSettingActivity", "save_btn clicked")
-            alarmData.title = alarm_title.text.toString()
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("alarmData", alarmData as Serializable)
-            setResult(Activity.RESULT_OK, intent)
+            viewModel?.addOrUpdateAlarm(
+                this,
+                alarm_title.text.toString(),
+                timePicker.hour,
+                timePicker.minute,
+                if(timePicker.hour in 12..23) "오후" else "오전",
+                sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
+                thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
+                true,
+                ringtone_btn.text.toString(),
+                volume_bar.progress
+            )
             finish()
         }
 
@@ -52,114 +81,6 @@ class AlarmSettingActivity : AppCompatActivity() {
             this.startActivityForResult(intent, 5)
         }
 
-        volume_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                alarmData.volume = p1
-            }
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-
-            }
-            override fun onStopTrackingTouch(p0: SeekBar?) {
-
-            }
-        })
-
-        OnClickTime()
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("deleteAlarmId", -1)
-        setResult(Activity.RESULT_CANCELED, intent)
-        finish()
-    }
-
-    private fun loadAlarmSetting() {
-        if (intent.hasExtra("alarmCode")) {
-            val type = intent.getIntExtra("alarmCode", 0)
-            alarmData = initAlarmData(type)
-            setAlarmView(alarmData)
-        }
-    }
-
-    private fun initAlarmData(type: Int): AlarmData {
-        when (type) {
-            /* make new alarm */
-            1 -> {
-                val id = intent.getIntExtra("alarmId", 0)
-                alarmData = newAlarmData(id)
-            }
-            /* update alarm*/
-            2 -> {
-                alarmData = loadAlarmData()
-            }
-        }
-        return alarmData
-    }
-
-    private fun newAlarmData(id : Int): AlarmData {
-        val uriDefault = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        var alarmData = AlarmData(id, "", 8, 0,"", ByteArray(7), true, uriDefault.toString(),5)
-        return alarmData
-    }
-
-    private fun loadAlarmData(): AlarmData {
-        var alarmData = intent.getSerializableExtra("updatedData") as AlarmData
-        return alarmData
-    }
-
-    private fun setAlarmView(alarmData : AlarmData) {
-        timePicker.hour = alarmData.hour
-        timePicker.minute = alarmData.minute
-
-        alarm_title.setText(alarmData.title)
-
-        sun_box.isChecked = alarmData.day[0].equals(1.toByte())
-        mon_box.isChecked = alarmData.day[1].equals(1.toByte())
-        tue_box.isChecked = alarmData.day[2].equals(1.toByte())
-        wed_box.isChecked = alarmData.day[3].equals(1.toByte())
-        thur_box.isChecked = alarmData.day[4].equals(1.toByte())
-        fri_box.isChecked = alarmData.day[5].equals(1.toByte())
-        sat_box.isChecked = alarmData.day[6].equals(1.toByte())
-
-        val ringtone = RingtoneManager.getRingtone(this, alarmData.uriRingtone.toUri())
-        val ringtoneTitle = ringtone.getTitle(this)
-        ringtone_btn.text = ringtoneTitle
-
-        volume_bar.progress = alarmData.volume
-    }
-
-    private fun showConfirmAlert() {
-        val builder = AlertDialog.Builder(ContextThemeWrapper(this@AlarmSettingActivity, R.style.Theme_AppCompat_Light_Dialog))
-        builder.setTitle("알람 삭제")
-        builder.setMessage("알람을 삭제하시겠습니까?")
-
-        builder.setPositiveButton("확인") { _, _ ->
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("deleteAlarmId", alarmData.alarmId)
-            setResult(Activity.RESULT_CANCELED, intent)
-            finish()
-        }
-        builder.setNegativeButton("취소") { _, _ ->
-
-        }
-        builder.show()
-    }
-
-    fun OnCheckboxClicked(view : View) {
-        if (view is CheckBox) {
-            val checked : Boolean = view.isChecked
-
-            when (view.id) {
-                R.id.sun_box -> if(checked) alarmData.day[0] = 1.toByte() else alarmData.day[0] = 0.toByte()
-                R.id.mon_box -> if(checked) alarmData.day[1] = 1.toByte() else alarmData.day[1] = 0.toByte()
-                R.id.tue_box -> if(checked) alarmData.day[2] = 1.toByte() else alarmData.day[2] = 0.toByte()
-                R.id.wed_box -> if(checked) alarmData.day[3] = 1.toByte() else alarmData.day[3] = 0.toByte()
-                R.id.thur_box -> if(checked) alarmData.day[4] = 1.toByte() else alarmData.day[4] = 0.toByte()
-                R.id.fri_box -> if(checked) alarmData.day[5] = 1.toByte() else alarmData.day[5] = 0.toByte()
-                R.id.sat_box -> if(checked) alarmData.day[6] = 1.toByte() else alarmData.day[6] = 0.toByte()
-            }
-        }
     }
 
     override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
@@ -169,32 +90,30 @@ class AlarmSettingActivity : AppCompatActivity() {
             val uri = data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
             val ringtone = RingtoneManager.getRingtone(this, uri)
             ringtone_btn.text = ringtone.getTitle(this)
-            alarmData.uriRingtone = uri.toString()
+            //alarmData.uriRingtone = uri.toString()
         }
     }
 
-    private fun OnClickTime() {
-        val remainTimeView = remain_time_view
-        timePicker.setOnTimeChangedListener { _, hour, minute ->
+    private fun showConfirmAlert(alarmId: String) {
+        val builder = AlertDialog.Builder(
+            ContextThemeWrapper(
+                this@AlarmSettingActivity,
+                R.style.Theme_AppCompat_Light_Dialog
+            )
+        )
+        builder.setTitle("알람 삭제")
+        builder.setMessage("알람을 삭제하시겠습니까?")
 
-            alarmData.hour = hour
-            alarmData.minute = minute
-
-            // AM_PM decider logic
-            if (hour/12 > 0) {
-                alarmData.apm = "오후"
-                if (hour != 12) {
-                    alarmData.hour %= 12
-                }
-            } else {
-                alarmData.apm = "오전"
-            }
-
-            if (remainTimeView != null) {
-                //Todo [Late] : calculate upcoming time
-                //remainTimeView.visibility = ViewGroup.VISIBLE
-            }
+        builder.setPositiveButton("확인") { _, _ ->
+            Log.d("delete button", "is clicked")
+            if (alarmId != null)
+                viewModel?.deleteAlarm(alarmId)
+            finish()
         }
+        builder.setNegativeButton("취소") { _, _ ->
+
+        }
+        builder.show()
     }
 
 }
