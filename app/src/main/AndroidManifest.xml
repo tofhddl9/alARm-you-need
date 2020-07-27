@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <receiver android:name=".AlarmTool"/>
+        <receiver android:name=".AlarmTool" />
 
         <activity
             android:name=".MainActivity"
@@ -22,7 +22,8 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER"/>
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -31,13 +32,15 @@
             android:value="ca-app-pub-1719157373734547~4794765830" />
 
         <activity
-            android:name=".ConfigurationActivity"
-            android:label="@string/title_activity_configuration" />
+            android:name=".RingActivity"
+            android:label="@string/title_activity_ring"/>
 
         <activity
+            android:name=".ConfigurationActivity"
+            android:label="@string/title_activity_configuration" />
+        <activity
             android:name=".AlarmSettingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

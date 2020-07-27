@@ -5,6 +5,8 @@
     <string name="title_activity_main">alARm</string>
     <string name="title_activity_configuration">설정</string>
     <string name="title_activity_alarm_setting"></string>
+    <string name="title_activity_ring"></string>
+
 
     <!-- Preference Titles -->
     <string name="alarm_header">알람</string>
