@@ -14,7 +14,6 @@ class AlarmSettingViewModel: ViewModel() {
     val title: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
     val hour: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
     val minute: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
-    val alarmTime: MutableLiveData<Date> = MutableLiveData<Date>().apply { value = Date(0) }
     var apm: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
     var sun: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
     var mon: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
@@ -47,7 +46,6 @@ class AlarmSettingViewModel: ViewModel() {
         alarmData = alarmDao.selectAlarm(id)
         title.value = alarmData.title
         hour.value = alarmData.hour
-        alarmTime.value = alarmData.alarmTime //
         minute.value = alarmData.minute
         apm.value = alarmData.apm
 
@@ -73,14 +71,11 @@ class AlarmSettingViewModel: ViewModel() {
                          sun: Boolean, mon: Boolean, tue: Boolean, wed: Boolean, thur: Boolean,
                          fri: Boolean, sat: Boolean, onoff: Boolean, uriRingtone: String, volume: Int) {
 
-        val alarmTimeValue = alarmTime.value!!
-        alarmDao.addOrUpdateAlarm(alarmData, title, hour, minute, alarmTimeValue, apm,
+        alarmDao.addOrUpdateAlarm(alarmData, title, hour, minute, apm,
             sun, mon, tue, wed, thur, fri, sat, onoff, uriRingtone, volume)
 
-        //AlarmTool.deleteAlarm(context, alarmData.alarmId)
-        if (alarmTimeValue.after(Date())) {
-            //AlarmTool.addAlarm(context, alarmData.alarmId, alarmTimeValue)
-        }
+        AlarmTool.deleteAlarm(context, alarmData.alarmId)
+        AlarmTool.addAlarm(context, alarmData.alarmId, alarmData.hour, alarmData.minute)
     }
 
     fun deleteAlarm(id: String) {

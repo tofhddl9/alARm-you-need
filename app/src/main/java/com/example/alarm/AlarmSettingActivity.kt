@@ -45,7 +45,6 @@ class AlarmSettingActivity : AppCompatActivity() {
         val alarmId = intent.getStringExtra("ALARM_ID")
         if (alarmId != null) {
             viewModel!!.loadAlarm(alarmId)
-            Log.d("@@@alarmID is not null!", "" + alarmId)
         }
 
         back_btn.setOnClickListener {
@@ -90,7 +89,6 @@ class AlarmSettingActivity : AppCompatActivity() {
             val uri = data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
             val ringtone = RingtoneManager.getRingtone(this, uri)
             ringtone_btn.text = ringtone.getTitle(this)
-            //alarmData.uriRingtone = uri.toString()
         }
     }
 
