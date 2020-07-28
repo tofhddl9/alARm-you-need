@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_alarm_setting.*
 class AlarmSettingActivity : AppCompatActivity() {
 
     private var viewModel: AlarmSettingViewModel? = null
+    private lateinit var uriRingtone: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +39,15 @@ class AlarmSettingActivity : AppCompatActivity() {
             it.fri.observe(this, Observer { fri_box.isChecked = it })
             it.sat.observe(this, Observer { sat_box.isChecked = it })
 
-            it.uriRingtone.observe(this, Observer { ringtone_btn.text = it })
+            it.uriRingtone.observe(this, Observer { uriRingtone = it })
             it.volume.observe(this, Observer {volume_bar.progress = it})
         }
 
         val alarmId = intent.getStringExtra("ALARM_ID")
         if (alarmId != null) {
             viewModel!!.loadAlarm(alarmId)
+            val uri = Uri.parse(viewModel!!.uriRingtone.value)
+            writeRingtoneTitle(uri!!)
         }
 
         back_btn.setOnClickListener {
@@ -66,7 +69,7 @@ class AlarmSettingActivity : AppCompatActivity() {
                 sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
                 thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
                 true,
-                ringtone_btn.text.toString(),
+                uriRingtone,
                 volume_bar.progress
             )
             finish()
@@ -82,13 +85,18 @@ class AlarmSettingActivity : AppCompatActivity() {
 
     }
 
+    private fun writeRingtoneTitle(uri: Uri) {
+       val ringtone = RingtoneManager.getRingtone(this, uri)
+        ringtone_btn.text = ringtone.getTitle(this)
+    }
+
     override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             val uri = data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            val ringtone = RingtoneManager.getRingtone(this, uri)
-            ringtone_btn.text = ringtone.getTitle(this)
+            uriRingtone = uri.toString()
+            writeRingtoneTitle(uri!!)
         }
     }
 
@@ -104,8 +112,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         builder.setPositiveButton("확인") { _, _ ->
             Log.d("delete button", "is clicked")
-            if (alarmId != null)
-                viewModel?.deleteAlarm(alarmId)
+            viewModel?.deleteAlarm(alarmId)
             finish()
         }
         builder.setNegativeButton("취소") { _, _ ->

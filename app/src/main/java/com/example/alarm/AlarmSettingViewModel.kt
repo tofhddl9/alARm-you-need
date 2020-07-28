@@ -1,22 +1,18 @@
 package com.example.alarm
 import android.content.Context
 import android.util.Log
-import android.view.View
-import android.widget.CheckBox
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.realm.Realm
-import kotlinx.android.synthetic.main.alarm_item.view.*
-import java.util.*
 
 class AlarmSettingViewModel: ViewModel() {
 
     val title: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
     val hour: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
     val minute: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
-    var apm: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
-    var sun: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    var mon: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
+    val apm: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
+    val sun: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
+    val mon: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
     val tue: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
     val wed: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
     val thur: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
