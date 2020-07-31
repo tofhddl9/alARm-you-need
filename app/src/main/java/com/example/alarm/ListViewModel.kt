@@ -17,9 +17,9 @@ class ListViewModel : ViewModel() {
 
     private var alarmData = AlarmData()
 
-    fun toggleAlarm(id: String, onoff: Boolean) {
+    fun toggleAlarm(id: String) {
         alarmData = alarmDao.selectAlarm(id)
-        alarmDao.onOffAlarm(alarmData, onoff)
+        alarmDao.toggleAlarm(alarmData)
     }
 
     override fun onCleared() {

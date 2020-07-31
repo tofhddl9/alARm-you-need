@@ -73,7 +73,8 @@ class AlarmTool: BroadcastReceiver() {
                 val realm = Realm.getDefaultInstance()
                 val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
 
-                if (isAlarmToday(alarmData)) {
+                Log.d("AlarmTool::","onReceive() ... alarm is on :"+ alarmData.onoff)
+                if (isAlarmToday(alarmData) && alarmData.onoff) {
                     val ringIntent = Intent(context, RingActivity::class.java)
                     ringIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     ringIntent.putExtra("ALARM_ID", alarmId)

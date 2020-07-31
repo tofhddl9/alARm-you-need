@@ -30,7 +30,9 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, AlarmSettingActivity::class.java)
             startActivity(intent)
         }
-        /* todo : alarm onoff update*/
+        /* TODO :
+            앱을 껐다 켰을 때 알람들 등록 확인
+            백그라운드에서도 알람이 동작하는지 확인*/
     }
 
 }

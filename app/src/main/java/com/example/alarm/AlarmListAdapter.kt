@@ -12,7 +12,7 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
     private val DAY : List<String> = listOf("일 ", "월 ", "화 ", "수 ", "목 ", "금 ", "토 ")
 
     lateinit var itemClickListener: (itemId: String) -> Unit
-    lateinit var checkBoxClickListner : (itemId: String) -> Unit
+    lateinit var checkBoxClickListener : (itemId: String) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmDataViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.alarm_item, parent, false)
@@ -21,6 +21,12 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
         view.setOnClickListener {
             itemClickListener?.run {
                 val alarmId = it.tag as String
+                this(alarmId)
+            }
+        }
+        view.alarm_on_off.setOnClickListener {
+            checkBoxClickListener?.run {
+                val alarmId = view.tag as String
                 this(alarmId)
             }
         }

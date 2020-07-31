@@ -60,12 +60,6 @@ class AlarmSettingViewModel: ViewModel() {
         onoff.value = alarmData.onoff
         uriRingtone.value = alarmData.uriRingtone
         volume.value = alarmData.volume
-
-    }
-
-    /* todo : implement */
-    fun onOffAlarm(id: String, onoff: Boolean) {
-        alarmDao.onOffAlarm(alarmData, onoff)
     }
 
     fun addOrUpdateAlarm(context : Context, title: String, hour: Int, minute: Int, apm: String,

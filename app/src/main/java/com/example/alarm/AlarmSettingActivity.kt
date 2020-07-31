@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
+import kotlinx.android.synthetic.main.activity_alarm_setting.alarm_title
 
 class AlarmSettingActivity : AppCompatActivity() {
 

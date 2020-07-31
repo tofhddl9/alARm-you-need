@@ -46,10 +46,8 @@ class AlarmListFragment: Fragment(){
                     startActivity(intent)
                 }
 
-                listAdapter.checkBoxClickListner = {
-                    /* true : for debug*/
-                    viewModel!!.toggleAlarm(it, true)
-                    Log.d("alarm toggle","success")
+                listAdapter.checkBoxClickListener = {
+                    viewModel!!.toggleAlarm(it)
                 }
 
             }

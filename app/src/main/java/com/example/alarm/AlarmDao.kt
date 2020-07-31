@@ -1,4 +1,5 @@
 package com.example.alarm
+import android.util.Log
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -17,9 +18,10 @@ class AlarmDao(private val realm: Realm) {
             .findFirst() as AlarmData
     }
 
-    fun onOffAlarm(alarmData: AlarmData, onoff: Boolean) {
+    fun toggleAlarm(alarmData: AlarmData) {
         realm.executeTransaction {
-            alarmData.onoff = onoff
+            alarmData.onoff = !alarmData.onoff
+            Log.d("AlarmDao::", "toggleAlarm() ... alarm is on now?" + alarmData.onoff)
         }
     }
 
