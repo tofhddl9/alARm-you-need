@@ -1,5 +1,7 @@
 package com.example.alarm
 import android.content.Context
+import android.media.RingtoneManager
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,19 +10,21 @@ import io.realm.Realm
 class AlarmSettingViewModel: ViewModel() {
 
     val title: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
-    val hour: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
-    val minute: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
+    val hour: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 8 }
+    val minute: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 30 }
     val apm: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
-    val sun: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val mon: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val tue: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val wed: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val thur: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val fri: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val sat: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val onoff: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
-    val uriRingtone: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
-    val volume: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
+    val sun: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val mon: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val tue: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val wed: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val thur: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val fri: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val sat: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+    val onoff: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
+
+    val defaultUriRingtone: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+    var uriRingtone: MutableLiveData<String> = MutableLiveData<String>().apply { value = defaultUriRingtone.toString()}
+    val volume: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 50 }
 
     private var alarmData = AlarmData()
 
@@ -59,6 +63,7 @@ class AlarmSettingViewModel: ViewModel() {
 
     }
 
+    /* todo : implement */
     fun onOffAlarm(id: String, onoff: Boolean) {
         alarmDao.onOffAlarm(alarmData, onoff)
     }

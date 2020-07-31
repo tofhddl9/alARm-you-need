@@ -21,6 +21,10 @@ class AlarmSettingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
 
+        val defaultUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val defaultRingtone = RingtoneManager.getRingtone(this, defaultUri)
+        ringtone_btn.text = defaultRingtone.getTitle(this)
+
         viewModel = application!!.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
                 .get(AlarmSettingViewModel::class.java)
@@ -86,7 +90,7 @@ class AlarmSettingActivity : AppCompatActivity() {
     }
 
     private fun writeRingtoneTitle(uri: Uri) {
-       val ringtone = RingtoneManager.getRingtone(this, uri)
+        val ringtone = RingtoneManager.getRingtone(this, uri)
         ringtone_btn.text = ringtone.getTitle(this)
     }
 
