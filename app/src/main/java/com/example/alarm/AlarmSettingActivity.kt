@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -65,19 +66,24 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
 
         save_btn.setOnClickListener {
-            viewModel?.addOrUpdateAlarm(
-                this,
-                alarm_title.text.toString(),
-                timePicker.hour,
-                timePicker.minute,
-                if(timePicker.hour in 12..23) "오후" else "오전",
-                sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
-                thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
-                true,
-                uriRingtone,
-                volume_bar.progress
-            )
-            finish()
+            if (isAlarmValid()) {
+                viewModel?.addOrUpdateAlarm(
+                    this,
+                    alarm_title.text.toString(),
+                    timePicker.hour,
+                    timePicker.minute,
+                    if (timePicker.hour in 12..23) "오후" else "오전",
+                    sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
+                    thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
+                    true,
+                    uriRingtone,
+                    volume_bar.progress
+                )
+                finish()
+            }
+            else {
+                Toast.makeText(this@AlarmSettingActivity, "요일을 선택해 주세요", Toast.LENGTH_SHORT).show()
+            }
         }
 
         ringtone_btn.setOnClickListener {
@@ -88,6 +94,13 @@ class AlarmSettingActivity : AppCompatActivity() {
             this.startActivityForResult(intent, 5)
         }
 
+    }
+
+    private fun isAlarmValid(): Boolean {
+        var isValid = false
+        isValid = isValid or sun_box.isChecked or mon_box.isChecked or tue_box.isChecked or
+                wed_box.isChecked or thur_box.isChecked or fri_box.isChecked or sat_box.isChecked
+        return isValid
     }
 
     private fun writeRingtoneTitle(uri: Uri) {
@@ -125,5 +138,4 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
         builder.show()
     }
-
 }
