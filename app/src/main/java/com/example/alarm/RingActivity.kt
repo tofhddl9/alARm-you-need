@@ -30,7 +30,18 @@ class RingActivity : AppCompatActivity() {
 
         maybeEnableArButton()
     }
-/*
+
+    @Override
+    override fun onResume() {
+        super.onResume()
+
+        // ARCore requires camera permission to operate.
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            CameraPermissionHelper.requestCameraPermission(this)
+        }
+    }
+
+
     override fun onRequestPermissionsResult(requestCode: Int,  permissions: Array<out String>,  grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions!!, grantResults!!)
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
@@ -47,7 +58,7 @@ class RingActivity : AppCompatActivity() {
             finish()
         }
     }
-*/
+
     private fun maybeEnableArButton() {
         val availability = ArCoreApk.getInstance().checkAvailability(this);
         if (availability.isTransient) {

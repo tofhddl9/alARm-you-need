@@ -4,9 +4,7 @@
 
     <string name="title_activity_main">alARm</string>
     <string name="title_activity_configuration">설정</string>
-    <string name="title_activity_alarm_setting"></string>
-    <string name="title_activity_ring"></string>
-
+    <string name="title_activity_alarm_setting">알람 설정</string>
 
     <!-- Preference Titles -->
     <string name="alarm_header">알람</string>
@@ -18,4 +16,17 @@
 
     <!-- normal Preferences -->
     <string name="language_title">언어 설정</string>
+
+    <!--hello ar property-->
+    <string name="depth_use_explanation" translatable="false">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
+    <string name="button_text_enable_depth" translatable="false">Enable</string>
+    <string name="button_text_disable_depth" translatable="false">Disable</string>
+    <string name="options_title_with_depth" translatable="false">Your device supports depth</string>
+    <string name="options_title_without_depth" translatable="false">Your device does not support depth</string>
+    <string name="done" translatable="false">Done</string>
+    <string-array name="depth_options_array" translatable="false">
+        <item>Enable depth</item>
+        <item>Show depth map</item>
+
+    </string-array>
 </resources>
