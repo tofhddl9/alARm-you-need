@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             }
             /*For AR Debugging*/
             //val intent = Intent(this, AlarmSettingActivity::class.java)
-            val intent = Intent(this, HelloArActivity::class.java)
+            val intent = Intent(this, AugmentedImageActivity::class.java)
             startActivity(intent)
         }
         /* TODO :

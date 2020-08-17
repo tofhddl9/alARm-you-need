@@ -19,13 +19,13 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
         val newViewHolder = AlarmDataViewHolder(view)
 
         view.setOnClickListener {
-            itemClickListener?.run {
+            itemClickListener.run {
                 val alarmId = it.tag as String
                 this(alarmId)
             }
         }
         view.alarm_on_off.setOnClickListener {
-            checkBoxClickListener?.run {
+            checkBoxClickListener.run {
                 val alarmId = view.tag as String
                 this(alarmId)
             }
@@ -43,7 +43,7 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
         val checkBox = holder.itemView.alarm_on_off
         checkBox.isChecked = alarmList[position].onoff
         setCheckBoxBackgroundColor(holder, checkBox)
-        registerCheckBoxListener(holder, checkBox, position)
+        registerCheckBoxListener(holder, checkBox)
 
         var days = ""
         if (alarmList[position].sun) days += DAY[0]
@@ -72,10 +72,9 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
             holder.itemView.item_view.setBackgroundColor(Color.parseColor("#ffffffff"))
     }
 
-    private fun registerCheckBoxListener(holder: AlarmDataViewHolder, checkBox: CheckBox, position: Int) {
-        checkBox.setOnCheckedChangeListener { _, b ->
+    private fun registerCheckBoxListener(holder: AlarmDataViewHolder, checkBox: CheckBox) {
+        checkBox.setOnCheckedChangeListener { _, _ ->
             setCheckBoxBackgroundColor(holder, checkBox)
-
         }
     }
 

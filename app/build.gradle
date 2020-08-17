@@ -3,10 +3,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
+apply plugin: 'com.google.ar.sceneform.plugin'
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.0"
+
+    applicationVariants.all { variant ->
+        variant.getRuntimeConfiguration().exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    }
 
     defaultConfig {
         applicationId "com.example.alarm"
@@ -39,6 +44,9 @@ dependencies {
 
     implementation 'de.javagl:obj:0.2.1'
     implementation 'com.google.ar:core:1.18.0'
+    implementation "com.google.ar.sceneform.ux:sceneform-ux:1.17.1"
+    implementation 'cz.advel.jbullet:jbullet:20101010-1'
+
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.gms:play-services-ads:19.3.0'
@@ -48,4 +56,14 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+
+    //api project(":sceneformux")
+
+    //implementation 'com.github.bumptech.glide:glide:4.9.0'
+    //annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 }
+
+sceneform.asset('sampledata/green_maze/GreenMaze.obj', // 'Source Asset Path' specified during import.
+        'default',                            // 'Material Path' specified during import.
+        'sampledata/models/GreenMaze.sfa',         // '.sfa Output Path' specified during import.
+        'src/main/assets/models/green_maze')              // '.sfb Output Path' specified during import.

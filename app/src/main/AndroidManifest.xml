@@ -2,18 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.alarm">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature
-        android:name="android.hardware.camera.ar"
-        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true" />
-
+    <uses-feature  android:name="android.hardware.camera.ar" android:required="true" />
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
 
     <application
         android:name=".AlarmYouNeedApplication"
@@ -39,19 +35,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".RingActivity"/>
-
-        <activity
-            android:name=".ConfigurationActivity"/>
-
+        <activity android:name=".RingActivity" />
+        <activity android:name=".ConfigurationActivity" />
         <activity
             android:name=".AlarmSettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".HelloArActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="locked"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name=".AugmentedImageActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar"
@@ -63,9 +61,7 @@
 
         <meta-data
             android:name="com.google.ar.core"
-            android:value="required"/>
-
-
+            android:value="required" />
     </application>
 
 </manifest>
