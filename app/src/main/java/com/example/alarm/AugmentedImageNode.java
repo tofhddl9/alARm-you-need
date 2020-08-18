@@ -104,7 +104,14 @@ public class AugmentedImageNode extends AnchorNode {
     // Scale Y an extra 10 times to lower the maze wall.
     mazeNode.setLocalScale(new Vector3(maze_scale, maze_scale * 0.1f, maze_scale));
 
+    AddBall();
+  }
+
+  protected void AddBall() {
     // Add the ball
+    if (ballNode != null)
+      DeleteBall();
+
     ballNode = new Node();
     ballNode.setParent(this);
     ballNode.setRenderable(ballRenderable);
@@ -119,12 +126,20 @@ public class AugmentedImageNode extends AnchorNode {
             6.5f * maze_scale / 0.01f));
   }
 
+  protected void DeleteBall() {
+    if (ballNode != null) {
+      ballNode.setRenderable(null);
+      ballNode = null;
+    }
+  }
+
   public void updateBallPose(Pose pose) {
     if (ballNode == null)
       return;
 
     ballNode.setLocalPosition(new Vector3(pose.tx() * maze_scale, pose.ty()* maze_scale, pose.tz()* maze_scale));
     ballNode.setLocalRotation(new Quaternion(pose.qx(), pose.qy(), pose.qz(), pose.qw()));
+
   }
 
   public AugmentedImage getImage() {

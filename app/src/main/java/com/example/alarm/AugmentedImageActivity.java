@@ -17,8 +17,8 @@
 package com.example.alarm;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,8 +42,10 @@ public class AugmentedImageActivity extends AppCompatActivity {
 
     private ArFragment arFragment;
     private ImageView fitToScanView;
-    private PhysicsController physicsController;
+    private Button initButton;
 
+    private PhysicsController physicsController;
+    private Boolean init;
     // Augmented image and its associated center pose anchor, keyed by the augmented image in
     // the database.
     private final Map<AugmentedImage, AugmentedImageNode> augmentedImageMap = new HashMap<>();
@@ -55,8 +57,16 @@ public class AugmentedImageActivity extends AppCompatActivity {
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
+        initButton = findViewById(R.id.init_btn);
 
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+
+        SetListener();
+        init = false;
+    }
+
+    public void SetListener() {
+        initButton.setOnClickListener(view -> init = true);
     }
 
     @Override
@@ -64,6 +74,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
         super.onResume();
         if (augmentedImageMap.isEmpty()) {
             fitToScanView.setVisibility(View.VISIBLE);
+            initButton.setVisibility(View.GONE);
         }
     }
 
@@ -85,7 +96,6 @@ public class AugmentedImageActivity extends AppCompatActivity {
         for (AugmentedImage augmentedImage : updatedAugmentedImages) {
             switch (augmentedImage.getTrackingState()) {
                 case PAUSED:
-                    Log.d("AugmentedImageActivity","#####");
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
                     String text = "Detected Image " + augmentedImage.getIndex();
@@ -95,6 +105,7 @@ public class AugmentedImageActivity extends AppCompatActivity {
                 case TRACKING:
                     // Have to switch to UI Thread to update View.
                     fitToScanView.setVisibility(View.GONE);
+                    initButton.setVisibility(View.VISIBLE);
 
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
@@ -110,12 +121,21 @@ public class AugmentedImageActivity extends AppCompatActivity {
                         // If the image anchor is already created
                         AugmentedImageNode node = augmentedImageMap.get(augmentedImage);
 
-                        Pose ball_pose = physicsController.getBallPose();
-                        if (physicsController.isBallGone()) {
+                        Pose ball_pose;
+                        if (init) {
+                            physicsController.DeleteBallRigidBody();
 
+                            node.AddBall();
+                            ball_pose = physicsController.getBallPose(true);
+                            physicsController.AddBallRigidBody();
+                            init = false;
+                        }
+                        else {
+                            ball_pose = physicsController.getBallPose(false);
                         }
 
-                        node.updateBallPose(physicsController.getBallPose());
+                        node.updateBallPose(ball_pose);
+                        physicsController.isBallFarFromMaze();
                         // Use real world gravity, (0, -10, 0) as gravity
                         // Convert to Physics world coordinate (because Maze mesh has to be static)
                         // Use it as a force to move the ball
@@ -132,7 +152,6 @@ public class AugmentedImageActivity extends AppCompatActivity {
                     break;
 
                 case STOPPED:
-                    Log.d("AugmentedImageActivity","%%%%");
                     AugmentedImageNode node = augmentedImageMap.get(augmentedImage);
                     augmentedImageMap.remove(augmentedImage);
                     arFragment.getArSceneView().getScene().removeChild(node);

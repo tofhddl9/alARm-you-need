@@ -93,7 +93,9 @@ public class PhysicsController {
         previous_time = java.lang.System.currentTimeMillis();
     }
 
-    private void AddBallRigidBody() {
+    protected void forTest()
+
+    protected void AddBallRigidBody() {
         // Read comments in AddMazeRigidBody to see why we choose 0.13 for Ball's radius
         CollisionShape ballShape = new SphereShape(0.13f);
 
@@ -109,6 +111,11 @@ public class PhysicsController {
         ballRB.setActivationState(DISABLE_DEACTIVATION);
 
         dynamicsWorld.addRigidBody(ballRB);
+    }
+
+    protected void DeleteBallRigidBody() {
+        dynamicsWorld.removeRigidBody(ballRB);
+        ballRB.destroy();
     }
 
     //
@@ -168,7 +175,6 @@ public class PhysicsController {
         mazeRBInfo.friction = 0.1f;
         RigidBody mazeRB = new RigidBody(mazeRBInfo);
         dynamicsWorld.addRigidBody(mazeRB); // add the body to the dynamics world
-
 
         // Maze part 2, plane as bottom
         CollisionShape fakeGroundShape = new StaticPlaneShape(
@@ -266,7 +272,7 @@ public class PhysicsController {
         dynamicsWorld.stepSimulation((current_time - previous_time) / 1000.0f);
         previous_time = current_time;
 
-        printDebugInfo();
+        //printDebugInfo();
     }
 
     private void printDebugInfo() {
@@ -296,8 +302,11 @@ public class PhysicsController {
     // Get the pose on Ball, in Maze's coordinate space
     // - With centered the vertices in Maze, (0, 0, 0) is the center of the maze
     // - Though we scaled maze in physics simulation, the Pose returned here is not scaled.
-    public Pose getBallPose() {
+    public Pose getBallPose(Boolean isNew) {
         Transform ballTransform = new Transform();
+        if (isNew) {
+            DeleteBallRigidBody();
+        }
         ballRB.getMotionState().getWorldTransform(ballTransform);
 
         Quat4f rot = new Quat4f();
@@ -305,11 +314,20 @@ public class PhysicsController {
 
         // Use MAZE_SCALE to convert size from physical world size to Maze's original size
         // Because in display size, Sceneform is actually dealing with original size of Maze
-        float translation[] = {ballTransform.origin.x / MAZE_SCALE, ballTransform.origin.y / MAZE_SCALE, ballTransform.origin.z/ MAZE_SCALE};
-        float rotation[] = {rot.x, rot.y, rot.z, rot.w};
+        float[] translation = {ballTransform.origin.x / MAZE_SCALE, ballTransform.origin.y / MAZE_SCALE, ballTransform.origin.z/ MAZE_SCALE};
+        float[] rotation = {rot.x, rot.y, rot.z, rot.w};
 
         Pose ballPose = new Pose(translation, rotation);
         return ballPose;
+    }
+
+    public boolean isBallFarFromMaze() {
+        Pose ballPose = getBallPose(false);
+        //if (ballPose.ty())
+        Log.d("BallPose ","x :"+ballPose.tx()+"y :"+ballPose.ty()+"z : "+ballPose.tz());
+
+
+        return false;
     }
 
     public void applyGravityToBall(float[] mazeGravity) {

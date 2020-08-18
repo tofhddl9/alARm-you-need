@@ -36,4 +36,12 @@
         android:contentDescription="@string/fit_image_to_scan"
         />
 
+    <Button
+        android:id="@+id/init_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:rotation="90"
+        android:text="공 초기화" />
+
 </FrameLayout>
