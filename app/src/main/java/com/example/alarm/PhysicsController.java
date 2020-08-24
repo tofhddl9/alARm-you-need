@@ -93,15 +93,13 @@ public class PhysicsController {
         previous_time = java.lang.System.currentTimeMillis();
     }
 
-    protected void forTest()
-
     protected void AddBallRigidBody() {
         // Read comments in AddMazeRigidBody to see why we choose 0.13 for Ball's radius
         CollisionShape ballShape = new SphereShape(0.13f);
 
         Transform ballTransform = new Transform();
         ballTransform.setIdentity();
-        ballTransform.origin.set(0, 0.5f, 0); // Slightly raise the ball at the beginning
+        ballTransform.origin.set(0.3f, 0.2f, 0); // Slightly raise the ball at the beginning
 
         DefaultMotionState ballMotionState = new DefaultMotionState(ballTransform);
         RigidBodyConstructionInfo ballRBInfo = new RigidBodyConstructionInfo(
@@ -191,6 +189,21 @@ public class PhysicsController {
         fakeGroundRBInfo.friction = 0.1f;
         RigidBody fakeGroundRB = new RigidBody(fakeGroundRBInfo);
         dynamicsWorld.addRigidBody(fakeGroundRB);
+
+        CollisionShape fakeCoverShape = new StaticPlaneShape(
+                new Vector3f(0, -1.0f, 0),
+                0);
+
+        Transform fakeCoverTransform = new Transform();
+        fakeCoverTransform.setIdentity();
+        fakeCoverTransform.origin.set(0, 0.35f, 0);
+
+        DefaultMotionState fakeCoverMotionState = new DefaultMotionState(fakeCoverTransform);
+        RigidBodyConstructionInfo fakeCoverRBInfo = new RigidBodyConstructionInfo(
+                0.0f, fakeCoverMotionState, fakeCoverShape, new Vector3f(0, 0, 0));
+        fakeCoverRBInfo.friction = 0.1f;
+        RigidBody fakeCoverRB = new RigidBody(fakeCoverRBInfo);
+        dynamicsWorld.addRigidBody(fakeCoverRB);
     }
 
     private IndexedMesh loadMazeMesh() {
@@ -235,7 +248,6 @@ public class PhysicsController {
                 maxY = Float.max(y, maxY);
                 maxZ = Float.max(z, maxZ);
             }
-
             float centerX = (minX + maxX) / 2.0f;
             float centerZ = (minZ + maxZ) / 2.0f;
 
@@ -321,15 +333,6 @@ public class PhysicsController {
         return ballPose;
     }
 
-    public boolean isBallFarFromMaze() {
-        Pose ballPose = getBallPose(false);
-        //if (ballPose.ty())
-        Log.d("BallPose ","x :"+ballPose.tx()+"y :"+ballPose.ty()+"z : "+ballPose.tz());
-
-
-        return false;
-    }
-
     public void applyGravityToBall(float[] mazeGravity) {
 //    Log.d(TAG,
 //        String.format("Apply force to ball %f, %f, %f",
@@ -337,4 +340,5 @@ public class PhysicsController {
 
         ballRB.applyCentralForce(new Vector3f(mazeGravity));
     }
+
 }
