@@ -68,6 +68,7 @@ public class PhysicsController {
     private Context context;
     private final float MAZE_SCALE = 0.02f;
     private final float MAZE_SCALE_Y_EXTRA = 0.1f;
+    private final float MAZE_ORIGINAL_RADIUS = 250;
 
     public PhysicsController(Context activity) {
         context = activity;
@@ -339,6 +340,11 @@ public class PhysicsController {
 //            mazeGravity[0], mazeGravity [1], mazeGravity[2]));
 
         ballRB.applyCentralForce(new Vector3f(mazeGravity));
+    }
+
+    public boolean isEscape(Pose ballPose) {
+        //Log.d("PhysicsController"," ball_x : "+ballPose.tx()+" ball_y : "+ballPose.ty()+" ball_z : "+ballPose.tz());
+        return Math.abs(ballPose.tx()) > MAZE_ORIGINAL_RADIUS || Math.abs(ballPose.tz()) > MAZE_ORIGINAL_RADIUS;
     }
 
 }
