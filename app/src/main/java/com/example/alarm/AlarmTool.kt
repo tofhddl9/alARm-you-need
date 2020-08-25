@@ -75,7 +75,7 @@ class AlarmTool: BroadcastReceiver() {
 
                 Log.d("AlarmTool::","onReceive() ... alarm is on :"+ alarmData.onoff)
                 if (isAlarmToday(alarmData) && alarmData.onoff) {
-                    val ringIntent = if (alarmData.alarmType == AlarmType.AR) {
+                    val ringIntent = if (alarmData.alarmType == AlarmData.TYPE_AR) {
                         Intent(context, ArRingActivity::class.java)
                     } else {
                         Intent(context, DefaultRingActivity::class.java)

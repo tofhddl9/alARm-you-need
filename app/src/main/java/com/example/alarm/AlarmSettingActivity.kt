@@ -18,6 +18,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
     private var viewModel: AlarmSettingViewModel? = null
     private lateinit var uriRingtone: String
+    private lateinit var alarmType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         val defaultUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val defaultRingtone = RingtoneManager.getRingtone(this, defaultUri)
         ringtone_btn.text = defaultRingtone.getTitle(this)
+        alarm_type_btn.text = AlarmData.TYPE_DEFAULT
 
         viewModel = application!!.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
@@ -47,6 +49,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
             it.uriRingtone.observe(this, Observer { uriRingtone = it })
             it.volume.observe(this, Observer {volume_bar.progress = it})
+            it.alarmType.observe(this, Observer {alarmType = it})
         }
 
         val alarmId = intent.getStringExtra("ALARM_ID")
@@ -54,6 +57,7 @@ class AlarmSettingActivity : AppCompatActivity() {
             viewModel!!.loadAlarm(alarmId)
             val uri = Uri.parse(viewModel!!.uriRingtone.value)
             writeRingtoneTitle(uri!!)
+            writeAlarmTypeTitle(viewModel!!.alarmType.value)
         }
 
         back_btn.setOnClickListener {
@@ -77,7 +81,8 @@ class AlarmSettingActivity : AppCompatActivity() {
                     thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
                     true,
                     uriRingtone,
-                    volume_bar.progress
+                    volume_bar.progress,
+                    alarmType
                 )
                 finish()
             }
@@ -94,6 +99,22 @@ class AlarmSettingActivity : AppCompatActivity() {
             this.startActivityForResult(intent, 5)
         }
 
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose Alarm Type")
+        alarm_type_btn.setOnClickListener {
+            val alarmTypes = arrayOf("DEFAULT", "AR")
+            val checkedItem = alarmTypes.indexOf(alarmType)
+            builder.setSingleChoiceItems(alarmTypes, checkedItem) { dialog, which ->
+                alarmType = alarmTypes[which]
+            }
+            builder.setPositiveButton("OK") { _, _ ->
+                alarm_type_btn.text = alarmType
+            }
+            builder.setNegativeButton("Cancel", null)
+
+            val dialog = builder.create()
+            dialog.show()
+        }
     }
 
     private fun isAlarmValid(): Boolean {
@@ -106,6 +127,10 @@ class AlarmSettingActivity : AppCompatActivity() {
     private fun writeRingtoneTitle(uri: Uri) {
         val ringtone = RingtoneManager.getRingtone(this, uri)
         ringtone_btn.text = ringtone.getTitle(this)
+    }
+
+    private fun writeAlarmTypeTitle(alarmType: String?) {
+        alarm_type_btn.text = alarmType
     }
 
     override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {

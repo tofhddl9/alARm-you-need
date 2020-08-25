@@ -17,9 +17,11 @@ open class AlarmData(
     var fri:Boolean = false, var sat:Boolean = false,
     var onoff:Boolean = true,
     var uriRingtone: String = "",
-    var volume : Int = 0,
-    var alarmType : AlarmType = AlarmType.DEFAULT) : RealmObject(), Serializable
+    var volume: Int = 0,
+    var alarmType: String = TYPE_AR) : RealmObject(), Serializable {
 
-enum class AlarmType {
-    DEFAULT, AR
+    companion object {
+        const val TYPE_DEFAULT = "DEFAULT"
+        const val TYPE_AR = "AR"
+    }
 }
