@@ -39,7 +39,7 @@ import java.util.Map;
  * This application demonstrates using augmented images to place anchor nodes. app to include image
  * tracking functionality.
  */
-public class AugmentedImageActivity extends AppCompatActivity {
+public class ArRingActivity extends AppCompatActivity {
 
     private ArFragment arFragment;
     private ImageView fitToScanView;

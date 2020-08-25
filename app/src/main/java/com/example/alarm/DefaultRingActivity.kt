@@ -7,15 +7,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.ArCoreApk
-import kotlinx.android.synthetic.main.activity_ring.*;
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper;
+import kotlinx.android.synthetic.main.activity_default_ring.*
 
-class RingActivity : AppCompatActivity() {
+class DefaultRingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("RingActivity::onCreate", "is called")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ring)
+        setContentView(R.layout.activity_default_ring)
 
         val alarmData = intent.getStringExtra("ALARM_ID")
         val serviceIntent = Intent(this, AlarmService::class.java)

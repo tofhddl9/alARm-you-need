@@ -29,15 +29,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         fab.setOnClickListener {
-            // ARCore requires camera permission to operate.
-            if (!CameraPermissionHelper.hasCameraPermission(this)) {
-                CameraPermissionHelper.requestCameraPermission(this)
-            }
-            /*For AR Debugging*/
-            //val intent = Intent(this, AlarmSettingActivity::class.java)
-            val intent = Intent(this, AugmentedImageActivity::class.java)
+            val intent = Intent(this, AlarmSettingActivity::class.java)
             startActivity(intent)
         }
+
         /* TODO :
             앱을 껐다 켰을 때 알람 등록 확인
             백그라운드에서도 알람이 동작하는지 확인*/
