@@ -75,13 +75,11 @@ class AlarmTool: BroadcastReceiver() {
 
                 Log.d("AlarmTool::","onReceive() ... alarm is on :"+ alarmData.onoff)
                 if (isAlarmToday(alarmData) && alarmData.onoff) {
-
-                    // Todo Add alarmType property in alarmData
-                    //val ringIntent = if (alarmData.alarmType == AR) {
-                    //    Intent(context, ArRingActivity::class.java)
-                    //} else {
-                        val ringIntent = Intent(context, DefaultRingActivity::class.java)
-                    //}
+                    val ringIntent = if (alarmData.alarmType == AlarmType.AR) {
+                        Intent(context, ArRingActivity::class.java)
+                    } else {
+                        Intent(context, DefaultRingActivity::class.java)
+                    }
 
                     ringIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     ringIntent.putExtra("ALARM_ID", alarmId)

@@ -78,8 +78,6 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
         }
     }
 
-
-
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }

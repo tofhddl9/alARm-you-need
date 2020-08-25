@@ -25,6 +25,7 @@ class AlarmSettingViewModel: ViewModel() {
     val defaultUriRingtone: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
     var uriRingtone: MutableLiveData<String> = MutableLiveData<String>().apply { value = defaultUriRingtone.toString()}
     val volume: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 50 }
+    val alarmType : MutableLiveData<AlarmType> = MutableLiveData<AlarmType>().apply {value = AlarmType.DEFAULT}
 
     private var alarmData = AlarmData()
 
@@ -60,14 +61,15 @@ class AlarmSettingViewModel: ViewModel() {
         onoff.value = alarmData.onoff
         uriRingtone.value = alarmData.uriRingtone
         volume.value = alarmData.volume
+        alarmType.value = alarmData.alarmType
     }
 
     fun addOrUpdateAlarm(context : Context, title: String, hour: Int, minute: Int, apm: String,
                          sun: Boolean, mon: Boolean, tue: Boolean, wed: Boolean, thur: Boolean,
-                         fri: Boolean, sat: Boolean, onoff: Boolean, uriRingtone: String, volume: Int) {
+                         fri: Boolean, sat: Boolean, onoff: Boolean, uriRingtone: String, volume: Int, alarmType: AlarmType) {
 
         alarmDao.addOrUpdateAlarm(alarmData, title, hour, minute, apm,
-            sun, mon, tue, wed, thur, fri, sat, onoff, uriRingtone, volume)
+            sun, mon, tue, wed, thur, fri, sat, onoff, uriRingtone, volume, alarmType)
 
         AlarmTool.deleteAlarm(context, alarmData.alarmId)
         AlarmTool.addAlarm(context, alarmData.alarmId, alarmData.hour, alarmData.minute)
