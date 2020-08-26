@@ -15,7 +15,7 @@ open class AlarmData(
     var sun:Boolean = false, var mon:Boolean = false, var tue:Boolean = false,
     var wed:Boolean = false, var thur:Boolean = false,
     var fri:Boolean = false, var sat:Boolean = false,
-    var onoff:Boolean = true,
+    var active:Boolean = true,
     var uriRingtone: String = "",
     var volume: Int = 0,
     var alarmType: String = TYPE_AR) : RealmObject(), Serializable {

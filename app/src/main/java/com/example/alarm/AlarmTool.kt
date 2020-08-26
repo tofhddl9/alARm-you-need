@@ -73,8 +73,8 @@ class AlarmTool: BroadcastReceiver() {
                 val realm = Realm.getDefaultInstance()
                 val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
 
-                Log.d("AlarmTool::","onReceive() ... alarm is on :"+ alarmData.onoff)
-                if (isAlarmToday(alarmData) && alarmData.onoff) {
+                Log.d("AlarmTool::","onReceive() ... alarm is on :"+ alarmData.active)
+                if (isAlarmToday(alarmData) && alarmData.active) {
                     val ringIntent = if (alarmData.alarmType == AlarmData.TYPE_AR) {
                         Intent(context, ArRingActivity::class.java)
                     } else {

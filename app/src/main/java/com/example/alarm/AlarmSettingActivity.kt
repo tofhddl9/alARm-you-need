@@ -104,7 +104,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         alarm_type_btn.setOnClickListener {
             val alarmTypes = arrayOf("DEFAULT", "AR")
             val checkedItem = alarmTypes.indexOf(alarmType)
-            builder.setSingleChoiceItems(alarmTypes, checkedItem) { dialog, which ->
+            builder.setSingleChoiceItems(alarmTypes, checkedItem) { _, which ->
                 alarmType = alarmTypes[which]
             }
             builder.setPositiveButton("OK") { _, _ ->

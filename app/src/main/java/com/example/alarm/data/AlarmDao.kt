@@ -3,12 +3,11 @@ import android.util.Log
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
-import java.util.*
 
 class AlarmDao(private val realm: Realm) {
     fun getAllAlarms() : RealmResults<AlarmData> {
         return realm.where(AlarmData::class.java)
-            .sort("onoff", Sort.DESCENDING)
+            .sort("active", Sort.DESCENDING)
             .findAll()
     }
 
@@ -20,14 +19,14 @@ class AlarmDao(private val realm: Realm) {
 
     fun toggleAlarm(alarmData: AlarmData) {
         realm.executeTransaction {
-            alarmData.onoff = !alarmData.onoff
-            Log.d("AlarmDao::", "toggleAlarm() ... alarm is on now?" + alarmData.onoff)
+            alarmData.active = !alarmData.active
+            Log.d("AlarmDao::", "toggleAlarm() ... alarm is on now?" + alarmData.active)
         }
     }
 
     fun addOrUpdateAlarm(alarmData : AlarmData, title: String, hour: Int,  minute: Int,
                          apm: String, sun: Boolean, mon: Boolean, tue: Boolean, wed: Boolean,
-                         thur: Boolean, fri: Boolean, sat: Boolean, onoff: Boolean,
+                         thur: Boolean, fri: Boolean, sat: Boolean, active: Boolean,
                          uriRingtone: String, volume: Int, alarmType : String) {
         realm.executeTransaction {
 
@@ -40,7 +39,7 @@ class AlarmDao(private val realm: Realm) {
             alarmData.sun = sun; alarmData.mon = mon; alarmData.tue = tue; alarmData.wed = wed
             alarmData.thur = thur; alarmData.fri = fri; alarmData.sat = sat
 
-            alarmData.onoff = onoff
+            alarmData.active = active
             alarmData.uriRingtone = uriRingtone
             alarmData.volume = volume
             alarmData.alarmType = alarmType
@@ -62,7 +61,7 @@ class AlarmDao(private val realm: Realm) {
 
     fun getActiveAlarms(): RealmResults<AlarmData>? {
         return realm.where(AlarmData::class.java)
-            .equalTo("onoff", true)
+            .equalTo("active", true)
             //.and()
             .findAll()
     }

@@ -23,7 +23,7 @@
             android:padding="10dp">
 
             <CheckBox
-                android:id="@+id/alarm_on_off"
+                android:id="@+id/alarm_active"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingEnd="20dp" />

@@ -24,7 +24,7 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
                 this(alarmId)
             }
         }
-        view.alarm_on_off.setOnClickListener {
+        view.alarm_active.setOnClickListener {
             checkBoxClickListener.run {
                 val alarmId = view.tag as String
                 this(alarmId)
@@ -40,8 +40,8 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
     override fun onBindViewHolder(holder: AlarmDataViewHolder, position: Int) {
         holder.containerView.tag = alarmList[position].alarmId
 
-        val checkBox = holder.itemView.alarm_on_off
-        checkBox.isChecked = alarmList[position].onoff
+        val checkBox = holder.itemView.alarm_active
+        checkBox.isChecked = alarmList[position].active
         setCheckBoxBackgroundColor(holder, checkBox)
         registerCheckBoxListener(holder, checkBox)
 
