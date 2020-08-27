@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import io.realm.Realm
 import java.util.*
@@ -16,7 +15,7 @@ class AlarmTool: BroadcastReceiver() {
         private const val ACTION_RUN_ALARM = "RUN_ALARM"
 
         private fun createAlarmIntent(context: Context, id: String): PendingIntent {
-            Log.d("AlarmTool::createAlarm", "Intent : $id")
+            Log.d("DEBUGGING LOG", "AlarmTool::createAlarmIntent() is called ... id : $id")
             val intent = Intent(context, AlarmTool::class.java)
             intent.data = Uri.parse("id$id")
             intent.putExtra("ALARM_ID", id)
@@ -26,14 +25,12 @@ class AlarmTool: BroadcastReceiver() {
         }
 
         fun addAlarm(context: Context, id: String, hourOfDay: Int, minute: Int) {
-            Log.d("AlarmTool::addAlarm", "$hourOfDay:$minute")
+            Log.d("DEBUGGING LOG", "AlarmTool::addAlarm() is called ... $hourOfDay:$minute")
+
             val alarmIntent = createAlarmIntent(context, id)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getTriggerAtMillis(hourOfDay, minute), alarmIntent)
-                else -> alarmManager.setExact(AlarmManager.RTC_WAKEUP,  getTriggerAtMillis(hourOfDay, minute), alarmIntent)
-            }
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getTriggerAtMillis(hourOfDay, minute), alarmIntent)
         }
 
         private fun getTriggerAtMillis(hourOfDay: Int, minute: Int): Long {
@@ -59,6 +56,7 @@ class AlarmTool: BroadcastReceiver() {
 
         fun deleteAlarm(context: Context, id: String) {
             Log.d("AlarmTool::deleteAlarm", "id :$id")
+            Log.d("DEBUGGING LOG", "AlarmTool::deleteAlarm() is called  ...id : $id")
             val alarmIntent = createAlarmIntent(context, id)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(alarmIntent)
@@ -66,14 +64,14 @@ class AlarmTool: BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("onReceive()", "Action :" + intent.action)
+        Log.d("DEBUGGING LOG", "AlarmTool::onReceive() is called ... action : "+intent.action)
         when(intent.action) {
             ACTION_RUN_ALARM -> {
                 val alarmId: String? = intent.getStringExtra("ALARM_ID")
                 val realm = Realm.getDefaultInstance()
                 val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
+                Log.d("DEBUGGING LOG", "AlarmTool::onReceive() ... ACTION_RUN_ALARM")
 
-                Log.d("AlarmTool::","onReceive() ... alarm is on :"+ alarmData.active)
                 if (isAlarmToday(alarmData) && alarmData.active) {
                     val ringIntent = if (alarmData.alarmType == AlarmData.TYPE_AR) {
                         Intent(context, ArRingActivity::class.java)
@@ -88,6 +86,7 @@ class AlarmTool: BroadcastReceiver() {
             }
 
             Intent.ACTION_BOOT_COMPLETED -> {
+                Log.d("DEBUGGING LOG", "AlarmTool::onReceive() ... ACTION_BOOT_COMPLETED")
                 val realm = Realm.getDefaultInstance()
                 val activeAlarms = AlarmDao(realm).getActiveAlarms()
 

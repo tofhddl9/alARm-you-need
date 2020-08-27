@@ -11,8 +11,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
-import kotlinx.android.synthetic.main.activity_alarm_setting.alarm_title
 
 class AlarmSettingActivity : AppCompatActivity() {
 
@@ -106,12 +106,17 @@ class AlarmSettingActivity : AppCompatActivity() {
             val checkedItem = alarmTypes.indexOf(alarmType)
             builder.setSingleChoiceItems(alarmTypes, checkedItem) { _, which ->
                 alarmType = alarmTypes[which]
+                if (alarmType == "AR") {
+                    if (!CameraPermissionHelper.hasCameraPermission(this)) {
+                        alarmType = "DEFAULT"
+                        CameraPermissionHelper.requestCameraPermission(this)
+                    }
+                }
             }
-            builder.setPositiveButton("OK") { _, _ ->
+            builder.setPositiveButton("Ok") { _, _ ->
                 alarm_type_btn.text = alarmType
             }
             builder.setNegativeButton("Cancel", null)
-
             val dialog = builder.create()
             dialog.show()
         }
@@ -162,5 +167,20 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         }
         builder.show()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            Toast.makeText(this, "AR 기능을 사용하기 위해서 카메라 권한이 필요합니다", Toast.LENGTH_LONG).show()
+            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+                Log.d("DEBUGGING LOG", "HERE I AM")
+                // Permission denied with checking "Do not ask again".
+                CameraPermissionHelper.launchPermissionSettings(this)
+            }
+        }
+        else {
+            alarmType = "AR"
+        }
     }
 }

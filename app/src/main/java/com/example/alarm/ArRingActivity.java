@@ -16,11 +16,12 @@
 
 package com.example.alarm;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +29,7 @@ import com.google.ar.core.AugmentedImage;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
 import com.google.ar.core.TrackingState;
+import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper;
 import com.google.ar.core.examples.java.common.helpers.SnackbarHelper;
 import com.google.ar.sceneform.FrameTime;
 import com.google.ar.sceneform.ux.ArFragment;
@@ -64,6 +66,12 @@ public class ArRingActivity extends AppCompatActivity {
 
         SetListener();
         init = false;
+
+        String alarmData = getIntent().getExtras().getString("ALARM_ID");
+        Intent serviceIntent = new Intent(getApplicationContext(), AlarmService.class);
+        serviceIntent.putExtra("ALARM_ID", alarmData);
+        startService(serviceIntent);
+
     }
 
     public void SetListener() {
@@ -73,6 +81,12 @@ public class ArRingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // ARCore requires camera permission to operate.
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            CameraPermissionHelper.requestCameraPermission(this);
+        }
+
         if (augmentedImageMap.isEmpty()) {
             fitToScanView.setVisibility(View.VISIBLE);
             initButton.setVisibility(View.GONE);
@@ -135,18 +149,11 @@ public class ArRingActivity extends AppCompatActivity {
                             ball_pose = physicsController.getBallPose(false);
                         }
 
-
                         node.updateBallPose(ball_pose);
                         if (physicsController.isEscape(ball_pose)) {
-                            // @TODO : Escape Logic
-                            init = true;
+                            RingOff();
                         }
-                        // Use real world gravity, (0, -10, 0) as gravity
-                        // Convert to Physics world coordinate (because Maze mesh has to be static)
-                        // Use it as a force to move the ball
 
-                        // Replace this line to the code below
-                        // Pose worldGravityPose = Pose.makeTranslation(0, -20f, 0);
                         Pose worldGravityPose = Pose.makeTranslation(0, -9.8f, 0);
                         Pose mazeGravityPose = augmentedImage.getCenterPose().inverse().compose(worldGravityPose);
                         float mazeGravity[] = mazeGravityPose.getTranslation();
@@ -164,4 +171,11 @@ public class ArRingActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void RingOff() {
+        Intent ringOffIntent = new Intent(getApplicationContext(), AlarmService.class);
+        getApplicationContext().stopService(ringOffIntent);
+        finish();
+    }
+
 }

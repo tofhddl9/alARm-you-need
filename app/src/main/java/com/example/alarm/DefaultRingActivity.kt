@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_default_ring.*
 class DefaultRingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("RingActivity::onCreate", "is called")
+        Log.d("DEBUGGING LOG", "DefaultRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_default_ring)
 
@@ -27,55 +27,12 @@ class DefaultRingActivity : AppCompatActivity() {
             applicationContext.stopService(ringOffIntent)
             finish()
         }
-
-        maybeEnableArButton()
     }
 
     @Override
     override fun onResume() {
         super.onResume()
-
-        // ARCore requires camera permission to operate.
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            CameraPermissionHelper.requestCameraPermission(this)
-        }
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int,  permissions: Array<out String>,  grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            Toast.makeText(
-                this,
-                "Camera permission is needed to run this application",
-                Toast.LENGTH_LONG
-            )
-                .show()
-            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
-                // Permission denied with checking "Do not ask again".
-                CameraPermissionHelper.launchPermissionSettings(this)
-            }
-            finish()
-        }
-    }
-
-    private fun maybeEnableArButton() {
-        val availability = ArCoreApk.getInstance().checkAvailability(this);
-        if (availability.isTransient) {
-            // Re-query at 5Hz while compatibility is checked in the background.
-            Handler().postDelayed({
-                run {
-                    maybeEnableArButton();
-                }
-            }, 200);
-        }
-        if (availability.isSupported) {
-            alarm_off.visibility = View.VISIBLE;
-            alarm_off.isEnabled = true;
-            // indicator on the button.
-        } else { // Unsupported or unknown.
-            alarm_off.visibility = View.INVISIBLE;
-            alarm_off.isEnabled = false;
-        }
-    }
 }
