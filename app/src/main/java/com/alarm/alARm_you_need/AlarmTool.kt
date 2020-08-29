@@ -116,7 +116,7 @@ class AlarmTool: BroadcastReceiver() {
 }
 */
 
-package com.example.alarm
+package com.alarm.alARm_you_need
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -183,19 +183,19 @@ class AlarmTool: BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("DEBUGGING LOG", "AlarmTool::onReceive() is called ... action : "+intent.action)
-        Log.d("DEBUGGING LOG", "AlarmTool::onReceive() is called ... id :"+intent.getStringExtra(("ALARM_ID")))
         when(intent.action) {
             ACTION_RUN_ALARM -> {
                 val alarmId: String? = intent.getStringExtra("ALARM_ID")
                 val realm = Realm.getDefaultInstance()
                 val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
-                Log.d("DEBUGGING LOG", "AlarmTool::onReceive() ... ACTION_RUN_ALARM")
-                /* todo : need to debug! ... second alarm instance is not immortal */
-                //Log.d("DEBUGGING LOG", "is today? :"+isAlarmToday(alarmData)+"is active? : " + alarmData.active)
+                Log.d("DEBUGGING LOG",
+                    "[Received ACTION_RUN_ALARM info]" +
+                            "alarm Id : $alarmId" +
+                            "is today? : " + isAlarmToday(alarmData) +
+                            "is active? : " + alarmData.active)
+
                 if (isAlarmToday(alarmData) && alarmData.active) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        Log.d("DEBUGGING LOG", "oreo!")
                         val serviceIntent = Intent(context, RestartAlarmService::class.java)
                         serviceIntent.putExtra("ALARM_ID",alarmId)
                         context.startForegroundService(serviceIntent)

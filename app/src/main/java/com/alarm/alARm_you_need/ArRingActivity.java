@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.alarm;
+package com.alarm.alARm_you_need;
 
 import android.content.Intent;
 import android.os.Bundle;

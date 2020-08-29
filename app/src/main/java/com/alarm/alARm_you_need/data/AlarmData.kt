@@ -1,4 +1,4 @@
-package com.example.alarm
+package com.alarm.alARm_you_need
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

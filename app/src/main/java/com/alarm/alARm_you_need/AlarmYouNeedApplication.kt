@@ -1,12 +1,7 @@
-package com.example.alarm
+package com.alarm.alARm_you_need
 
 import android.app.*
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import io.realm.Realm
 
 class AlarmYouNeedApplication() : Application() {

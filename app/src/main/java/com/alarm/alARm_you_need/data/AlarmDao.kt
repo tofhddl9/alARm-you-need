@@ -1,10 +1,11 @@
-package com.example.alarm
+package com.alarm.alARm_you_need
 import android.util.Log
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
 
 class AlarmDao(private val realm: Realm) {
+
     fun getAllAlarms() : RealmResults<AlarmData> {
         return realm.where(AlarmData::class.java)
             .sort("active", Sort.DESCENDING)

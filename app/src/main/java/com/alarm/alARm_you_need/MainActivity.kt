@@ -1,4 +1,4 @@
-package com.example.alarm
+package com.alarm.alARm_you_need
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -9,9 +9,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.activity_list.*
 
 class MainActivity : AppCompatActivity() {
