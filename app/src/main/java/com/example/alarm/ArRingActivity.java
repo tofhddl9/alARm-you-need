@@ -18,10 +18,10 @@ package com.example.alarm;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,6 +55,7 @@ public class ArRingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("DEBUGGING LOG", "ArRingActivity::onCreate is called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_augmented_image);
 
@@ -67,11 +68,11 @@ public class ArRingActivity extends AppCompatActivity {
         SetListener();
         init = false;
 
-        String alarmData = getIntent().getExtras().getString("ALARM_ID");
-        Intent serviceIntent = new Intent(getApplicationContext(), AlarmService.class);
-        serviceIntent.putExtra("ALARM_ID", alarmData);
-        startService(serviceIntent);
-
+        if (getSupportActionBar() != null) {
+            Log.d("DEBUGGING LOG", "hide back button");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
+        }
     }
 
     public void SetListener() {
@@ -81,7 +82,7 @@ public class ArRingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.d("DEBUGGING LOG", "ArRingActivity::onResume is called");
         // ARCore requires camera permission to operate.
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
             CameraPermissionHelper.requestCameraPermission(this);
@@ -91,6 +92,43 @@ public class ArRingActivity extends AppCompatActivity {
             fitToScanView.setVisibility(View.VISIBLE);
             initButton.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("DEBUGGING LOG", "ArRingActivity::onDestroy is called");
+
+        if (!AlarmService.normalExit) {
+            Log.d("DEBUGGING LOG", "ArRingActivity ...  abnormal exit");
+            if (AlarmService.service != null) {
+                stopService(AlarmService.service);
+            }
+        }
+        else {
+            Log.d("DEBUGGING LOG", "ArRingActivity ... normal exit");
+            if (AlarmService.service != null) {
+                stopService(AlarmService.service);
+                AlarmService.service = null;
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("DEBUGGING LOG", "ArRingActivity::onBackPressed()");
+        //nop
+    }
+
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        Log.d("DEBUGGING LOG", "ArRingActivity::onUserLeaveHint()");
+        /* todo : seperate imgage registration */
+        /*if (AlarmService.service != null) {
+            Intent intent = new Intent(this, ArRingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }*/
     }
 
     /**
@@ -151,7 +189,7 @@ public class ArRingActivity extends AppCompatActivity {
 
                         node.updateBallPose(ball_pose);
                         if (physicsController.isEscape(ball_pose)) {
-                            RingOff();
+                            AlarmRingOff();
                         }
 
                         Pose worldGravityPose = Pose.makeTranslation(0, -9.8f, 0);
@@ -172,10 +210,15 @@ public class ArRingActivity extends AppCompatActivity {
         }
     }
 
-    private void RingOff() {
-        Intent ringOffIntent = new Intent(getApplicationContext(), AlarmService.class);
-        getApplicationContext().stopService(ringOffIntent);
-        finish();
+    private void AlarmRingOff() {
+        stopService(AlarmService.service);
+        AlarmService.service = null;
+        AlarmService.normalExit = true;
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        /*todo : GoodMorningActivity로 바꾸기
+         * */
     }
 
 }
