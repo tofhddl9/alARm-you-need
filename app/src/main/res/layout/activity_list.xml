@@ -44,12 +44,12 @@
             android:contentDescription="Move to main activity"
             android:src="@drawable/main_btn" />
 
-    <ImageButton
-        android:id="@+id/setting_btn"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:contentDescription="Move to setting activity"
-        android:src="@drawable/setting_btn" />
+        <ImageButton
+            android:id="@+id/setting_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="Move to setting activity"
+            android:src="@drawable/setting_btn" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

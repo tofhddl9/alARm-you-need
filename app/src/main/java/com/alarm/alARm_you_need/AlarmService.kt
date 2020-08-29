@@ -2,6 +2,7 @@ package com.alarm.alARm_you_need
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -37,6 +38,11 @@ class AlarmService : Service() {
         alarmId = intent.getStringExtra("ALARM_ID")!!
         val realm = Realm.getDefaultInstance()
         val alarmData = AlarmDao(realm).selectAlarm(alarmId)
+
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 15, AudioManager.FLAG_PLAY_SOUND)
+        }
 
         mediaPlayer = MediaPlayer.create(this, Uri.parse(alarmData.uriRingtone))
         mediaPlayer.setVolume(1.0F * alarmData.volume, 1.0F * alarmData.volume)
@@ -78,7 +84,7 @@ class AlarmService : Service() {
         intent.action = ACTION_RUN_ALARM
         val sender = PendingIntent.getBroadcast(this, 0, intent, 0)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, sender);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, sender)
     }
 }
 

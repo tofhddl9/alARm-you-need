@@ -194,7 +194,7 @@ public class ArRingActivity extends AppCompatActivity {
 
                         Pose worldGravityPose = Pose.makeTranslation(0, -9.8f, 0);
                         Pose mazeGravityPose = augmentedImage.getCenterPose().inverse().compose(worldGravityPose);
-                        float mazeGravity[] = mazeGravityPose.getTranslation();
+                        float[] mazeGravity = mazeGravityPose.getTranslation();
                         physicsController.applyGravityToBall(mazeGravity);
 
                         physicsController.updatePhysics();

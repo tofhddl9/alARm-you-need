@@ -30,8 +30,9 @@ public final class SnackbarHelper {
   private static final SnackbarHelper THE_INSTANCE = new SnackbarHelper(); //added
 
   private Snackbar messageSnackbar;
-  private enum DismissBehavior { HIDE, SHOW, FINISH };
-  private int maxLines = 2;
+  private enum DismissBehavior { HIDE, SHOW, FINISH }
+
+    private int maxLines = 2;
   private String lastMessage = "";
   private View snackbarView;
 

@@ -45,14 +45,14 @@ class DefaultRingActivity : AppCompatActivity() {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                     AudioManager.ADJUST_RAISE,/* it may be helpful >_<*/
                     AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
-                return true;
+                return true
             }
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
                     AudioManager.ADJUST_RAISE,
                     AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
-                return true;
+                return true
             }
             else -> {
                 return super.onKeyDown(keyCode, event)
@@ -62,7 +62,7 @@ class DefaultRingActivity : AppCompatActivity() {
 
     @Override
     override fun onBackPressed() {
-        Log.d("DEBUGGING LOG", "DefaultRingActivity::onBackPressed()");
+        Log.d("DEBUGGING LOG", "DefaultRingActivity::onBackPressed()")
         //nop
     }
 

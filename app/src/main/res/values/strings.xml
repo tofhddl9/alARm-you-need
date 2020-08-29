@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">alARm</string>
+    <string name="app_name">alARm_you_need</string>
     <string name="remain_time">it will show remaining time of upcoming alarm</string>
 
     <string name="title_activity_main">alARm</string>

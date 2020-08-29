@@ -4,13 +4,15 @@
     <PreferenceCategory app:title="@string/alarm_header">
 
         <SwitchPreference
-            app:key="status_bar"
+            app:key="status_bar_noti"
             app:title="@string/status_bar_title"
             app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreference
+        <Preference
             app:key="disturb_mode"
             app:title="@string/disturb_mode_title"
+            app:summaryOff="진동, 무음에서 벨소리가 울리지 않습니다"
+            app:summaryOn="진동, 무음에서도 벨소리가 울립니다"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

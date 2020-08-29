@@ -1,6 +1,7 @@
 package com.alarm.alARm_you_need
 
 import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_list.*
 class MainActivity : AppCompatActivity() {
 
     private var viewModel: ListViewModel? = null
-    private val resultCode = 12345
+    private val overlayPermissionResultCode = 1111
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("DEBUGGING LOG", "MainActivity::onCreate() is called")
@@ -39,6 +40,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        setting_btn.setOnClickListener {
+            val intent = Intent(this, ConfigurationActivity::class.java)
+            startActivity(intent)
+        }
+
+        requestPermissions()
+
+    }
+
+    fun requestPermissions() {
+        requestOverlayPermission()
+    }
+
+    private fun requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             !Settings.canDrawOverlays(this)) {
             Log.d("DEBUGGING LOG", "MainActivity::onCreate() ... Need to getting canDrawOverlay")
@@ -52,18 +67,17 @@ class MainActivity : AppCompatActivity() {
                     dialog.dismiss()
                 }.setPositiveButton("수락") {dialog, _->
                     val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-                    startActivityForResult(intent, resultCode)
+                    startActivityForResult(intent, overlayPermissionResultCode)
                     dialog.dismiss()
                 }
             }
             builder.show()
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == this.resultCode) {
+        if (resultCode == overlayPermissionResultCode) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!Settings.canDrawOverlays(this)) {
                     Toast.makeText(this, "권한을 수락해주세요", Toast.LENGTH_SHORT).show()
