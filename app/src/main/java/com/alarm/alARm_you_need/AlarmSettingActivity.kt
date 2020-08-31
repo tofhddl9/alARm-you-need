@@ -20,6 +20,8 @@ class AlarmSettingActivity : AppCompatActivity() {
     private lateinit var uriRingtone: String
     private lateinit var alarmType: String
 
+    private val RINGTONE_SELECT = 5;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_setting)
@@ -101,6 +103,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Choose Alarm Type")
+
         alarm_type_btn.setOnClickListener {
             val alarmTypes = arrayOf("DEFAULT", "AR")
             val checkedItem = alarmTypes.indexOf(alarmType)
@@ -141,10 +144,12 @@ class AlarmSettingActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode : Int, resultCode : Int, data : Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
+        if (resultCode == Activity.RESULT_OK && requestCode == RINGTONE_SELECT) {
             val uri = data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            uriRingtone = uri.toString()
-            writeRingtoneTitle(uri!!)
+            if (uri != null) {
+                uriRingtone = uri.toString()
+                writeRingtoneTitle(uri!!)
+            }
         }
     }
 
