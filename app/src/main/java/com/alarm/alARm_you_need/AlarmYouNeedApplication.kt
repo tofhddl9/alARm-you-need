@@ -9,7 +9,6 @@ class AlarmYouNeedApplication : Application() {
         super.onCreate()
         Realm.init(this)
         Log.d("DEBUGGING LOG", "AlarmYouNeedApplication")
-        val channelId = "$packageName-${getString(R.string.app_name)}"
     }
 
 }
@@ -17,7 +16,6 @@ class AlarmYouNeedApplication : Application() {
 /* Todo List
 * - 활성화 알람 시간 순 정렬
 * - 다음 알람까지 남은 시간 계산
-* - 설정 페이지 구현
 * - AR 사진 설정 구현
 *
 * */
