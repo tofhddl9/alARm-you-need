@@ -1,12 +1,19 @@
 package com.alarm.alARm_you_need
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -62,6 +69,10 @@ class AlarmSettingActivity : AppCompatActivity() {
             writeAlarmTypeTitle(viewModel!!.alarmType.value)
         }
 
+        setOnClickListeners(alarmId)
+    }
+
+    private fun setOnClickListeners(alarmId: String?) {
         back_btn.setOnClickListener {
             onBackPressed()
         }
@@ -112,8 +123,15 @@ class AlarmSettingActivity : AppCompatActivity() {
                 if (alarmType == "AR") {
                     if (!CameraPermissionHelper.hasCameraPermission(this)) {
                         alarmType = "DEFAULT"
+                        ar_image.visibility = View.GONE
                         CameraPermissionHelper.requestCameraPermission(this)
                     }
+                    else {
+                        ar_image.visibility = View.VISIBLE
+                    }
+                }
+                else {
+                    ar_image.visibility = View.GONE
                 }
             }
             builder.setPositiveButton("Ok") { _, _ ->
@@ -123,6 +141,12 @@ class AlarmSettingActivity : AppCompatActivity() {
             val dialog = builder.create()
             dialog.show()
         }
+
+        ar_image.setOnClickListener {
+            val dialog = ImageDialog(this)
+
+        }
+
     }
 
     private fun isAlarmValid(): Boolean {

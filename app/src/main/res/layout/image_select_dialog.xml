@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="216dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/camera_req"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/image_selector"
+            android:gravity="left|center_vertical"
+            android:lineSpacingExtra="1.5sp"
+            android:paddingLeft="16dp"
+            android:text="사진 촬영"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+
+
+        <Button
+            android:id="@+id/galery_req"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/image_selector"
+            android:gravity="left|center_vertical"
+            android:lineSpacingExtra="1.5sp"
+            android:paddingLeft="16dp"
+            android:text="갤러리에서 가져오기"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+
+
+        <Button
+            android:id="@+id/remove_img"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/image_selector"
+            android:gravity="left|center_vertical"
+            android:lineSpacingExtra="1.5sp"
+            android:paddingLeft="16dp"
+            android:text="등록된 사진 삭제"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+</layout>
