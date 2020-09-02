@@ -63,8 +63,8 @@ dependencies {
 
     //api project(":sceneformux")
 
-    //implementation 'com.github.bumptech.glide:glide:4.9.0'
-    //annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
 }
 
 sceneform.asset('sampledata/green_maze/GreenMaze.obj', // 'Source Asset Path' specified during import.
