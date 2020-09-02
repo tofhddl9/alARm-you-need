@@ -28,7 +28,7 @@ class AlarmDao(private val realm: Realm) {
     fun addOrUpdateAlarm(alarmData : AlarmData, title: String, hour: Int,  minute: Int,
                          apm: String, sun: Boolean, mon: Boolean, tue: Boolean, wed: Boolean,
                          thur: Boolean, fri: Boolean, sat: Boolean, active: Boolean,
-                         uriRingtone: String, volume: Int, alarmType : String) {
+                         uriRingtone: String, uriImage: String?, volume: Int, alarmType : String) {
         realm.executeTransaction {
 
             alarmData.title = title
@@ -42,6 +42,8 @@ class AlarmDao(private val realm: Realm) {
 
             alarmData.active = active
             alarmData.uriRingtone = uriRingtone
+            if (uriImage != null)
+                alarmData.uriImage = uriImage
             alarmData.volume = volume
             alarmData.alarmType = alarmType
 

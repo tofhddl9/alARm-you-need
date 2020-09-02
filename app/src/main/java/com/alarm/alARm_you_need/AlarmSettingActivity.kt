@@ -21,7 +21,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
     private var viewModel: AlarmSettingViewModel? = null
     private lateinit var uriRingtone: String
-    private lateinit var uriArImage: String
+    private var uriArImage: String? = null
     private lateinit var alarmType: String
 
     private val REQ_RINGTONE_SELECT = 1
@@ -37,7 +37,6 @@ class AlarmSettingActivity : AppCompatActivity() {
         val defaultRingtone = RingtoneManager.getRingtone(this, defaultUri)
         ringtone_btn.text = defaultRingtone.getTitle(this)
         alarm_type_btn.text = AlarmData.TYPE_DEFAULT
-
 
         viewModel = application!!.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
@@ -58,6 +57,7 @@ class AlarmSettingActivity : AppCompatActivity() {
             it.sat.observe(this, Observer { sat_box.isChecked = it })
 
             it.uriRingtone.observe(this, Observer { uriRingtone = it })
+            it.uriImage.observe(this, Observer { uriArImage = it })
             it.volume.observe(this, Observer { volume_bar.progress = it })
             it.alarmType.observe(this, Observer { alarmType = it })
         }
@@ -66,8 +66,24 @@ class AlarmSettingActivity : AppCompatActivity() {
         if (alarmId != null) {
             viewModel!!.loadAlarm(alarmId)
             val uri = Uri.parse(viewModel!!.uriRingtone.value)
+            Log.d("!!!!","Loaded ringtone uri : "+uri)
             writeRingtoneTitle(uri!!)
+
             writeAlarmTypeTitle(viewModel!!.alarmType.value)
+
+            if (viewModel!!.uriImage.value != null) {
+                if (viewModel!!.alarmType.value == AlarmData.TYPE_AR)
+                    ar_image.visibility = View.VISIBLE
+                val uri2 = Uri.parse(viewModel!!.uriImage.value)
+                if (uri2 != null) {
+                    Log.d("!!!!","Loaded image uri : "+uri2)
+                    setArImage(uri2)
+                }
+                else {
+                    Log.d("!!!!","####")
+                }
+            }
+
         }
 
         setOnClickListeners(alarmId)
@@ -82,6 +98,7 @@ class AlarmSettingActivity : AppCompatActivity() {
 
     private fun writeRingtoneTitle(uri: Uri) {
         val ringtone = RingtoneManager.getRingtone(this, uri)
+        Log.d("!!!!", "ringtone.title :${ringtone.getTitle(this)}")
         ringtone_btn.text = ringtone.getTitle(this)
     }
 
@@ -98,21 +115,19 @@ class AlarmSettingActivity : AppCompatActivity() {
                 REQ_RINGTONE_SELECT -> {
                     val uri =
                         data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+
+                    Log.d("!!!!", "selected ringtone uri : $uri")
                     if (uri != null) {
                         uriRingtone = uri.toString()
-                        writeRingtoneTitle(uri!!)
+                        writeRingtoneTitle(uri)
                     }
                 }
 
                 REQ_GALLERY_OPEN -> {
                     val imageUri = data?.data!!
+                    Log.d("!!!!", "image uri : $imageUri")
                     try {
-                        val input = contentResolver.openInputStream(imageUri)
-                        val image = BitmapFactory.decodeStream(input)
-                        Glide.with(this)
-                            .load(image)
-                            .into(ar_image)
-
+                        setArImage(imageUri)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -123,6 +138,15 @@ class AlarmSettingActivity : AppCompatActivity() {
         } else if (resultCode == Activity.RESULT_CANCELED) {
             //nop
         }
+    }
+
+    private fun setArImage(uriImage: Uri) {
+        uriArImage = uriImage.toString()
+        val input = contentResolver.openInputStream(uriImage)
+        val image = BitmapFactory.decodeStream(input)
+        ar_image.setImageBitmap(image)
+        Log.d("!!!!","setting image uri : "+uriImage)
+        Glide.with(this).load(image).into(ar_image)
     }
 
     private fun showConfirmAlert(alarmId: String) {
@@ -183,9 +207,12 @@ class AlarmSettingActivity : AppCompatActivity() {
                     thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
                     true,
                     uriRingtone,
+                    uriArImage,
                     volume_bar.progress,
                     alarmType
                 )
+                Log.d("!!!!","saved ringtone uri : $uriRingtone")
+                Log.d("!!!!", "saved imageUri : $uriArImage")
                 finish()
             }
             else {
@@ -198,7 +225,7 @@ class AlarmSettingActivity : AppCompatActivity() {
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone")
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, null as Uri?)
-            this.startActivityForResult(intent, 5)
+            this.startActivityForResult(intent, REQ_RINGTONE_SELECT)
         }
 
         val builder = AlertDialog.Builder(this)
