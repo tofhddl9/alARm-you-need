@@ -16,9 +16,13 @@
 
 package com.alarm.alARm_you_need;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,10 +36,11 @@ import com.google.ar.core.TrackingState;
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper;
 import com.google.ar.core.examples.java.common.helpers.SnackbarHelper;
 import com.google.ar.sceneform.FrameTime;
-import com.google.ar.sceneform.ux.ArFragment;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
 
 /**
  * This application demonstrates using augmented images to place anchor nodes. app to include image
@@ -43,9 +48,10 @@ import java.util.Map;
  */
 public class ArRingActivity extends AppCompatActivity {
 
-    private ArFragment arFragment;
+    private AugmentedImageFragment arFragment;
     private ImageView fitToScanView;
     private Button initButton;
+    private String alarmId;
 
     private PhysicsController physicsController;
     private Boolean init;
@@ -59,7 +65,15 @@ public class ArRingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_augmented_image);
 
-        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        alarmId = getIntent().getStringExtra("ALARM_ID");
+        Realm realm = Realm.getDefaultInstance();
+        assert alarmId != null;
+        Log.d("DEBUGGING LOG", "ArRingActivity get alarmId : " +  alarmId);
+        String targetImageUri = new AlarmDao(realm).selectAlarm(alarmId).getUriImage();
+
+        arFragment = (AugmentedImageFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        arFragment.setAugmentedTargetImage(Uri.parse(targetImageUri));
+
         fitToScanView = findViewById(R.id.image_view_fit_to_scan);
         initButton = findViewById(R.id.init_btn);
 
@@ -73,6 +87,7 @@ public class ArRingActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(false);
         }
+
     }
 
     public void SetListener() {
@@ -95,6 +110,38 @@ public class ArRingActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d("DEBUGGING LOG", "ArRingActivity::onKeyDown() is called");
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
+                    AudioManager.ADJUST_RAISE,
+                    AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("DEBUGGING LOG", "ArRingActivity::onBackPressed()");
+        //nop
+    }
+
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        Log.d("DEBUGGING LOG", "ArRingActivity::onUserLeaveHint()");
+        /* todo : seperate imgage registration */
+
+        if (AlarmService.service != null) {
+            Intent intent = new Intent(this, ArRingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.putExtra("ALARM_ID", alarmId);
+            startActivity(intent);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d("DEBUGGING LOG", "ArRingActivity::onDestroy is called");
@@ -112,23 +159,6 @@ public class ArRingActivity extends AppCompatActivity {
                 AlarmService.service = null;
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Log.d("DEBUGGING LOG", "ArRingActivity::onBackPressed()");
-        //nop
-    }
-
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        Log.d("DEBUGGING LOG", "ArRingActivity::onUserLeaveHint()");
-        /* todo : seperate imgage registration */
-        /*if (AlarmService.service != null) {
-            Intent intent = new Intent(this, ArRingActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-        }*/
     }
 
     /**

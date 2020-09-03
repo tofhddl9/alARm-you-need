@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,7 +53,7 @@ public class AugmentedImageFragment extends ArFragment {
   // This is a pre-created database containing the sample image.
   private static final String SAMPLE_IMAGE_DATABASE = "sample_database.imgdb";
 
-  private android.net.Uri chosenImageUri = null;
+  private /*android.net.Uri*/ Uri chosenImageUri = null;
   private static final int REQUEST_CODE_CHOOSE_IMAGE = 1;
 
   // Augmented image configuration and rendering.
@@ -79,17 +80,12 @@ public class AugmentedImageFragment extends ArFragment {
       SnackbarHelper.getInstance()
               .showError(getActivity(), "Sceneform requires OpenGL ES 3.0 or later");
     }
+    //chooseNewImage();
 
-    chooseNewImage();
   }
 
-  void chooseNewImage() {
-    android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT);
-    intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
-    intent.setType("image/*");
-    startActivityForResult(
-            android.content.Intent.createChooser(intent, "Select target augmented image"),
-            REQUEST_CODE_CHOOSE_IMAGE);
+  public void setAugmentedTargetImage(Uri imageUri) {
+    chosenImageUri = imageUri;
   }
 
   @Override
@@ -114,7 +110,8 @@ public class AugmentedImageFragment extends ArFragment {
     Log.d(TAG, "getSessionConfiguration()");
 
     if (!setupAugmentedImageDatabase(config, session)) {
-      SnackbarHelper.getInstance()
+      SnackbarHelper
+              .getInstance()
               .showError(getActivity(), "Could not setup augmented image database");
     }
     return config;
@@ -182,6 +179,17 @@ public class AugmentedImageFragment extends ArFragment {
     }
     return null;
   }
+
+  /*
+  public void chooseNewImage() {
+    android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT);
+    intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+    intent.setType("image/*");
+    startActivityForResult(
+            android.content.Intent.createChooser(intent, "Select target augmented image"),
+            REQUEST_CODE_CHOOSE_IMAGE);
+  }
+
   @Override
   public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
@@ -202,5 +210,5 @@ public class AugmentedImageFragment extends ArFragment {
       Log.e(TAG, "onActivityResult - target image selection error ", e);
     }
   }
-
+  */
 }
