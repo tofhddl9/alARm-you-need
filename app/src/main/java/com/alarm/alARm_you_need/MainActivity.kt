@@ -1,7 +1,6 @@
 package com.alarm.alARm_you_need
 
 import android.app.AlertDialog
-import android.app.NotificationManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -47,6 +46,13 @@ class MainActivity : AppCompatActivity() {
 
         requestPermissions()
 
+    }
+
+    @Override
+    override fun onBackPressed() {
+        val closeAppDialog = CloseAppDialog(this)
+        closeAppDialog.setContentView(R.layout.close_app_dialog)
+        closeAppDialog.show()
     }
 
     fun requestPermissions() {
