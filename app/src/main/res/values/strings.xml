@@ -12,7 +12,7 @@
 
     <!-- Messages Preferences -->
     <string name="status_bar_title">상단바 알림</string>
-    <string name="disturb_mode_title">방해모드에서도 알람 허용</string>
+    <string name="disturb_mode_title">방해금지모드에서도 알람 허용</string>
 
     <!-- normal Preferences -->
     <string name="language_title">언어 설정</string>

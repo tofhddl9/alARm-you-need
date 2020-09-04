@@ -17,6 +17,7 @@ import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.configuration_activity.*
 
 class ConfigurationActivity : AppCompatActivity() {
+    /* todo fragment로 만드는게 어떨까? */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
