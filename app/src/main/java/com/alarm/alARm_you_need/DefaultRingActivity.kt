@@ -34,6 +34,7 @@ class DefaultRingActivity : AppCompatActivity() {
         stopService(AlarmService.service)
         AlarmService.service = null
         AlarmService.normalExit = true
+        finish()
 
         val intent = Intent(this, GoodMorningActivity::class.java)
         intent.putExtra("ALARM_ID", alarmId)
