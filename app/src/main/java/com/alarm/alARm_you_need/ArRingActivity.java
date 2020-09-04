@@ -131,7 +131,6 @@ public class ArRingActivity extends AppCompatActivity {
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         Log.d("DEBUGGING LOG", "ArRingActivity::onUserLeaveHint()");
-        /* todo : seperate imgage registration */
 
         if (AlarmService.service != null) {
             Intent intent = new Intent(this, ArRingActivity.class);
@@ -245,10 +244,9 @@ public class ArRingActivity extends AppCompatActivity {
         AlarmService.service = null;
         AlarmService.normalExit = true;
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, GoodMorningActivity.class);
+        intent.putExtra("ALARM_ID", alarmId);
         startActivity(intent);
-        /*todo : GoodMorningActivity로 바꾸기
-         * */
     }
 
 }

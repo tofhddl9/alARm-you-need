@@ -10,10 +10,14 @@ import kotlinx.android.synthetic.main.activity_default_ring.*
 
 class DefaultRingActivity : AppCompatActivity() {
 
+    private lateinit var alarmId : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("DEBUGGING LOG", "DefaultRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_default_ring)
+
+        alarmId = intent.getStringExtra("ALARM_ID")!!
 
         alarm_off.setOnClickListener {
             AlarmRingOff()
@@ -31,8 +35,9 @@ class DefaultRingActivity : AppCompatActivity() {
         AlarmService.service = null
         AlarmService.normalExit = true
 
-        val int = Intent(this, MainActivity::class.java)
-        startActivity(int)
+        val intent = Intent(this, GoodMorningActivity::class.java)
+        intent.putExtra("ALARM_ID", alarmId)
+        startActivity(intent)
         /*todo : GoodMorningActivity로 바꾸기
         * */
     }

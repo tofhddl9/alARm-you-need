@@ -16,6 +16,6 @@ class AlarmYouNeedApplication : Application() {
 /* Todo List
 * - 활성화 알람 시간 순 정렬
 * - 다음 알람까지 남은 시간 계산
-* - AR 사진 설정 구현
+* - BaseRingActivity 구현 ... ArRingActiviy부터 Kt로 바꿔야겠다
 *
 * */
