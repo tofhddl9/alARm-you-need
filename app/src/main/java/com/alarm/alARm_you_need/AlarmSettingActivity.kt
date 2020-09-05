@@ -24,10 +24,15 @@ class AlarmSettingActivity : AppCompatActivity() {
     private var uriArImage: String? = null
     private lateinit var alarmType: String
 
+    /*이 요청 코드를 ImageDialog랑 같이 들고 있는게 올바른가*/
     private val REQ_RINGTONE_SELECT = 1
     private val REQ_CAMERA_OPEN = 2
     private val REQ_GALLERY_OPEN = 3
-    /* 요청 코드를 dialog와 중복으로 갖고 있는데 어떻게 해결할까 */
+
+    /*todo : alarmValid 검사 OK/요일체크/AR 사진 미등록 추가
+    private val ALARM_OK = 1
+    private val SETTING_DAY_NOT_CHECKED = 2...
+    private val SETTING_IMAGE_NOT_REGISTERED = 3*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,14 +130,15 @@ class AlarmSettingActivity : AppCompatActivity() {
 
                 REQ_GALLERY_OPEN -> {
                     val imageUri = data?.data!!
+                    //contentResolver.takePersistableUriPermission(imageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     Log.d("!!!!", "image uri : $imageUri")
                     try {
                         setArImage(imageUri)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-
                 }
+
             }
 
         } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -145,7 +151,6 @@ class AlarmSettingActivity : AppCompatActivity() {
         val input = contentResolver.openInputStream(uriImage)
         val image = BitmapFactory.decodeStream(input)
         ar_image.setImageBitmap(image)
-        Log.d("!!!!","setting image uri : "+uriImage)
         Glide.with(this).load(image).into(ar_image)
     }
 
@@ -169,6 +174,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
         builder.show()
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

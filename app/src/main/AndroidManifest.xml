@@ -73,12 +73,15 @@
             android:screenOrientation="locked"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
+        <activity android:name=".BaseRingActivity" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1719157373734547~4794765830" />
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

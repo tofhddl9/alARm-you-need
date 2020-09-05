@@ -59,6 +59,7 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
 
         holder.containerView.alarm_apm.text = alarmList[position].apm
 
+        /*todo time formmat 0-12 사용*/
         var time= if(alarmList[position].hour < 10) "0" + alarmList[position].hour else ""+alarmList[position].hour
         time += ":"
         time += if(alarmList[position].minute < 10) "0" + alarmList[position].minute else ""+alarmList[position].minute

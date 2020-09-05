@@ -34,8 +34,10 @@ class ImageDialog constructor(context: Context) : Dialog(context) {
         }
 
         galleryButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.type = "image/*"
+            //intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+            //intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             activity.startActivityForResult(intent, REQ_GALLERY_OPEN)
         }
 

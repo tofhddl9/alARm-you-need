@@ -15,17 +15,11 @@
  */
 package com.alarm.alARm_you_need
 
-import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
@@ -33,17 +27,15 @@ import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import com.google.ar.core.examples.java.common.helpers.SnackbarHelper
 import com.google.ar.sceneform.FrameTime
 import io.realm.Realm
+import kotlinx.android.synthetic.main.activity_augmented_image.*
 import java.util.*
 
 /**
  * This application demonstrates using augmented images to place anchor nodes. app to include image
  * tracking functionality.
  */
-class ArRingActivity : AppCompatActivity() {
+class ArRingActivity : BaseRingActivity() {
     private var arFragment: AugmentedImageFragment? = null
-    private var fitToScanView: ImageView? = null
-    private var initButton: Button? = null
-    private var alarmId: String? = null
     private var physicsController: PhysicsController? = null
     private var init: Boolean? = null
 
@@ -55,31 +47,19 @@ class ArRingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_augmented_image)
 
-        alarmId = intent.getStringExtra("ALARM_ID")
+        init = false
         val realm = Realm.getDefaultInstance()
-        Log.d("DEBUGGING LOG", "ArRingActivity get alarmId : $alarmId")
         val targetImageUri = AlarmDao(realm).selectAlarm(alarmId!!).uriImage
 
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as AugmentedImageFragment
         arFragment!!.setAugmentedTargetImage(Uri.parse(targetImageUri))
 
-        fitToScanView = findViewById(R.id.image_view_fit_to_scan)
-        initButton = findViewById(R.id.init_btn)
-
         arFragment!!.arSceneView.scene.addOnUpdateListener { frameTime: FrameTime ->
             onUpdateFrame(frameTime)
         }
-        SetListener()
-        init = false
 
-        if (supportActionBar != null) {
-            Log.d("DEBUGGING LOG", "hide back button")
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-            supportActionBar!!.setHomeButtonEnabled(false)
-        }
+        init_btn.setOnClickListener { init = true; finish() }
     }
-
-    fun SetListener() { initButton!!.setOnClickListener { init = true }}
 
     override fun onResume() {
         super.onResume()
@@ -89,28 +69,9 @@ class ArRingActivity : AppCompatActivity() {
             CameraPermissionHelper.requestCameraPermission(this)
         }
         if (augmentedImageMap.isEmpty()) {
-            fitToScanView!!.visibility = View.VISIBLE
-            initButton!!.visibility = View.GONE
+            image_view_fit_to_scan.visibility = View.VISIBLE
+            init_btn.visibility = View.GONE
         }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        Log.d("DEBUGGING LOG", "ArRingActivity::onKeyDown() is called")
-        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            audioManager.adjustStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                AudioManager.ADJUST_RAISE,
-                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE
-            )
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
-    }
-
-    override fun onBackPressed() {
-        Log.d("DEBUGGING LOG", "ArRingActivity::onBackPressed()")
-        //nop
     }
 
     override fun onUserLeaveHint() {
@@ -121,23 +82,6 @@ class ArRingActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             intent.putExtra("ALARM_ID", alarmId)
             startActivity(intent)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("DEBUGGING LOG", "ArRingActivity::onDestroy is called")
-        if (!AlarmService.normalExit) {
-            Log.d("DEBUGGING LOG", "ArRingActivity ...  abnormal exit")
-            if (AlarmService.service != null) {
-                stopService(AlarmService.service)
-            }
-        } else {
-            Log.d("DEBUGGING LOG", "ArRingActivity ... normal exit")
-            if (AlarmService.service != null) {
-                stopService(AlarmService.service)
-                AlarmService.service = null
-            }
         }
     }
 
@@ -165,8 +109,8 @@ class ArRingActivity : AppCompatActivity() {
                 }
                 TrackingState.TRACKING -> {
                     // Have to switch to UI Thread to update View.
-                    fitToScanView!!.visibility = View.GONE
-                    initButton!!.visibility = View.VISIBLE
+                    image_view_fit_to_scan.visibility = View.GONE
+                    init_btn.visibility = View.VISIBLE
 
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
@@ -192,7 +136,7 @@ class ArRingActivity : AppCompatActivity() {
 
                         node!!.updateBallPose(ball_pose)
                         if (physicsController!!.isEscape(ball_pose)) {
-                            AlarmRingOff()
+                            alarmRingOff()
                         }
                         val worldGravityPose = Pose.makeTranslation(0f, -9.8f, 0f)
                         val mazeGravityPose = augmentedImage.centerPose.inverse().compose(worldGravityPose)
@@ -210,14 +154,4 @@ class ArRingActivity : AppCompatActivity() {
         }
     }
 
-    private fun AlarmRingOff() {
-        stopService(AlarmService.service)
-        AlarmService.service = null
-        AlarmService.normalExit = true
-        finish()
-
-        val intent = Intent(this, GoodMorningActivity::class.java)
-        intent.putExtra("ALARM_ID", alarmId)
-        startActivity(intent)
-    }
 }
