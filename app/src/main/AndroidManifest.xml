@@ -41,7 +41,8 @@
         <service android:name=".AlarmService" />
         <service android:name=".RestartAlarmService" />
 
-        <activity android:name=".GoodMorningActivity"
+        <activity
+            android:name=".GoodMorningActivity"
             android:launchMode="singleTop"/>
 
         <activity
@@ -64,14 +65,14 @@
         <activity
             android:name=".AlarmSettingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ArRingActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/AppTheme" />
 
         <activity android:name=".BaseRingActivity" />
 

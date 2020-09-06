@@ -60,10 +60,10 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
 
         holder.containerView.alarm_apm.text = alarmData.apm
 
-        holder.containerView.alarm_time.text = setTimeformatting(alarmData.hour, alarmData.minute)
+        holder.containerView.alarm_time.text = makeTime12HourClock(alarmData.hour, alarmData.minute)
     }
 
-    private fun setTimeformatting(hour: Int, min: Int) : String{
+    private fun makeTime12HourClock(hour: Int, min: Int) : String{
         var time = ""
         if (hour % 12 in 0..9)
             time += "0"
