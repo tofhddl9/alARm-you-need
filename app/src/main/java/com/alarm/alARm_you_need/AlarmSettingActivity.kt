@@ -29,10 +29,9 @@ class AlarmSettingActivity : AppCompatActivity() {
     private val REQ_CAMERA_OPEN = 2
     private val REQ_GALLERY_OPEN = 3
 
-    /*todo : alarmValid 검사 OK/요일체크/AR 사진 미등록 추가
-    private val ALARM_OK = 1
-    private val SETTING_DAY_NOT_CHECKED = 2...
-    private val SETTING_IMAGE_NOT_REGISTERED = 3*/
+    private val VALID_SETTING = 1
+    private val INVALID_NO_DAY_OF_WEEK = 2
+    private val INVALID_NO_IMAGE = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +42,16 @@ class AlarmSettingActivity : AppCompatActivity() {
         ringtone_btn.text = defaultRingtone.getTitle(this)
         alarm_type_btn.text = AlarmData.TYPE_DEFAULT
 
+        ObserveViewModel()
+        val alarmId = intent.getStringExtra("ALARM_ID")
+        if (alarmId != null) {
+            loadAlarm(alarmId)
+        }
+
+        setOnClickListeners(alarmId)
+    }
+
+    private fun ObserveViewModel() {
         viewModel = application!!.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
                 .get(AlarmSettingViewModel::class.java)
@@ -66,51 +75,59 @@ class AlarmSettingActivity : AppCompatActivity() {
             it.volume.observe(this, Observer { volume_bar.progress = it })
             it.alarmType.observe(this, Observer { alarmType = it })
         }
+    }
 
-        val alarmId = intent.getStringExtra("ALARM_ID")
-        if (alarmId != null) {
-            viewModel!!.loadAlarm(alarmId)
-            val uri = Uri.parse(viewModel!!.uriRingtone.value)
-            Log.d("!!!!","Loaded ringtone uri : "+uri)
-            writeRingtoneTitle(uri!!)
+    private fun loadAlarm(id : String) {
+        viewModel!!.loadAlarm(id)
+        val uri = Uri.parse(viewModel!!.uriRingtone.value)
+        writeRingtoneTitle(uri!!)
 
-            writeAlarmTypeTitle(viewModel!!.alarmType.value)
+        writeAlarmTypeTitle(viewModel!!.alarmType.value)
 
-            if (viewModel!!.uriImage.value != null) {
-                if (viewModel!!.alarmType.value == AlarmData.TYPE_AR)
-                    ar_image.visibility = View.VISIBLE
-                val uri2 = Uri.parse(viewModel!!.uriImage.value)
-                if (uri2 != null) {
-                    Log.d("!!!!","Loaded image uri : "+uri2)
-                    setArImage(uri2)
-                }
-                else {
-                    Log.d("!!!!","####")
-                }
+        if (viewModel!!.uriImage.value != null) {
+            if (viewModel!!.alarmType.value == AlarmData.TYPE_AR)
+                ar_image.visibility = View.VISIBLE
+            val uri2 = Uri.parse(viewModel!!.uriImage.value)
+            if (uri2 != null) {
+                Log.d("DEBUGGING LOG","Loaded image uri : "+uri2)
+                setArImage(uri2)
             }
-
+            else {
+                Log.d("DEBUGGING LOG","No ARimage was selected : "+uri2)
+            }
         }
-
-        setOnClickListeners(alarmId)
     }
 
-
-    private fun isAlarmValid(): Boolean {
-        val isValid: Boolean = sun_box.isChecked or mon_box.isChecked or tue_box.isChecked or
+    private fun isAlarmValid(): Int {
+        val isDayOfWeekValid = sun_box.isChecked or mon_box.isChecked or tue_box.isChecked or
                 wed_box.isChecked or thur_box.isChecked or fri_box.isChecked or sat_box.isChecked
-        return isValid
+
+        var isARImageSelected = true
+        if (alarmType == AlarmData.TYPE_AR && uriArImage == null)
+            isARImageSelected = false
+
+        return if (!isDayOfWeekValid) {
+            INVALID_NO_DAY_OF_WEEK
+        } else if (!isARImageSelected) {
+            INVALID_NO_IMAGE
+        } else {
+            VALID_SETTING
+        }
     }
 
-    private fun writeRingtoneTitle(uri: Uri) {
-        val ringtone = RingtoneManager.getRingtone(this, uri)
-        Log.d("!!!!", "ringtone.title :${ringtone.getTitle(this)}")
-        ringtone_btn.text = ringtone.getTitle(this)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            Toast.makeText(this, "AR 기능을 사용하기 위해서 카메라 권한이 필요합니다", Toast.LENGTH_LONG).show()
+            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+                Log.d("DEBUGGING LOG", "HERE I AM")
+                CameraPermissionHelper.launchPermissionSettings(this)
+            }
+        }
+        if(CameraPermissionHelper.hasCameraPermission(this)) {
+            alarmType = "AR"
+        }
     }
-
-    private fun writeAlarmTypeTitle(alarmType: String?) {
-        alarm_type_btn.text = alarmType
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -120,8 +137,7 @@ class AlarmSettingActivity : AppCompatActivity() {
                 REQ_RINGTONE_SELECT -> {
                     val uri =
                         data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-
-                    Log.d("!!!!", "selected ringtone uri : $uri")
+                    Log.d("DEBUGGING LOG", "selected ringtone URI : $uri")
                     if (uri != null) {
                         uriRingtone = uri.toString()
                         writeRingtoneTitle(uri)
@@ -129,11 +145,10 @@ class AlarmSettingActivity : AppCompatActivity() {
                 }
 
                 REQ_GALLERY_OPEN -> {
-                    val imageUri = data?.data!!
-                    //contentResolver.takePersistableUriPermission(imageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    Log.d("!!!!", "image uri : $imageUri")
+                    val uri = data?.data!!
+                    Log.d("DEBUGGING LOG", "selected image URI : $uri")
                     try {
-                        setArImage(imageUri)
+                        setArImage(uri)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -146,49 +161,21 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
     }
 
+    private fun writeRingtoneTitle(uri: Uri) {
+        val ringtone = RingtoneManager.getRingtone(this, uri)
+        ringtone_btn.text = ringtone.getTitle(this)
+    }
+
+    private fun writeAlarmTypeTitle(alarmType: String?) {
+        alarm_type_btn.text = alarmType
+    }
+
     private fun setArImage(uriImage: Uri) {
         uriArImage = uriImage.toString()
         val input = contentResolver.openInputStream(uriImage)
         val image = BitmapFactory.decodeStream(input)
         ar_image.setImageBitmap(image)
         Glide.with(this).load(image).into(ar_image)
-    }
-
-    private fun showConfirmAlert(alarmId: String) {
-        val builder = AlertDialog.Builder(
-            ContextThemeWrapper(
-                this@AlarmSettingActivity,
-                R.style.Theme_AppCompat_Light_Dialog
-            )
-        )
-        builder.setTitle("알람 삭제")
-        builder.setMessage("알람을 삭제하시겠습니까?")
-
-        builder.setPositiveButton("확인") { _, _ ->
-            Log.d("delete button", "is clicked")
-            viewModel?.deleteAlarm(alarmId)
-            finish()
-        }
-        builder.setNegativeButton("취소") { _, _ ->
-
-        }
-        builder.show()
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (!CameraPermissionHelper.hasCameraPermission(this)) {
-            Toast.makeText(this, "AR 기능을 사용하기 위해서 카메라 권한이 필요합니다", Toast.LENGTH_LONG).show()
-            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
-                Log.d("DEBUGGING LOG", "HERE I AM")
-                // Permission denied with checking "Do not ask again".
-                CameraPermissionHelper.launchPermissionSettings(this)
-            }
-        }
-        else {
-            alarmType = "AR"
-        }
     }
 
     private fun setOnClickListeners(alarmId: String?) {
@@ -202,80 +189,105 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
 
         save_btn.setOnClickListener {
-            if (isAlarmValid()) {
-                viewModel?.addOrUpdateAlarm(
-                    this,
-                    alarm_title.text.toString(),
-                    timePicker.hour,
-                    timePicker.minute,
-                    if (timePicker.hour in 12..23) "오후" else "오전",
-                    sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
-                    thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
-                    true,
-                    uriRingtone,
-                    uriArImage,
-                    volume_bar.progress,
-                    alarmType
-                )
-                Log.d("!!!!","saved ringtone uri : $uriRingtone")
-                Log.d("!!!!", "saved imageUri : $uriArImage")
-                finish()
-            }
-            else {
-                Toast.makeText(this@AlarmSettingActivity, "요일을 선택해 주세요", Toast.LENGTH_SHORT).show()
-            }
+            saveAlarm()
         }
 
         ringtone_btn.setOnClickListener {
-            val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone")
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, null as Uri?)
-            this.startActivityForResult(intent, REQ_RINGTONE_SELECT)
+            selectAlarmRingtone()
         }
 
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Choose Alarm Type")
 
         alarm_type_btn.setOnClickListener {
-            val alarmTypes = arrayOf("DEFAULT", "AR")
-            val checkedItem = alarmTypes.indexOf(alarmType)
-            var type = "DEFAULT"
-            builder.setSingleChoiceItems(alarmTypes, checkedItem) { _, which ->
-                type = alarmTypes[which]
-                if (type == "AR") {
-                    if (!CameraPermissionHelper.hasCameraPermission(this)) {
-                        type = "DEFAULT"
-                        ar_image.visibility = View.GONE
-                        CameraPermissionHelper.requestCameraPermission(this)
-                    }
-                    else {
-                        type = "AR"
-                        ar_image.visibility = View.VISIBLE
-                    }
-                }
-                else {
-                    type = "DEFAULT"
-                    ar_image.visibility = View.GONE
-                }
-            }
-            builder.setPositiveButton("Ok") { _, _ ->
-                alarmType = type
-                alarm_type_btn.text = alarmType
-            }
-            builder.setNegativeButton("Cancel", null)
-            val dialog = builder.create()
-            dialog.show()
+            selectAlarmType()
         }
 
         ar_image.setOnClickListener {
             val dialog = ImageDialog(this)
-
         }
 
     }
 
+    private fun showConfirmAlert(alarmId: String) {
+        val builder = AlertDialog.Builder(
+            ContextThemeWrapper(this@AlarmSettingActivity,
+                R.style.Theme_AppCompat_Light_Dialog
+            )
+        )
+        builder.setTitle("알람 삭제")
+        builder.setMessage("알람을 삭제하시겠습니까?")
 
+        builder.setPositiveButton("확인") { _, _ ->
+            Log.d("DEBUGGING LOG", "Id:[${alarmId}] alarm is deleted")
+            viewModel?.deleteAlarm(alarmId)
+            finish()
+        }
+        builder.setNegativeButton("취소") { _, _ ->
+
+        }
+        builder.show()
+    }
+
+    private fun selectAlarmRingtone() {
+        val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone")
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, null as Uri?)
+        this.startActivityForResult(intent, REQ_RINGTONE_SELECT)
+    }
+
+    private fun selectAlarmType() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("알람 유형을 고르세요")
+        val alarmTypes = arrayOf("DEFAULT", "AR")
+        val checkedItem = alarmTypes.indexOf(alarmType)
+        var type = "DEFAULT"
+        builder.setSingleChoiceItems(alarmTypes, checkedItem) { _, which ->
+            type = alarmTypes[which]
+            if (type == "AR") {
+                if (!CameraPermissionHelper.hasCameraPermission(this)) {
+                    type = "DEFAULT"
+                    ar_image.visibility = View.GONE
+                    CameraPermissionHelper.requestCameraPermission(this)
+                }
+                else {
+                    type = "AR"
+                    ar_image.visibility = View.VISIBLE
+                }
+            }
+            else {
+                type = "DEFAULT"
+                ar_image.visibility = View.GONE
+            }
+        }
+        builder.setPositiveButton("Ok") { _, _ ->
+            alarmType = type
+            alarm_type_btn.text = alarmType
+        }
+        builder.setNegativeButton("Cancel", null)
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun saveAlarm() {
+        when (isAlarmValid()) {
+            VALID_SETTING -> {
+                viewModel?.addOrUpdateAlarm(this, alarm_title.text.toString(),
+                    timePicker.hour, timePicker.minute,
+                    if (timePicker.hour in 12..23) "오후" else "오전",
+                    sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
+                    thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
+                    true, uriRingtone, uriArImage, volume_bar.progress, alarmType
+                )
+                finish()
+            }
+            INVALID_NO_DAY_OF_WEEK -> {
+                Toast.makeText(this@AlarmSettingActivity, "요일을 선택해 주세요", Toast.LENGTH_SHORT).show()
+            }
+            else -> { // INVALID_NO_IMAGE
+                Toast.makeText(this@AlarmSettingActivity, "AR로 인식할 이미지를 선택해 주세요", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 
 }
