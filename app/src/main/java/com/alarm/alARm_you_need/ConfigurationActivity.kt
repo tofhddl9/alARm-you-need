@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -43,7 +44,7 @@ class ConfigurationActivity : AppCompatActivity() {
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private var b_statusBarNotiSwtich: Boolean = false
+    private var bStatusbarnotiswtich: Boolean = false
     private lateinit var channelId: String
     private val notificationId = 12
 
@@ -59,15 +60,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         Log.d("DEBUGGING LOG", "onPreferenceTreeClick()")
         if (preference.key == "status_bar_noti") {
-            if (b_statusBarNotiSwtich) {
+            Toast.makeText(requireContext(), "아직 미구현 기능입니다", Toast.LENGTH_SHORT).show()
+            /* todo : 앱과 함께 꺼지지 않도록 구현
+            if (bStatusbarnotiswtich) {
                 Log.d("DEBUGGING LOG", "show noti")
                 hideStatusNotification()
-                b_statusBarNotiSwtich = false
+                bStatusbarnotiswtich = false
             } else {
                 Log.d("DEBUGGING LOG", "hide noti")
                 showStatusNotification()
-                b_statusBarNotiSwtich = true
+                bStatusbarnotiswtich = true
             }
+             */
         }
         else if (preference.key == "disturb_mode") {
             requireContext().startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
@@ -100,7 +104,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(requireContext(), channelId)
-        builder.setSmallIcon(R.drawable.fit_to_scan) /*todo : change noti image*/
+        builder.setSmallIcon(R.drawable.main_btn)
         builder.setContentTitle(title)
         builder.setContentText(content)
         builder.priority = NotificationCompat.PRIORITY_DEFAULT

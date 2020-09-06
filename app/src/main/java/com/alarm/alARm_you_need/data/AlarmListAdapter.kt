@@ -38,32 +38,44 @@ class AlarmListAdapter(val alarmList: MutableList<AlarmData>): RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: AlarmDataViewHolder, position: Int) {
-        holder.containerView.tag = alarmList[position].alarmId
+        val alarmData = alarmList[position]
 
+        holder.containerView.tag = alarmData.alarmId
         val checkBox = holder.itemView.alarm_active
-        checkBox.isChecked = alarmList[position].active
+        checkBox.isChecked = alarmData.active
         setCheckBoxBackgroundColor(holder, checkBox)
         registerCheckBoxListener(holder, checkBox)
 
         var days = ""
-        if (alarmList[position].sun) days += DAY[0]
-        if (alarmList[position].mon) days += DAY[1]
-        if (alarmList[position].tue) days += DAY[2]
-        if (alarmList[position].wed) days += DAY[3]
-        if (alarmList[position].thur) days += DAY[4]
-        if (alarmList[position].fri) days += DAY[5]
-        if (alarmList[position].sat) days += DAY[6]
+        if (alarmData.sun) days += DAY[0]
+        if (alarmData.mon) days += DAY[1]
+        if (alarmData.tue) days += DAY[2]
+        if (alarmData.wed) days += DAY[3]
+        if (alarmData.thur) days += DAY[4]
+        if (alarmData.fri) days += DAY[5]
+        if (alarmData.sat) days += DAY[6]
         holder.containerView.alarm_day.text = days
 
-        holder.containerView.alarm_title.text = alarmList[position].title
+        holder.containerView.alarm_title.text = alarmData.title
 
-        holder.containerView.alarm_apm.text = alarmList[position].apm
+        holder.containerView.alarm_apm.text = alarmData.apm
 
-        /*todo time formmat 0-12 사용*/
-        var time= if(alarmList[position].hour < 10) "0" + alarmList[position].hour else ""+alarmList[position].hour
+        holder.containerView.alarm_time.text = setTimeformatting(alarmData.hour, alarmData.minute)
+    }
+
+    private fun setTimeformatting(hour: Int, min: Int) : String{
+        var time = ""
+        if (hour % 12 in 0..9)
+            time += "0"
+        time += hour % 12
+        if (hour == 12)
+            time = "12"
         time += ":"
-        time += if(alarmList[position].minute < 10) "0" + alarmList[position].minute else ""+alarmList[position].minute
-        holder.containerView.alarm_time.text = time
+        if (min < 10) {
+            time += "0"
+        }
+        time += min
+        return time
     }
 
     private fun setCheckBoxBackgroundColor(holder: AlarmDataViewHolder, checkBox: CheckBox) {

@@ -19,9 +19,8 @@ class AlarmService : Service() {
     private lateinit var alarmId: String
     private val ACTION_RUN_ALARM = "RUN_ALARM"
     companion object  {
-        @JvmField var service: Intent? = null
-        @JvmField var normalExit: Boolean = false
-        /*todo 간단하니까 ArRingActivity를 Kt로 migration 하자*/
+        var service: Intent? = null
+        var normalExit: Boolean = false
     }
 
     override fun onCreate() {
