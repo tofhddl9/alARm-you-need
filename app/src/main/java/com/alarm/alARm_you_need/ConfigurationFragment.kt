@@ -10,39 +10,12 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import kotlinx.android.synthetic.main.configuration_activity.*
 
-class ConfigurationActivity : AppCompatActivity() {
-    /* todo fragment로 만드는게 어떨까? */
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.configuration_activity)
-
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.configuration, SettingsFragment())
-            .commit()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        main_btn.setOnClickListener {
-            finish()
-        }
-    }
-
-    @Override
-    override fun onPause() {
-
-        super.onPause()
-    }
-}
-
-class SettingsFragment : PreferenceFragmentCompat() {
+class ConfigurationFragment : PreferenceFragmentCompat() {
 
     private var bStatusbarnotiswtich: Boolean = false
     private lateinit var channelId: String

@@ -10,7 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,27 +21,31 @@ class MainActivity : AppCompatActivity() {
         Log.d("DEBUGGING LOG", "MainActivity::onCreate() is called")
         Thread.sleep(1500)
         setTheme(R.style.AppTheme)
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_main)
 
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.contentLayout, AlarmListFragment())
-        fragmentTransaction.commit()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.contentLayout, AlarmListFragment())
+            .commit()
 
         viewModel = application!!.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
                 .get(ListViewModel::class.java)
         }
 
-        fab.setOnClickListener {
-            val intent = Intent(this, AlarmSettingActivity::class.java)
-            startActivity(intent)
+        main_btn.setOnClickListener {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.contentLayout, AlarmListFragment())
+                .commit()
         }
 
         setting_btn.setOnClickListener {
-            val intent = Intent(this, ConfigurationActivity::class.java)
-            startActivity(intent)
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.contentLayout, ConfigurationFragment())
+                .commit()
         }
 
         requestPermissions()

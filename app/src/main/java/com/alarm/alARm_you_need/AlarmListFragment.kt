@@ -26,7 +26,7 @@ class AlarmListFragment: Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        
         viewModel = requireActivity().application!!.let {
             ViewModelProvider(
                 requireActivity().viewModelStore,
@@ -56,6 +56,11 @@ class AlarmListFragment: Fragment(){
                     listAdapter.notifyDataSetChanged()
                 }
             )
+        }
+
+        fab.setOnClickListener {
+            val intent = Intent(requireContext(), AlarmSettingActivity::class.java)
+            startActivity(intent)
         }
     }
 
