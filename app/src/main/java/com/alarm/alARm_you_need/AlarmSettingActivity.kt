@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
+import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -17,12 +19,15 @@ import com.bumptech.glide.Glide
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.activity_alarm_setting.*
 
-class AlarmSettingActivity : AppCompatActivity() {
+class AlarmSettingActivity : AppCompatActivity(), ImageDialogListener {
 
     private var viewModel: AlarmSettingViewModel? = null
     private lateinit var uriRingtone: String
     private var uriArImage: String? = null
     private lateinit var alarmType: String
+
+    private var imageDialog: ImageDialog? = null
+    //private var imageUri: Uri? = null
 
     /*이 요청 코드를 ImageDialog랑 같이 들고 있는게 올바른가*/
     private val REQ_RINGTONE_SELECT = 1
@@ -42,7 +47,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         ringtone_btn.text = defaultRingtone.getTitle(this)
         alarm_type_btn.text = AlarmData.TYPE_DEFAULT
 
-        ObserveViewModel()
+        observeViewModel()
         val alarmId = intent.getStringExtra("ALARM_ID")
         if (alarmId != null) {
             loadAlarm(alarmId)
@@ -51,7 +56,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         setOnClickListeners(alarmId)
     }
 
-    private fun ObserveViewModel() {
+    private fun observeViewModel() {
         viewModel = application!!.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
                 .get(AlarmSettingViewModel::class.java)
@@ -145,10 +150,10 @@ class AlarmSettingActivity : AppCompatActivity() {
                 }
 
                 REQ_GALLERY_OPEN -> {
-                    val uri = data?.data!!
-                    Log.d("DEBUGGING LOG", "selected image URI : $uri")
+                    val uri = data?.data
+                    Log.d("DEBUGGING LOG", "selected image URI : ${uri}")
                     try {
-                        setArImage(uri)
+                        setArImage(uri!!)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -202,7 +207,8 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
 
         ar_image.setOnClickListener {
-            val dialog = ImageDialog(this)
+            imageDialog = ImageDialog(this, this)
+            imageDialog?.show()
         }
 
     }
@@ -289,6 +295,26 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCameraBtnClicked() {
+        Toast.makeText(this, "아직 미지원 기능입니다", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onGalleryBtnClicked() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.type = "image/*"
+        this.startActivityForResult(intent, REQ_GALLERY_OPEN)
+    }
+
+    override fun onPreviewBtnClicked() {
+        if (uriArImage == null) {
+            Toast.makeText(this, "사진을 먼저 선택해주세요", Toast.LENGTH_SHORT).show()
+            return
+        }
+        Toast.makeText(this, "Tip : 미로가 생성되지 않는다면 이미지를 바꿔보세요.",Toast.LENGTH_LONG).show()
+        val intent = Intent(this, ArPreviewActivity::class.java)
+        intent.putExtra("IMAGE_URI", uriArImage)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        this.startActivity(intent)
+    }
 
 }
-

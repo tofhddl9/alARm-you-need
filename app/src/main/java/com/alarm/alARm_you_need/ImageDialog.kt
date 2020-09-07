@@ -1,50 +1,59 @@
 package com.alarm.alARm_you_need
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.Toast
+import kotlinx.android.synthetic.main.image_select_dialog.*
 
-class ImageDialog constructor(context: Context) : Dialog(context) {
 
-    private val activity = context as Activity
-    private val REQ_CAMERA_OPEN = 2
-    private val REQ_GALLERY_OPEN = 3
-    private val REQ_PREVIEW_OPEN = 4
+class ImageDialog constructor(context: Context, imageDialogListener: ImageDialogListener)
+                              : Dialog(context), View.OnClickListener
+{
+
+    private var imageDialogListener: ImageDialogListener? = null
 
     init {
-        val alertDialog = AlertDialog.Builder(context).create()
-        val view = layoutInflater.inflate(R.layout.image_select_dialog, null)
-        alertDialog.setView(view)
-        alertDialog.show()
-        alertDialog.window?.setBackgroundDrawableResource(R.drawable.popup_background)
-        alertDialog.window?.setLayout(700, WindowManager.LayoutParams.WRAP_CONTENT)
-
-        val cameraButton = view.findViewById<Button>(R.id.camera_req)
-        val galleryButton = view.findViewById<Button>(R.id.galery_req)
-        val previewButton = view.findViewById<Button>(R.id.preview_img)
-
-        cameraButton.setOnClickListener {
-            Toast.makeText(context, "아직 미지원 기능입니다", Toast.LENGTH_SHORT).show()
-            /* 단순히 사진 찍기x. 맞춰서 자르는 기능 필요 */
-        }
-
-        galleryButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.type = "image/*"
-            //intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-            //intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            activity.startActivityForResult(intent, REQ_GALLERY_OPEN)
-        }
-
-        previewButton.setOnClickListener {
-            Toast.makeText(context, "아직 미지원 기능입니다", Toast.LENGTH_SHORT).show()
-        }
-
+        this.imageDialogListener = imageDialogListener
+        preview_req?.visibility = View.GONE
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.image_select_dialog)
+        window?.setBackgroundDrawableResource(R.drawable.popup_background)
+        window?.setLayout(700, WindowManager.LayoutParams.WRAP_CONTENT)
+
+        camera_req.setOnClickListener(this)
+        gallery_req.setOnClickListener(this)
+        preview_req.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+            camera_req -> {
+                Log.d("DEBUGGING LOG", "onClick: camera_req")
+                this.imageDialogListener?.onCameraBtnClicked()
+                dismiss()
+            }
+            gallery_req -> {
+                Log.d("DEBUGGING LOG", "onClick: gallery_req")
+                this.imageDialogListener?.onGalleryBtnClicked()
+                dismiss()
+            }
+            preview_req -> {
+                Log.d("DEBUGGING LOG", "onClick: preview_req")
+                this.imageDialogListener?.onPreviewBtnClicked()
+            }
+        }
+    }
+
+}
+
+interface ImageDialogListener {
+    fun onCameraBtnClicked()
+    fun onGalleryBtnClicked()
+    fun onPreviewBtnClicked()
 }

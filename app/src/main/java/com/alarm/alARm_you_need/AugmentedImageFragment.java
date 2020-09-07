@@ -53,7 +53,7 @@ public class AugmentedImageFragment extends ArFragment {
   // This is a pre-created database containing the sample image.
   private static final String SAMPLE_IMAGE_DATABASE = "sample_database.imgdb";
 
-  private /*android.net.Uri*/ Uri chosenImageUri = null;
+  private Uri chosenImageUri = null;
   private static final int REQUEST_CODE_CHOOSE_IMAGE = 1;
 
   // Augmented image configuration and rendering.

@@ -69,7 +69,7 @@ public class AugmentedImageNode extends AnchorNode {
    * relative to the center of the image, which is the parent node of the corners.
    */
   @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
-  public void setImage(AugmentedImage image) {
+  public void setImage(AugmentedImage image, Boolean isPreview) {
     this.image = image;
 
     Log.d(TAG, "setImage()");
@@ -80,7 +80,7 @@ public class AugmentedImageNode extends AnchorNode {
     if (!mazeRenderable.isDone()) {
       Log.d(TAG, "loading maze renderable still in progress. Wait to render again");
       CompletableFuture.allOf(mazeRenderable)
-              .thenAccept((Void aVoid) -> setImage(image))
+              .thenAccept((Void aVoid) -> setImage(image, isPreview))
               .exceptionally(
                       throwable -> {
                         Log.e(TAG, "Exception loading", throwable);
@@ -104,7 +104,7 @@ public class AugmentedImageNode extends AnchorNode {
     // Scale Y an extra 10 times to lower the maze wall.
     mazeNode.setLocalScale(new Vector3(maze_scale, maze_scale * 0.1f, maze_scale));
 
-    AddBall();
+    if (!isPreview) AddBall();
   }
 
   protected void AddBall() {

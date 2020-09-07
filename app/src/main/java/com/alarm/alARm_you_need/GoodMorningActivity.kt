@@ -36,6 +36,7 @@ class GoodMorningActivity : AppCompatActivity() {
     }
 
     /* todo
+    * 일어났을 때 유용한 정보를 제공한다면 (시간, 날씨, 일정 등)
     * 기존 MainActivity를 MainFragment로 바꾸고
     * goodMorningActivity를 MainActivity 위의 GoodMorningFragment로 구현하여서 메인과 통합하자
     */

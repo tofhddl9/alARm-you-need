@@ -37,7 +37,7 @@ import java.util.*
 class ArRingActivity : BaseRingActivity() {
     private var arFragment: AugmentedImageFragment? = null
     private var physicsController: PhysicsController? = null
-    private var init: Boolean? = null
+    private var isInit: Boolean? = null
 
     // Augmented image and its associated center pose anchor, keyed by the augmented image in the database.
     private val augmentedImageMap: MutableMap<AugmentedImage, AugmentedImageNode> = HashMap()
@@ -47,7 +47,8 @@ class ArRingActivity : BaseRingActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_augmented_image)
 
-        init = false
+        isInit = false
+
         val realm = Realm.getDefaultInstance()
         val targetImageUri = AlarmDao(realm).selectAlarm(alarmId!!).uriImage
 
@@ -58,7 +59,7 @@ class ArRingActivity : BaseRingActivity() {
             onUpdateFrame(frameTime)
         }
 
-        init_btn.setOnClickListener { init = true; finish() }
+        init_btn.setOnClickListener { isInit = true; finish() }
     }
 
     override fun onResume() {
@@ -85,6 +86,10 @@ class ArRingActivity : BaseRingActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        SnackbarHelper.getInstance().hide(this)
+    }
     /**
      * Registered with the Sceneform Scene object, this method is called at the start of each frame.
      * @param frameTime - time since last frame.
@@ -115,7 +120,7 @@ class ArRingActivity : BaseRingActivity() {
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
                         val node = AugmentedImageNode(this)
-                        node.image = augmentedImage
+                        node.setImage(augmentedImage, false)
                         augmentedImageMap[augmentedImage] = node
                         arFragment!!.arSceneView.scene.addChild(node)
                         physicsController = PhysicsController(this)
@@ -124,12 +129,12 @@ class ArRingActivity : BaseRingActivity() {
                         val node = augmentedImageMap[augmentedImage]
                         var ball_pose: Pose?
 
-                        if (init!!) {
+                        if (isInit!!) {
                             physicsController!!.DeleteBallRigidBody()
                             node!!.AddBall()
                             ball_pose = physicsController!!.getBallPose(true)
                             physicsController!!.AddBallRigidBody()
-                            init = false
+                            isInit = false
                         } else {
                             ball_pose = physicsController!!.getBallPose(false)
                         }
@@ -149,6 +154,7 @@ class ArRingActivity : BaseRingActivity() {
                     val node = augmentedImageMap[augmentedImage]
                     augmentedImageMap.remove(augmentedImage)
                     arFragment!!.arSceneView.scene.removeChild(node)
+                    SnackbarHelper.getInstance().hide(this)
                 }
             }
         }

@@ -15,6 +15,7 @@
 package com.google.ar.core.examples.java.common.helpers;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,12 +28,12 @@ import com.google.android.material.snackbar.Snackbar;
  */
 public final class SnackbarHelper {
   private static final int BACKGROUND_COLOR = 0xbf323232;
-  private static final SnackbarHelper THE_INSTANCE = new SnackbarHelper(); //added
+  private static final SnackbarHelper THE_INSTANCE = new SnackbarHelper();
 
   private Snackbar messageSnackbar;
   private enum DismissBehavior { HIDE, SHOW, FINISH }
 
-    private int maxLines = 2;
+  private int maxLines = 2;
   private String lastMessage = "";
   private View snackbarView;
 
