@@ -1,35 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <include layout="@layout/content_list"/>
 
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints"
-        android:layout_gravity="bottom">
-
-        <ImageButton
-            android:id="@+id/main_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/main_btn"
-            android:contentDescription="Move to main activity" />
-
-        <ImageButton
-            android:id="@+id/setting_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/setting_btn"
-            android:contentDescription="Move to setting activity"/>
-
-    </LinearLayout>
+        android:layout_gravity="bottom"
+        android:background="@color/cardview_dark_background"
+        app:menu="@menu/menu_bottom"
+        app:itemTextColor="@drawable/menu_selector"
+        app:itemIconTint="@drawable/menu_selector"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

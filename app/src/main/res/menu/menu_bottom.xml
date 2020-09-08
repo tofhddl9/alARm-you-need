@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/main_menu"
+        android:title="메인 메뉴"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_alarm"
+        android:enabled="true"
+        android:checked="true"/>
+
+    <item
+        android:id="@+id/schedule_menu"
+        android:title="스케줄"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_calendar"
+        android:enabled="true"
+        android:checked="true"/>
+
+    <item
+        android:id="@+id/config_menu"
+        android:title="설정"
+        app:showAsAction="withText"
+        android:icon="@drawable/ic_setting"
+        android:enabled="true"
+        android:checked="true"/>
+</menu>

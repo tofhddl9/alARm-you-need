@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -34,19 +35,31 @@ class MainActivity : AppCompatActivity() {
                 .get(ListViewModel::class.java)
         }
 
-        main_btn.setOnClickListener {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.contentLayout, AlarmListFragment())
-                .commit()
-        }
-
-        setting_btn.setOnClickListener {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.contentLayout, ConfigurationFragment())
-                .commit()
-        }
+        val mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.main_menu -> {
+                        supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.contentLayout, AlarmListFragment())
+                            .commit()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.schedule_menu -> {
+                        Toast.makeText(this, "아직 미구현 기능입니다", Toast.LENGTH_SHORT).show()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.config_menu -> {
+                        supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.contentLayout, ConfigurationFragment())
+                            .commit()
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            }
+        bottom_navigation_view.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         requestPermissions()
 

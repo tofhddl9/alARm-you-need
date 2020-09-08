@@ -77,7 +77,7 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
             PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(requireContext(), channelId)
-        builder.setSmallIcon(R.drawable.main_btn)
+        builder.setSmallIcon(R.drawable.ic_alarm)
         builder.setContentTitle(title)
         builder.setContentText(content)
         builder.priority = NotificationCompat.PRIORITY_DEFAULT
