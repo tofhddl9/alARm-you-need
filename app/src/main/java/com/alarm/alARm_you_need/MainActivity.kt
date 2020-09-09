@@ -34,7 +34,11 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
                 .get(ListViewModel::class.java)
         }
+        setOnBottomNaviClickedListener()
+        requestPermissions()
+    }
 
+    private fun setOnBottomNaviClickedListener() {
         val mOnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { menuItem ->
                 when (menuItem.itemId) {
@@ -60,9 +64,6 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         bottom_navigation_view.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-        requestPermissions()
-
     }
 
     @Override
