@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.fragment_alarm_setting.*
+import java.util.*
 
 class AlarmSettingFragment(): Fragment(), ImageDialogListener{
     private var viewModel: AlarmSettingViewModel? = null
@@ -250,12 +251,13 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         if (alarmType == AlarmData.TYPE_AR && uriArImage == null)
             isARImageSelected = false
 
-        return if (!isDayOfWeekValid) {
-            INVALID_NO_DAY_OF_WEEK
+        if (!isDayOfWeekValid) {
+            return INVALID_NO_DAY_OF_WEEK
         } else if (!isARImageSelected) {
-            INVALID_NO_IMAGE
+            return INVALID_NO_IMAGE
         } else {
-            VALID_SETTING
+            notifyRemainingTime()
+            return VALID_SETTING
         }
     }
 
@@ -278,6 +280,51 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
                 Toast.makeText(requireContext(), "AR로 인식할 이미지를 선택해 주세요", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun notifyRemainingTime() {
+        val targetDays = BooleanArray(7)
+        if (sun_box.isChecked) targetDays[0] = true
+        if (mon_box.isChecked) targetDays[1] = true
+        if (tue_box.isChecked) targetDays[2] = true
+        if (wed_box.isChecked) targetDays[3] = true
+        if (thur_box.isChecked) targetDays[4] = true
+        if (fri_box.isChecked) targetDays[5] = true
+        if (sat_box.isChecked) targetDays[6] = true
+
+        var targetTimeInMillis = AlarmTool.getTimeInMillis(false, timePicker.hour, timePicker.minute)
+
+        val currentTime = GregorianCalendar.getInstance() as GregorianCalendar
+        val currentTimeInMillis = currentTime.timeInMillis
+        var dayOfToday = currentTime.get(GregorianCalendar.DAY_OF_WEEK) - 1
+
+        var dDay = 0
+        if (targetTimeInMillis < currentTimeInMillis) {
+            dayOfToday++
+            dDay++
+        }
+
+        while (!targetDays[dayOfToday]) {
+            dayOfToday++
+            dayOfToday %= 7
+            dDay++
+        }
+        targetTimeInMillis += (dDay * 1000 * 60 * 60 * 24)
+
+        val remainTimeInMills = targetTimeInMillis - currentTimeInMillis
+        val remainMinute = (remainTimeInMills/(1000*60)) % 60
+        val remainHour = (remainTimeInMills/(1000*60*60)) % 24
+        val remainDay = (remainTimeInMills/(1000*60*60)) / 24
+
+        val hourPadding = if(remainHour < 10) "0" else ""
+        val minutePadding = if(remainMinute < 10) "0" else ""
+
+        val remainTime = if (remainDay.toInt() == 0 && remainHour.toInt() == 0 && remainMinute.toInt() == 0) {
+            "1분 이내에 알람이 울립니다"
+        } else {
+            "${remainDay}일 ${hourPadding}${remainHour}시간 ${minutePadding}${remainMinute}분 뒤에 알람이 울립니다"
+        }
+        Toast.makeText(requireContext(), remainTime, Toast.LENGTH_LONG).show()
     }
 
     override fun onCameraBtnClicked() {

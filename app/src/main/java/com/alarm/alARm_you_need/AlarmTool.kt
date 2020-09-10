@@ -25,6 +25,9 @@ class AlarmTool: BroadcastReceiver() {
             return PendingIntent.getBroadcast(context, 0, intent, 0)
         }
 
+        /*todo 현재는 (h, m)만 보고 24시간 내에 얼마나 남았는지 계산해서 브로드캐스팅하고
+        *  onReceive에서 오늘에 해당하는 알람인지 확인함. 이것을 d 정보도 넘겨서 깔끔히 처리하자*/
+
         fun addAlarm(context: Context, id: String, hourOfDay: Int, minute: Int) {
             Log.d("DEBUGGING LOG", "AlarmTool::addAlarm() is called ... $hourOfDay:$minute")
 
@@ -32,6 +35,10 @@ class AlarmTool: BroadcastReceiver() {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getTriggerAtMillis(hourOfDay, minute), alarmIntent)
+        }
+
+        fun getRemainingTimeInMillis() {
+
         }
 
         private fun getTriggerAtMillis(hourOfDay: Int, minute: Int): Long {
@@ -45,7 +52,7 @@ class AlarmTool: BroadcastReceiver() {
                 getTimeInMillis(true, hourOfDay, minute)
         }
 
-        private fun getTimeInMillis(tomorrow: Boolean, hourOfDay: Int, minute: Int): Long {
+        fun getTimeInMillis(tomorrow: Boolean, hourOfDay: Int, minute: Int): Long {
             val calendar = GregorianCalendar.getInstance() as GregorianCalendar
             if (tomorrow) calendar.add(GregorianCalendar.DAY_OF_YEAR, 1)
             calendar[GregorianCalendar.HOUR_OF_DAY] = hourOfDay
