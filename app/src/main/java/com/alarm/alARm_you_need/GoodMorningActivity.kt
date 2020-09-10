@@ -19,14 +19,13 @@ class GoodMorningActivity : AppCompatActivity() {
         val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
 
         val title = alarmData.title
-        val time = "${alarmData.hour}시 ${alarmData.minute}분입니다"
+        val apm = alarmData.apm
+        val time = "${apm} ${alarmData.hour}시 ${alarmData.minute}분입니다"
 
-        alarm_title.text = "ex) 잘 주무셨나요? 설마 다시 눕는건 아니겠죠?\n" + title
+        message.text = "잘 주무셨나요? 앉으면 다시 잘 확률이 높습니다!\n"
+        alarm_title.text = title
         clock.text = time
 
-        back_btn.setOnClickListener {
-            onBackPressed()
-        }
     }
 
     override fun onBackPressed() {
@@ -37,7 +36,6 @@ class GoodMorningActivity : AppCompatActivity() {
 
     /* todo
     * 일어났을 때 유용한 정보를 제공한다면 (시간, 날씨, 일정 등)
-    * 기존 MainActivity를 MainFragment로 바꾸고
     * goodMorningActivity를 MainActivity 위의 GoodMorningFragment로 구현하여서 메인과 통합하자
     */
     private fun gotoMain() {

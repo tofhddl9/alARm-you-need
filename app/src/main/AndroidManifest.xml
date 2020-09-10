@@ -60,18 +60,23 @@
         </activity>
 
         <activity
-            android:name=".DefaultRingActivity"
-            android:launchMode="singleTop" />
-
-        <activity
             android:name=".AlarmSettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
-        <activity android:name=".ArPreviewActivity"
+        <activity
+            android:name=".BaseRingActivity"
+            android:launchMode="singleTask"/>
+
+        <activity
+            android:name=".DefaultRingActivity"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".ArPreviewActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme"/>
 
@@ -80,11 +85,9 @@
             android:name=".ArRingActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme" />
-
-        <activity android:name=".BaseRingActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

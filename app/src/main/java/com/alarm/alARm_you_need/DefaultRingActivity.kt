@@ -36,4 +36,9 @@ class DefaultRingActivity : BaseRingActivity() {
         }
     }
 
+    override fun onStop() {
+        Log.d("DEBUGGING LOG", "DefaultRingActivity::onStop()")
+        super.onStop()
+    }
+
 }
