@@ -9,6 +9,8 @@ class AlarmYouNeedApplication : Application() {
         super.onCreate()
         Realm.init(this)
         Log.d("DEBUGGING LOG", "AlarmYouNeedApplication")
+        Thread.sleep(1500)
+        setTheme(R.style.AppTheme)
     }
 
 }
