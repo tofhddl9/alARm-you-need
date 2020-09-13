@@ -142,12 +142,15 @@
 
             <ImageButton
                 android:id="@+id/ar_image"
+                android:src ="@drawable/ic_baseline_add_photo_alternate_24"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
+                android:paddingStart="3dp"
+                android:paddingEnd="3dp"
                 android:scaleType="fitCenter"
                 android:layout_weight="1"
                 android:visibility="gone"
-                android:background="#FAFAFA"/>
+                android:background="#FAFAFA" />
 
         </LinearLayout>
 
