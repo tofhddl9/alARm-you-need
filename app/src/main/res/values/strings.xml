@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">alARm_you_need</string>
+    <string name="app_name">AR람</string>
     <string name="remain_time">등록된 알람이 없습니다.</string>
 
     <string name="title_activity_main">alARm</string>
