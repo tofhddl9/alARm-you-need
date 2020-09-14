@@ -17,6 +17,30 @@
     <!-- normal Preferences -->
     <string name="language_title">언어 설정</string>
 
+    <!-- onBoarding Messages -->
+    <string name="onboarding1_title">준비 - 스캐너</string>
+    <string name="onboarding2_title">준비 - 이미지</string>
+    <string name="onboarding3_title">이미지 등록</string>
+    <string name="onboarding4_title">프리뷰</string>
+    <string name="onboarding5_title">미로 생성 확인</string>
+
+    <string name="onboarding1_desc">Google PhotoScan 앱(또는 스캐너)을 준비합니다.\n</string>
+    <string name="onboarding2_desc">
+        1.미로를 증강시킬 이미지를 준비합니다.\n
+        (예시는 개발자의 마우스패드입니다.)\n\n
+        2.스캐너 앱을 이용해 선명한 이미지를 생성합니다.\n\n
+        [중요] 단순한 패턴의 이미지는 미로가 증강되지 않습니다.</string>
+    <string name="onboarding3_desc">
+        1.알람 설정에서 AR 모드를 선택합니다.\n\n
+        2.스캔한 이미지를 선택합니다.</string>
+    <string name="onboarding4_desc">
+        1.프리뷰를 통해 미로가 증강되는지 확인합니다.\n\n
+        2.미로가 생성되지 않는다면 다른 이미지가 필요합니다.</string>
+    <string name="onboarding5_desc">
+        1.미로 안의 공을 탈출시키면 알람이 꺼집니다.\n\n
+        2.미로가 생성되지 않으면 알람을 끌 수 없으니.\n  꼭 프리뷰를 확인하세요!\n\n
+        [Tip] 해당 이미지를 침실에서 멀리 두세요</string>
+
     <!--hello ar property-->
     <string name="depth_use_explanation" translatable="false">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
     <string name="button_text_enable_depth" translatable="false">Enable</string>

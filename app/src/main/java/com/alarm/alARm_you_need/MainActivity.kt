@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         closeAppDialog.show()
     }
 
-    fun requestPermissions() {
+    private fun requestPermissions() {
         requestOverlayPermission()
     }
 

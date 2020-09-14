@@ -37,10 +37,6 @@ class AlarmTool: BroadcastReceiver() {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, getTriggerAtMillis(hourOfDay, minute), alarmIntent)
         }
 
-        fun getRemainingTimeInMillis() {
-
-        }
-
         private fun getTriggerAtMillis(hourOfDay: Int, minute: Int): Long {
             val currentCalendar = GregorianCalendar.getInstance() as GregorianCalendar
             val currentHourOfDay = currentCalendar[GregorianCalendar.HOUR_OF_DAY]

@@ -5,10 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.AnimationUtils
-import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
@@ -30,9 +27,11 @@ class OnboardingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_onboarding)
 
         val list = ArrayList<ScreenItem>()
-        list.add(ScreenItem("title1", "desc1", R.drawable.ic_alarm))
-        list.add(ScreenItem("title2", "desc2", R.drawable.back_btn))
-        list.add(ScreenItem("title3", "desc3", R.drawable.cancel_btn))
+        list.add(ScreenItem(resources.getString(R.string.onboarding1_title), resources.getString(R.string.onboarding1_desc), R.drawable.onboarding_img1))
+        list.add(ScreenItem(resources.getString(R.string.onboarding2_title), resources.getString(R.string.onboarding2_desc), R.drawable.onboarding_img2))
+        list.add(ScreenItem(resources.getString(R.string.onboarding3_title), resources.getString(R.string.onboarding3_desc), R.drawable.onboarding_img3))
+        list.add(ScreenItem(resources.getString(R.string.onboarding4_title), resources.getString(R.string.onboarding4_desc), R.drawable.onboarding_img4))
+        list.add(ScreenItem(resources.getString(R.string.onboarding5_title), resources.getString(R.string.onboarding5_desc), R.drawable.onboarding_img5))
 
         val onboardingAdapter = OnboardingViewpagerAdapter(list)
         screen_viewpager.adapter = onboardingAdapter

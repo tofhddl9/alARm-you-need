@@ -59,7 +59,7 @@ class ArRingActivity : BaseRingActivity() {
             onUpdateFrame(frameTime)
         }
 
-        init_btn.setOnClickListener { isInit = true; finish() }
+        init_btn.setOnClickListener { isInit = true; }
     }
 
     override fun onResume() {
@@ -109,7 +109,7 @@ class ArRingActivity : BaseRingActivity() {
                 TrackingState.PAUSED -> {
                     // When an image is in PAUSED state, but the camera is not PAUSED, it has been detected,
                     // but not yet tracked.
-                    val text = "Detected Image " + augmentedImage.index
+                    val text = "곧 미로가 생성됩니다"
                     SnackbarHelper.getInstance().showMessage(this, text)
                 }
                 TrackingState.TRACKING -> {

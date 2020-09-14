@@ -7,8 +7,10 @@ import io.realm.Sort
 class AlarmDao(private val realm: Realm) {
 
     fun getAllAlarms() : RealmResults<AlarmData> {
+        val fieldNames = arrayOf("active", "hour", "minute")
+        val sortOrders = arrayOf(Sort.DESCENDING, Sort.ASCENDING, Sort.ASCENDING)
         return realm.where(AlarmData::class.java)
-            .sort("active", Sort.DESCENDING)
+            .sort(fieldNames, sortOrders)
             .findAll()
     }
 
@@ -65,7 +67,6 @@ class AlarmDao(private val realm: Realm) {
     fun getActiveAlarms(): RealmResults<AlarmData>? {
         return realm.where(AlarmData::class.java)
             .equalTo("active", true)
-            //.and()
             .findAll()
     }
 }
