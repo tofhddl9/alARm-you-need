@@ -47,12 +47,16 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
              */
         }
         else if (preference.key == "pref_disturb_mode") {
-            requireContext().startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+            startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
         }
         else if (preference.key == "pref_onboarding") {
             val onboardingIntent = Intent(requireContext(), OnboardingActivity::class.java)
             onboardingIntent.putExtra("isReview", true)
-            requireContext().startActivity(onboardingIntent)
+            startActivity(onboardingIntent)
+        }
+        else if (preference.key == "pref_app_info") {
+            val appInfoIntent = Intent(requireContext(), AppInfoActivity::class.java)
+            startActivity(appInfoIntent)
         }
 
         return super.onPreferenceTreeClick(preference)

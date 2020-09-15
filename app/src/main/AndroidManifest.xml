@@ -51,6 +51,9 @@
         <service android:name=".RestartAlarmService" />
 
         <activity
+            android:name=".AppInfoActivity"/>
+
+        <activity
             android:name=".GoodMorningActivity"
             android:launchMode="singleTop" />
         <activity
