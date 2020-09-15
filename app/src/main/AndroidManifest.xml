@@ -27,7 +27,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".OnboardingActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,12 +55,10 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".MainActivity"
-            android:excludeFromRecents="true"
             android:label="@string/title_activity_main"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <!---->
         </activity>
         <activity
             android:name=".AlarmSettingActivity"

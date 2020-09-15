@@ -16,12 +16,6 @@ open class BaseRingActivity : AppCompatActivity() {
         Log.d("DEBUGGING LOG", "BaseRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         alarmId = intent.getStringExtra("ALARM_ID")
-
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-            supportActionBar!!.setHomeButtonEnabled(false)
-        }
-
     }
 
     open fun alarmRingOff() {
@@ -60,7 +54,6 @@ open class BaseRingActivity : AppCompatActivity() {
         }
     }
 
-    @Override
     override fun onBackPressed() {
         //nop
     }
