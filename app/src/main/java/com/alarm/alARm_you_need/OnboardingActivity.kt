@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.activity_onboarding.*
 class OnboardingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (restorePreferenceData()) {
+        val isReview = intent.getBooleanExtra("isReview", false)
+        if (restorePreferenceData() && !isReview) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

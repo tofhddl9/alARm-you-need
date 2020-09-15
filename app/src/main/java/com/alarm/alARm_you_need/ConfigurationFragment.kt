@@ -32,8 +32,8 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
     @Override
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         Log.d("DEBUGGING LOG", "onPreferenceTreeClick()")
-        if (preference.key == "status_bar_noti") {
-            Toast.makeText(requireContext(), "아직 미구현 기능입니다", Toast.LENGTH_SHORT).show()
+        if (preference.key == "pref_status_bar_notification") {
+            Toast.makeText(requireContext(), "업데이트 예정입니다.", Toast.LENGTH_SHORT).show()
             /* todo : 앱과 함께 꺼지지 않도록 구현
             if (bStatusbarnotiswtich) {
                 Log.d("DEBUGGING LOG", "show noti")
@@ -46,9 +46,15 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
             }
              */
         }
-        else if (preference.key == "disturb_mode") {
+        else if (preference.key == "pref_disturb_mode") {
             requireContext().startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
         }
+        else if (preference.key == "pref_onboarding") {
+            val onboardingIntent = Intent(requireContext(), OnboardingActivity::class.java)
+            onboardingIntent.putExtra("isReview", true)
+            requireContext().startActivity(onboardingIntent)
+        }
+
         return super.onPreferenceTreeClick(preference)
     }
 
