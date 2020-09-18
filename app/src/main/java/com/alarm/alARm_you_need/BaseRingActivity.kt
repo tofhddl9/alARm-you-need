@@ -6,6 +6,7 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 open class BaseRingActivity : AppCompatActivity() {
@@ -16,6 +17,11 @@ open class BaseRingActivity : AppCompatActivity() {
         Log.d("DEBUGGING LOG", "BaseRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         alarmId = intent.getStringExtra("ALARM_ID")
+
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
     open fun alarmRingOff() {
