@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var viewModel: ListViewModel? = null
-    private val overlayPermissionResultCode = 1111
+    private val overlayPermissionResultCode = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("DEBUGGING LOG", "MainActivity::onCreate() is called")
@@ -66,9 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     @Override
     override fun onBackPressed() {
-        val closeAppDialog = CloseAppDialog(this)
-        closeAppDialog.setContentView(R.layout.close_app_dialog)
-        closeAppDialog.show()
+        val closeAppDialog = CloseAppDialog()
+        closeAppDialog.show(supportFragmentManager, "CloseDialog")
     }
 
     private fun requestPermissions() {
@@ -100,10 +99,8 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == overlayPermissionResultCode) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(this)) {
-                    Toast.makeText(this, "권한을 수락해주세요", Toast.LENGTH_SHORT).show()
-                }
+            if (!Settings.canDrawOverlays(this)) {
+                Toast.makeText(this, "권한을 수락해주세요", Toast.LENGTH_SHORT).show()
             }
         }
     }
