@@ -9,12 +9,8 @@ class AlarmYouNeedApplication : Application() {
         super.onCreate()
         Realm.init(this)
         Log.d("DEBUGGING LOG", "AlarmYouNeedApplication")
+
+        Thread.sleep(1500)
+        setTheme(R.style.AppTheme)
     }
-
 }
-
-/* Todo List
-* - 활성화 알람 시간 순 정렬
-* - ARCore, Sceneform 버전 확인해보자... 사용중인 버전 성능이 안 좋다
-*
-* */
