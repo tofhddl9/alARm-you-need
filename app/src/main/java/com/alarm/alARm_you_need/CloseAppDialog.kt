@@ -1,25 +1,31 @@
 package com.alarm.alARm_you_need
 
-import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
+import kotlinx.android.synthetic.main.close_app_dialog.*
 
-class CloseAppDialog constructor(context: Context) : Dialog(context) {
+class CloseAppDialog: DialogFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.close_app_dialog, container, false)
+    }
 
-        val closeBtn = findViewById<TextView>(R.id.close_app_btn)
-        val cancelBtn = findViewById<TextView>(R.id.close_app_cancel_btn)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-        closeBtn.setOnClickListener {
-            android.os.Process.killProcess(android.os.Process.myPid())
+        close_app_btn.setOnClickListener {
+            (activity as MainActivity).finish()
         }
 
-        cancelBtn.setOnClickListener {
+        close_app_cancel_btn.setOnClickListener {
             dismiss()
         }
     }
-
 }

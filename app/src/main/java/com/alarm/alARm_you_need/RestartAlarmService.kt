@@ -25,9 +25,6 @@ class RestartAlarmService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d("DEBUGGING LOG", "RestartAlarmService::onStartCommand()")
         val builder = NotificationCompat.Builder(this, "default")
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-        builder.setContentTitle(null)
-        builder.setContentText(null)
 
         Log.d("DEBUGGING LOG", "RESTART!")
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -38,8 +35,8 @@ class RestartAlarmService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             manager.createNotificationChannel(
                 NotificationChannel(
-                    "default",
-                    "기본 채널",
+                    "",
+                    "기타",
                     NotificationManager.IMPORTANCE_NONE
                 )
             )

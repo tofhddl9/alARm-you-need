@@ -49,6 +49,10 @@
 
         <service android:name=".AlarmService" />
         <service android:name=".RestartAlarmService" />
+        <service android:name=".NotificationService"/>
+
+        <activity
+            android:name=".AppInfoActivity"/>
 
         <activity
             android:name=".GoodMorningActivity"
