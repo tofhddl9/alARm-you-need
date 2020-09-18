@@ -1,8 +1,6 @@
 package com.alarm.alARm_you_need
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,23 +8,15 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.alarm.alARm_you_need.NotificationService.Companion.CHANNEL_ID
 
 class ConfigurationFragment : PreferenceFragmentCompat() {
 
-    private var bStatusbarnotiswtich: Boolean = false
-    private lateinit var channelId: String
-    private val notificationId = 12
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences_setting, rootKey)
-        createNotificationChannel(
-            requireContext(), NotificationManagerCompat.IMPORTANCE_DEFAULT,
-            false, getString(R.string.app_name), "App notification channel"
-        )
     }
 
     @Override
@@ -34,17 +24,27 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
         Log.d("DEBUGGING LOG", "onPreferenceTreeClick()")
         if (preference.key == "pref_status_bar_notification") {
             Toast.makeText(requireContext(), "업데이트 예정입니다.", Toast.LENGTH_SHORT).show()
-            /* todo : 앱과 함께 꺼지지 않도록 구현
-            if (bStatusbarnotiswtich) {
-                Log.d("DEBUGGING LOG", "show noti")
-                hideStatusNotification()
-                bStatusbarnotiswtich = false
-            } else {
+
+            /*todo : make clean*/
+            val sharedPreference = requireContext().getSharedPreferences("notifyPref", Context.MODE_PRIVATE)
+            val isStatusbarNotificationSwitchOn = sharedPreference.getBoolean("isNotifying", false)
+
+            if (!isStatusbarNotificationSwitchOn) {
                 Log.d("DEBUGGING LOG", "hide noti")
-                showStatusNotification()
-                bStatusbarnotiswtich = true
+                showStatusbarNotification()
+
+                val editor = sharedPreference.edit()
+                editor.putBoolean("isNotifying", true)
+                editor.apply()
+            } else {
+                Log.d("DEBUGGING LOG", "show noti")
+                hideStatusbarNotification()
+
+                val editor = sharedPreference.edit()
+                editor.putBoolean("isNotifying", false)
+                editor.apply()
             }
-             */
+
         }
         else if (preference.key == "pref_disturb_mode") {
             startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
@@ -62,46 +62,37 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
         return super.onPreferenceTreeClick(preference)
     }
 
-
-    private fun createNotificationChannel(context: Context, importance: Int, showBadge: Boolean,
-                                          name: String, description: String) {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channelId = "${context.packageName}-$name"
-            val channel = NotificationChannel(channelId, name, importance)
-            channel.description = description
-            channel.setShowBadge(showBadge)
-
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+            val notificationChannel = NotificationChannel(CHANNEL_ID,
+                "Notification Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val notificationManager = requireContext().getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 
-    private fun showStatusNotification() {
-        val title = "Alarm You Need"
-        val content = "[다음 알람] "
-        /* Todo : content show remaining time */
-
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent =
-            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-        val builder = NotificationCompat.Builder(requireContext(), channelId)
-        builder.setSmallIcon(R.drawable.ic_alarm)
-        builder.setContentTitle(title)
-        builder.setContentText(content)
-        builder.priority = NotificationCompat.PRIORITY_DEFAULT
-        builder.setAutoCancel(false)
-        builder.setContentIntent(pendingIntent)
-        builder.setOngoing(true)
-
-        val notificationManager = NotificationManagerCompat.from(requireContext())
-        notificationManager.notify(notificationId, builder.build())
+    private fun deleteNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = requireContext().getSystemService(NotificationManager::class.java)
+            notificationManager.deleteNotificationChannel(CHANNEL_ID)
+        }
     }
 
-    private fun hideStatusNotification() {
-        val notificationManager = NotificationManagerCompat.from(requireContext())
-        notificationManager.cancel(notificationId)
+    private fun showStatusbarNotification() {
+        Log.d("DEBUGGING LOG", "showStatusNotification")
+        createNotificationChannel()
+        val notificationIntent = Intent(requireContext(), NotificationService::class.java)
+        ContextCompat.startForegroundService(requireContext() , notificationIntent)
+    }
+
+    private fun hideStatusbarNotification() {
+        Log.d("DEBUGGING LOG", "hideStatusNotification")
+        val notificationIntent = Intent(requireContext(), NotificationService::class.java)
+        requireContext().stopService(notificationIntent)
+
+        deleteNotificationChannel()
     }
 
 }
