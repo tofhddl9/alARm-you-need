@@ -303,6 +303,7 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             dayOfToday++
             dDay++
         }
+        dayOfToday %= 7
 
         while (!targetDays[dayOfToday]) {
             dayOfToday++
