@@ -11,11 +11,14 @@ import io.realm.Realm
 
 class RebootReceiver : BroadcastReceiver(){
 
-    @Override
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("DEBUGGING LOG", "RebootReceiver::onReceive()")
-        registerActiveAlarms(context)
-        showNotificationIfActive(context)
+        when (intent.action) {
+            Intent.ACTION_BOOT_COMPLETED -> {
+                registerActiveAlarms(context)
+                showNotificationIfActive(context)
+            }
+        }
     }
 
     private fun registerActiveAlarms(context: Context) {
