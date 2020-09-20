@@ -19,9 +19,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.fragment_alarm_setting.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.logging.SimpleFormatter
 
-class AlarmSettingFragment(): Fragment(), ImageDialogListener{
+class AlarmSettingFragment: Fragment(), ImageDialogListener{
     private var viewModel: AlarmSettingViewModel? = null
     private var alarmId: String? = null
 
@@ -70,6 +73,12 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             it.uriImage.observe(requireActivity(), Observer { uriArImage = it })
             it.volume.observe(requireActivity(), Observer { volume_bar.progress = it })
             it.alarmType.observe(requireActivity(), Observer { alarmType = it })
+
+            it.remainTime.observe(requireActivity(), Observer {
+                timePicker.setOnTimeChangedListener {_,_,_->
+                    remain_time_view.text = getRemainingTime()
+                }
+            })
         }
 
         val defaultUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
@@ -156,7 +165,6 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             selectAlarmRingtone()
         }
 
-
         alarm_type_btn.setOnClickListener {
             selectAlarmType()
         }
@@ -165,6 +173,7 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             imageDialog = ImageDialog(requireContext(), this)
             imageDialog?.show()
         }
+
     }
 
     fun showConfirmAlert(alarmId: String) {
@@ -256,7 +265,6 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         } else if (!isARImageSelected) {
             return INVALID_NO_IMAGE
         } else {
-            notifyRemainingTime()
             return VALID_SETTING
         }
     }
@@ -271,6 +279,7 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
                     thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
                     true, uriRingtone, uriArImage, volume_bar.progress, alarmType
                 )
+                notifyRemainingTime()
                 requireActivity().finish()
             }
             INVALID_NO_DAY_OF_WEEK -> {
@@ -283,6 +292,20 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
     }
 
     private fun notifyRemainingTime() {
+        val remainTime = getRemainingTime()
+        Toast.makeText(requireContext(), remainTime, Toast.LENGTH_LONG).show()
+    }
+
+    private fun getRemainingTime() : String {
+        val remainTimeInMillis = getRemainingTimeInMillis()
+        val remainMinute = (remainTimeInMillis/(1000*60)) % 60
+        val remainHour = (remainTimeInMillis/(1000*60*60)) % 24
+        val remainDay = (remainTimeInMillis/(1000*60*60)) / 24
+
+        return String.format("다음 알람까지 %d일 %d시간 %d분 남았습니다.",remainDay, remainHour, remainMinute)
+    }
+
+    private fun getRemainingTimeInMillis() : Long {
         val targetDays = BooleanArray(7)
         if (sun_box.isChecked) targetDays[0] = true
         if (mon_box.isChecked) targetDays[1] = true
@@ -312,20 +335,7 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         }
         targetTimeInMillis += (dDay * 1000 * 60 * 60 * 24)
 
-        val remainTimeInMills = targetTimeInMillis - currentTimeInMillis
-        val remainMinute = (remainTimeInMills/(1000*60)) % 60
-        val remainHour = (remainTimeInMills/(1000*60*60)) % 24
-        val remainDay = (remainTimeInMills/(1000*60*60)) / 24
-
-        val hourPadding = if(remainHour < 10) "0" else ""
-        val minutePadding = if(remainMinute < 10) "0" else ""
-
-        val remainTime = if (remainDay.toInt() == 0 && remainHour.toInt() == 0 && remainMinute.toInt() == 0) {
-            "1분 이내에 알람이 울립니다"
-        } else {
-            "${remainDay}일 ${hourPadding}${remainHour}시간 ${minutePadding}${remainMinute}분 뒤에 알람이 울립니다"
-        }
-        Toast.makeText(requireContext(), remainTime, Toast.LENGTH_LONG).show()
+        return targetTimeInMillis - currentTimeInMillis
     }
 
     override fun onCameraBtnClicked() {

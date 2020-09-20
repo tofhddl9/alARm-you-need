@@ -9,6 +9,7 @@ import io.realm.Realm
 
 class AlarmSettingViewModel: ViewModel() {
 
+    val remainTime: MutableLiveData<Long> = MutableLiveData<Long>().apply { value = 0 }
     val title: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
     val hour: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 8 }
     val minute: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 30 }
