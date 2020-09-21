@@ -1,4 +1,5 @@
 package com.alarm.alARm_you_need
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_alarm_list.*
 
-class AlarmListFragment: Fragment(){
+class AlarmListFragment : Fragment() {
     private lateinit var listAdapter: AlarmListAdapter
     private var viewModel: ListViewModel? = null
 
@@ -20,24 +21,25 @@ class AlarmListFragment: Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_alarm_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        
+
         viewModel = requireActivity().application!!.let {
             ViewModelProvider(
                 requireActivity().viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(it))
+                ViewModelProvider.AndroidViewModelFactory(it)
+            )
                 .get(ListViewModel::class.java)
         }
 
         viewModel!!.let {
             it.alarmLiveData.value?.let {
                 listAdapter = AlarmListAdapter(it)
-                alarmListView.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+                alarmListView.layoutManager =
+                    LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
                 alarmListView.adapter = listAdapter
                 listAdapter.itemClickListener = {
                     val intent = Intent(activity, AlarmSettingActivity::class.java)
@@ -48,6 +50,7 @@ class AlarmListFragment: Fragment(){
 
                 listAdapter.checkBoxClickListener = {
                     viewModel!!.toggleAlarm(it)
+                    AlarmTool.updateAlarmNotification(requireContext())
                 }
 
             }

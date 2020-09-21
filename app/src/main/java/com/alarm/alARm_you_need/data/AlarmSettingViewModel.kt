@@ -1,4 +1,5 @@
 package com.alarm.alARm_you_need
+
 import android.content.Context
 import android.media.RingtoneManager
 import android.net.Uri
@@ -7,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.realm.Realm
 
-class AlarmSettingViewModel: ViewModel() {
+class AlarmSettingViewModel : ViewModel() {
 
     val remainTime: MutableLiveData<Long> = MutableLiveData<Long>().apply { value = 0 }
     val title: MutableLiveData<String> = MutableLiveData<String>().apply { value = "" }
@@ -24,10 +25,12 @@ class AlarmSettingViewModel: ViewModel() {
     val active: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = true }
 
     val defaultUriRingtone: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-    var uriRingtone: MutableLiveData<String> = MutableLiveData<String>().apply { value = defaultUriRingtone.toString()}
+    var uriRingtone: MutableLiveData<String> =
+        MutableLiveData<String>().apply { value = defaultUriRingtone.toString() }
     val uriImage: MutableLiveData<String> = MutableLiveData<String>().apply { value = null }
     val volume: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 50 }
-    val alarmType : MutableLiveData<String> = MutableLiveData<String>().apply {value = AlarmData.TYPE_DEFAULT}
+    val alarmType: MutableLiveData<String> =
+        MutableLiveData<String>().apply { value = AlarmData.TYPE_DEFAULT }
 
     private var alarmData = AlarmData()
 
@@ -67,20 +70,25 @@ class AlarmSettingViewModel: ViewModel() {
         alarmType.value = alarmData.alarmType
     }
 
-    fun addOrUpdateAlarm(context : Context, title: String, hour: Int, minute: Int, apm: String,
-                         sun: Boolean, mon: Boolean, tue: Boolean, wed: Boolean, thur: Boolean,
-                         fri: Boolean, sat: Boolean, active: Boolean, uriRingtone: String,
-                         uriImage: String?, volume: Int, alarmType: String) {
+    fun addOrUpdateAlarm(
+        context: Context, title: String, hour: Int, minute: Int, apm: String,
+        sun: Boolean, mon: Boolean, tue: Boolean, wed: Boolean, thur: Boolean,
+        fri: Boolean, sat: Boolean, active: Boolean, uriRingtone: String,
+        uriImage: String?, volume: Int, alarmType: String
+    ) {
 
-        alarmDao.addOrUpdateAlarm(alarmData, title, hour, minute, apm,
-            sun, mon, tue, wed, thur, fri, sat, active, uriRingtone, uriImage, volume, alarmType)
+        alarmDao.addOrUpdateAlarm(
+            alarmData, title, hour, minute, apm,
+            sun, mon, tue, wed, thur, fri, sat, active, uriRingtone, uriImage, volume, alarmType
+        )
 
         AlarmTool.deleteAlarm(context, alarmData.alarmId)
         AlarmTool.addAlarm(context, alarmData.alarmId, alarmData.hour, alarmData.minute)
     }
 
-    fun deleteAlarm(id: String) {
+    fun deleteAlarm(context: Context, id: String) {
         alarmDao.deleteAlarm(id)
+        AlarmTool.deleteAlarm(context, id)
     }
 
 }
