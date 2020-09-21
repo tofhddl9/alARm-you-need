@@ -19,9 +19,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.fragment_alarm_setting.*
-import java.util.*
 
-class AlarmSettingFragment(): Fragment(), ImageDialogListener{
+class AlarmSettingFragment : Fragment(), ImageDialogListener {
     private var viewModel: AlarmSettingViewModel? = null
     private var alarmId: String? = null
 
@@ -31,7 +30,6 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
 
     private var imageDialog: ImageDialog? = null
 
-
     private val REQ_RINGTONE_SELECT = 1
     private val REQ_CAMERA_OPEN = 2
     private val REQ_GALLERY_OPEN = 3
@@ -40,7 +38,15 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
     private val INVALID_NO_DAY_OF_WEEK = 2
     private val INVALID_NO_IMAGE = 3
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private val mOnClickListener: View.OnClickListener = View.OnClickListener {
+        updateRemainTimeView()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_alarm_setting, container, false)
     }
 
@@ -48,8 +54,10 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         super.onActivityCreated(savedInstanceState)
 
         viewModel = requireActivity().application!!.let {
-            ViewModelProvider(viewModelStore,
-                ViewModelProvider.AndroidViewModelFactory(it))
+            ViewModelProvider(
+                viewModelStore,
+                ViewModelProvider.AndroidViewModelFactory(it)
+            )
                 .get(AlarmSettingViewModel::class.java)
         }
 
@@ -58,18 +66,45 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             it.hour.observe(requireActivity(), Observer { timePicker.hour = it })
             it.minute.observe(requireActivity(), Observer { timePicker.minute = it })
 
-            it.sun.observe(requireActivity(), Observer { sun_box.isChecked = it })
-            it.mon.observe(requireActivity(), Observer { mon_box.isChecked = it })
-            it.tue.observe(requireActivity(), Observer { tue_box.isChecked = it })
-            it.wed.observe(requireActivity(), Observer { wed_box.isChecked = it })
-            it.thur.observe(requireActivity(), Observer { thur_box.isChecked = it })
-            it.fri.observe(requireActivity(), Observer { fri_box.isChecked = it })
-            it.sat.observe(requireActivity(), Observer { sat_box.isChecked = it })
+            it.sun.observe(requireActivity(), Observer {
+                sun_box.isChecked = it
+                sun_box.setOnClickListener(mOnClickListener)
+            })
+            it.mon.observe(requireActivity(), Observer {
+                mon_box.isChecked = it
+                mon_box.setOnClickListener(mOnClickListener)
+            })
+            it.tue.observe(requireActivity(), Observer {
+                tue_box.isChecked = it
+                tue_box.setOnClickListener(mOnClickListener)
+            })
+            it.wed.observe(requireActivity(), Observer {
+                wed_box.isChecked = it
+                wed_box.setOnClickListener(mOnClickListener)
+            })
+            it.thur.observe(requireActivity(), Observer {
+                thur_box.isChecked = it
+                thur_box.setOnClickListener(mOnClickListener)
+            })
+            it.fri.observe(requireActivity(), Observer {
+                fri_box.isChecked = it
+                fri_box.setOnClickListener(mOnClickListener)
+            })
+            it.sat.observe(requireActivity(), Observer {
+                sat_box.isChecked = it
+                sat_box.setOnClickListener(mOnClickListener)
+            })
 
             it.uriRingtone.observe(requireActivity(), Observer { uriRingtone = it })
             it.uriImage.observe(requireActivity(), Observer { uriArImage = it })
             it.volume.observe(requireActivity(), Observer { volume_bar.progress = it })
             it.alarmType.observe(requireActivity(), Observer { alarmType = it })
+
+            it.remainTime.observe(requireActivity(), Observer {
+                timePicker.setOnTimeChangedListener { _, _, _ ->
+                    updateRemainTimeView()
+                }
+            })
         }
 
         val defaultUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
@@ -78,13 +113,29 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         alarm_type_btn.text = AlarmData.TYPE_DEFAULT
 
         alarmId = arguments?.getString("ALARM_ID")
-        if (alarmId != null)
+        if (alarmId != null) {
             loadAlarm(alarmId!!)
+        }
 
         setOnClickListeners()
     }
 
-    private fun loadAlarm(id : String) {
+    private fun getRemainTime(): Long {
+        val targetDays = booleanArrayOf(
+            sun_box.isChecked,
+            mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
+            thur_box.isChecked, fri_box.isChecked, sat_box.isChecked
+        )
+
+        return AlarmTool.findTimeOfAlarm(targetDays, timePicker.hour, timePicker.minute, true)
+    }
+
+    private fun updateRemainTimeView() {
+        val remainTime = getRemainTime()
+        remain_time_view.text = AlarmTool.convertMillisToRemainingTimeFormat(remainTime)
+    }
+
+    private fun loadAlarm(id: String) {
         viewModel!!.loadAlarm(id)
         val uri = Uri.parse(viewModel!!.uriRingtone.value)
         writeRingtoneTitle(uri!!)
@@ -96,19 +147,23 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
                 ar_image.visibility = View.VISIBLE
             val uri2 = Uri.parse(viewModel!!.uriImage.value)
             if (uri2 != null) {
-                Log.d("DEBUGGING LOG","Loaded image uri : "+uri2)
+                Log.d("DEBUGGING LOG", "Loaded image uri : " + uri2)
                 setArImage(uri2)
-            }
-            else {
-                Log.d("DEBUGGING LOG","No ARimage was selected : "+uri2)
+            } else {
+                Log.d("DEBUGGING LOG", "No ARimage was selected : " + uri2)
             }
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (!CameraPermissionHelper.hasCameraPermission(requireActivity())) {
-            Toast.makeText(requireActivity(), "AR 기능을 사용하기 위해서 카메라 권한이 필요합니다", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireActivity(), "AR 기능을 사용하기 위해서 카메라 권한이 필요합니다", Toast.LENGTH_LONG)
+                .show()
             if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(requireActivity())) {
                 Log.d("DEBUGGING LOG", "HERE I AM")
                 CameraPermissionHelper.launchPermissionSettings(requireActivity())
@@ -156,7 +211,6 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             selectAlarmRingtone()
         }
 
-
         alarm_type_btn.setOnClickListener {
             selectAlarmType()
         }
@@ -165,6 +219,7 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             imageDialog = ImageDialog(requireContext(), this)
             imageDialog?.show()
         }
+
     }
 
     fun showConfirmAlert(alarmId: String) {
@@ -176,7 +231,7 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
 
         builder.setPositiveButton("확인") { _, _ ->
             Log.d("DEBUGGING LOG", "Id:[${alarmId}] alarm is deleted")
-            viewModel?.deleteAlarm(alarmId)
+            viewModel?.deleteAlarm(requireContext(), alarmId)
             requireActivity().finish()
         }
         builder.setNegativeButton("취소") { _, _ ->
@@ -223,13 +278,11 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
                     type = "DEFAULT"
                     ar_image.visibility = View.GONE
                     CameraPermissionHelper.requestCameraPermission(requireActivity())
-                }
-                else {
+                } else {
                     type = "AR"
                     ar_image.visibility = View.VISIBLE
                 }
-            }
-            else {
+            } else {
                 type = "DEFAULT"
                 ar_image.visibility = View.GONE
             }
@@ -256,7 +309,6 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         } else if (!isARImageSelected) {
             return INVALID_NO_IMAGE
         } else {
-            notifyRemainingTime()
             return VALID_SETTING
         }
     }
@@ -264,13 +316,15 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
     fun saveAlarm() {
         when (isAlarmValid()) {
             VALID_SETTING -> {
-                viewModel?.addOrUpdateAlarm(requireContext(), alarm_title.text.toString(),
+                viewModel?.addOrUpdateAlarm(
+                    requireContext(), alarm_title.text.toString(),
                     timePicker.hour, timePicker.minute,
                     if (timePicker.hour in 12..23) "오후" else "오전",
                     sun_box.isChecked, mon_box.isChecked, tue_box.isChecked, wed_box.isChecked,
                     thur_box.isChecked, fri_box.isChecked, sat_box.isChecked,
                     true, uriRingtone, uriArImage, volume_bar.progress, alarmType
                 )
+                notifyRemainingTime()
                 requireActivity().finish()
             }
             INVALID_NO_DAY_OF_WEEK -> {
@@ -282,50 +336,14 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
         }
     }
 
+
     private fun notifyRemainingTime() {
-        val targetDays = BooleanArray(7)
-        if (sun_box.isChecked) targetDays[0] = true
-        if (mon_box.isChecked) targetDays[1] = true
-        if (tue_box.isChecked) targetDays[2] = true
-        if (wed_box.isChecked) targetDays[3] = true
-        if (thur_box.isChecked) targetDays[4] = true
-        if (fri_box.isChecked) targetDays[5] = true
-        if (sat_box.isChecked) targetDays[6] = true
-
-        var targetTimeInMillis = AlarmTool.getTimeInMillis(false, timePicker.hour, timePicker.minute)
-
-        val currentTime = GregorianCalendar.getInstance() as GregorianCalendar
-        val currentTimeInMillis = currentTime.timeInMillis
-        var dayOfToday = currentTime.get(GregorianCalendar.DAY_OF_WEEK) - 1
-
-        var dDay = 0
-        if (targetTimeInMillis < currentTimeInMillis) {
-            dayOfToday++
-            dDay++
-        }
-        dayOfToday %= 7
-
-        while (!targetDays[dayOfToday]) {
-            dayOfToday++
-            dayOfToday %= 7
-            dDay++
-        }
-        targetTimeInMillis += (dDay * 1000 * 60 * 60 * 24)
-
-        val remainTimeInMills = targetTimeInMillis - currentTimeInMillis
-        val remainMinute = (remainTimeInMills/(1000*60)) % 60
-        val remainHour = (remainTimeInMills/(1000*60*60)) % 24
-        val remainDay = (remainTimeInMills/(1000*60*60)) / 24
-
-        val hourPadding = if(remainHour < 10) "0" else ""
-        val minutePadding = if(remainMinute < 10) "0" else ""
-
-        val remainTime = if (remainDay.toInt() == 0 && remainHour.toInt() == 0 && remainMinute.toInt() == 0) {
-            "1분 이내에 알람이 울립니다"
-        } else {
-            "${remainDay}일 ${hourPadding}${remainHour}시간 ${minutePadding}${remainMinute}분 뒤에 알람이 울립니다"
-        }
-        Toast.makeText(requireContext(), remainTime, Toast.LENGTH_LONG).show()
+        val remainTime = getRemainTime()
+        Toast.makeText(
+            requireContext(),
+            AlarmTool.convertMillisToRemainingTimeFormat(remainTime),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     override fun onCameraBtnClicked() {
@@ -343,7 +361,8 @@ class AlarmSettingFragment(): Fragment(), ImageDialogListener{
             Toast.makeText(requireContext(), "사진을 먼저 선택해주세요", Toast.LENGTH_SHORT).show()
             return
         }
-        Toast.makeText(requireContext(), "Tip : 미로가 생성되지 않는다면 이미지를 바꿔보세요.",Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "Tip : 미로가 생성되지 않는다면 이미지를 바꿔보세요.", Toast.LENGTH_LONG)
+            .show()
         val intent = Intent(requireContext(), ArPreviewActivity::class.java)
         intent.putExtra("IMAGE_URI", uriArImage)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

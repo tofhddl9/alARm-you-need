@@ -7,15 +7,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.alarm.alARm_you_need.AlarmTool.Companion.CHANNEL_ID
 import io.realm.Realm
 
-class RebootReceiver : BroadcastReceiver(){
+class RebootReceiver : BroadcastReceiver() {
 
-    @Override
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("DEBUGGING LOG", "RebootReceiver::onReceive()")
-        registerActiveAlarms(context)
-        showNotificationIfActive(context)
+        when (intent.action) {
+            Intent.ACTION_BOOT_COMPLETED -> {
+                registerActiveAlarms(context)
+                showNotificationIfActive(context)
+            }
+        }
     }
 
     private fun registerActiveAlarms(context: Context) {
@@ -53,7 +57,7 @@ class RebootReceiver : BroadcastReceiver(){
     private fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                NotificationService.CHANNEL_ID,
+                CHANNEL_ID,
                 "Notification Service Channel",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
