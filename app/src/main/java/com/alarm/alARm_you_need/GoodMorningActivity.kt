@@ -20,12 +20,11 @@ class GoodMorningActivity : AppCompatActivity() {
 
         val title = alarmData.title
         val apm = alarmData.apm
-        val time = "${apm} ${alarmData.hour}시 ${alarmData.minute}분입니다"
+        val time = "${apm} ${alarmData.hour}시 ${alarmData.minute}분"
 
-        message.text = "잘 주무셨나요? 앉으면 다시 잘 확률이 높습니다!\n"
         alarm_title.text = title
         clock.text = time
-
+        AlarmTool.updateAlarmNotification(this)
     }
 
     override fun onBackPressed() {

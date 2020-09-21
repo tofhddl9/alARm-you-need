@@ -185,11 +185,9 @@ class AlarmTool : BroadcastReceiver() {
         fun convertMillisToRemainingTimeFormat(timeInMillis: Long): String {
             if (timeInMillis == Long.MAX_VALUE) return ""
 
-            val hourOffset = TimeZone.getDefault().getOffset(timeInMillis)
-            val localTimeInMillis = timeInMillis + hourOffset
-            val minute = (localTimeInMillis / (1000 * 60)) % 60
-            val hour = (localTimeInMillis / (1000 * 60 * 60)) % 24
-            val day = (localTimeInMillis / (1000 * 60 * 60)) / 24
+            val minute = (timeInMillis / (1000 * 60)) % 60
+            val hour = (timeInMillis / (1000 * 60 * 60)) % 24
+            val day = (timeInMillis / (1000 * 60 * 60)) / 24
 
             return String.format("%d 일 %d시간 %d분 후에 알람이 울립니다.", day, hour, minute)
         }

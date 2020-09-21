@@ -42,7 +42,8 @@
         2.미로가 생성되지 않으면 알람을 끌 수 없으니.\n  꼭 프리뷰를 확인하세요!\n\n
         [Tip] 해당 이미지를 침실에서 멀리 두세요</string>
 
+    <string name="goodMorningMsg">좋은 아침입니다. 잘 일어나셨어요!</string>
 
-    <string name="fit_image_to_scan">Fit image to scan</string>
+    <string name="fit_image_to_scan">이미지를 맞춰주세요</string>
 
 </resources>
