@@ -165,12 +165,16 @@ class AlarmTool : BroadcastReceiver() {
         }
 
         fun convertMillisToTimeFormat(timeInMillis: Long): String {
-            val minute = (timeInMillis / (1000 * 60)) % 60
-            val hour = (timeInMillis / (1000 * 60 * 60)) % 24
-            val day = (timeInMillis / (1000 * 60 * 60)) / 24 + DAY_OF_WEEK_BASE
+            if (timeInMillis == Long.MAX_VALUE)
+                return "등록된 알람이 없습니다."
 
-            return if (timeInMillis == Long.MAX_VALUE) "등록된 알람이 없습니다."
-            else String.format(
+            val hourOffset = TimeZone.getDefault().getOffset(timeInMillis)
+            val localTimeInMillis = timeInMillis + hourOffset
+            val minute = (localTimeInMillis / (1000 * 60)) % 60
+            val hour = (localTimeInMillis / (1000 * 60 * 60)) % 24
+            val day = (localTimeInMillis / (1000 * 60 * 60)) / 24 + DAY_OF_WEEK_BASE
+
+            return String.format(
                 "[%s] %d 시 %d 분에 알람이 울립니다.",
                 DAY_OF_WEEK[day.toInt() % 7],
                 hour,
@@ -179,11 +183,13 @@ class AlarmTool : BroadcastReceiver() {
         }
 
         fun convertMillisToRemainingTimeFormat(timeInMillis: Long): String {
-            val minute = (timeInMillis / (1000 * 60)) % 60
-            val hour = (timeInMillis / (1000 * 60 * 60)) % 24
-            val day = (timeInMillis / (1000 * 60 * 60)) / 24
-
             if (timeInMillis == Long.MAX_VALUE) return ""
+
+            val hourOffset = TimeZone.getDefault().getOffset(timeInMillis)
+            val localTimeInMillis = timeInMillis + hourOffset
+            val minute = (localTimeInMillis / (1000 * 60)) % 60
+            val hour = (localTimeInMillis / (1000 * 60 * 60)) % 24
+            val day = (localTimeInMillis / (1000 * 60 * 60)) / 24
 
             return String.format("%d 일 %d시간 %d분 후에 알람이 울립니다.", day, hour, minute)
         }
