@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">AR람</string>
     <string name="remain_time">등록된 알람이 없습니다.</string>
+    <string name="admob_app_id">ca-app-pub-1719157373734547~4794765830</string>
+    <string name="admob_app_id_for_test">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_native_unit_id">ca-app-pub-1719157373734547/3133865039</string>
+    <string name="admob_native_unit_id_for_test">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="admob_banner_unit_id">ca-app-pub-1719157373734547/2782828470</string>
+    <string name="admob_banner_unit_id_for_test">ca-app-pub-3940256099942544/6300978111</string>
 
     <string name="title_activity_main">alARm</string>
     <string name="title_activity_configuration">설정</string>
@@ -11,11 +17,12 @@
     <string name="normal_header">일반</string>
 
     <!-- Messages Preferences -->
-    <string name="status_bar_title">상단바 알림</string>
-    <string name="disturb_mode_title">방해금지모드에서도 알람 허용</string>
-
-    <!-- normal Preferences -->
-    <string name="language_title">언어 설정</string>
+    <string name="pref_status_bar_notification_title">상단바 알림</string>
+    <string name="pref_status_bar_notification_summary">상단바에 다음 알람시간을 표시합니다.</string>
+    <string name="pref_disturb_mode_title">방해금지모드에서도 알람 허용</string>
+    <string name="pref_disturb_mode_summary">방해금지모드에서도 알람이 울립니다</string>
+    <string name="pref_onboarding_title">AR 도움말 다시보기</string>
+    <string name="pref_app_info_title">앱 정보</string>
 
     <!-- onBoarding Messages -->
     <string name="onboarding1_title">준비 - 스캐너</string>
@@ -41,19 +48,13 @@
         2.미로가 생성되지 않으면 알람을 끌 수 없으니.\n  꼭 프리뷰를 확인하세요!\n\n
         [Tip] 해당 이미지를 침실에서 멀리 두세요</string>
 
-    <!--hello ar property-->
-    <string name="depth_use_explanation" translatable="false">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
-    <string name="button_text_enable_depth" translatable="false">Enable</string>
-    <string name="button_text_disable_depth" translatable="false">Disable</string>
-    <string name="options_title_with_depth" translatable="false">Your device supports depth</string>
-    <string name="options_title_without_depth" translatable="false">Your device does not support depth</string>
-    <string name="done" translatable="false">Done</string>
-    <string-array name="depth_options_array" translatable="false">
-        <item>Enable depth</item>
-        <item>Show depth map</item>
+    <string name="close_dialog_title">앱을 종료할까요?</string>
+    <string name="close_dialog_msg">오늘도 좋은하루 되세요!</string>
+    <string name="close_dialog_yes_btn">종료</string>
+    <string name="close_dialog_no_btn">취소</string>
 
-    </string-array>
+    <string name="goodMorningMsg">좋은 아침입니다. 잘 일어나셨어요!</string>
 
-    <string name="fit_image_to_scan">Fit image to scan</string>
+    <string name="fit_image_to_scan">이미지를 맞춰주세요</string>
 
 </resources>

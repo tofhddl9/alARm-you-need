@@ -28,6 +28,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.ar.core.AugmentedImageDatabase;
 import com.google.ar.core.Config;
 import com.google.ar.core.Session;
@@ -97,7 +100,18 @@ public class AugmentedImageFragment extends ArFragment {
     getPlaneDiscoveryController().hide();
     getPlaneDiscoveryController().setInstructionView(null);
     getArSceneView().getPlaneRenderer().setEnabled(false);
+
     return view;
+  }
+
+  @Override
+  public void onActivityCreated(@androidx.annotation.Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+
+    MobileAds.initialize(requireContext());
+    AdRequest adRequest = new AdRequest.Builder().build();
+    AdView adview = requireActivity().findViewById(R.id.adView_banner_ar);
+    adview.loadAd(adRequest);
   }
 
   @Override

@@ -1,25 +1,56 @@
 package com.alarm.alARm_you_need
 
-import android.app.Dialog
 import android.content.Context
+import android.graphics.Point
 import android.os.Bundle
-import android.widget.TextView
+import android.view.*
+import androidx.fragment.app.DialogFragment
+import com.google.android.gms.ads.*
+import kotlinx.android.synthetic.main.close_app_dialog.*
 
-class CloseAppDialog constructor(context: Context) : Dialog(context) {
+class CloseAppDialog: DialogFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var size: Point
 
-        val closeBtn = findViewById<TextView>(R.id.close_app_btn)
-        val cancelBtn = findViewById<TextView>(R.id.close_app_cancel_btn)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.close_app_dialog, container, false)
+    }
 
-        closeBtn.setOnClickListener {
-            android.os.Process.killProcess(android.os.Process.myPid())
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        MobileAds.initialize(requireContext()) { }
+        val adLoader = AdLoader.Builder(requireContext(), "ca-app-pub-3940256099942544/2247696110")
+            .forUnifiedNativeAd {
+                close_dialog_ad.setNativeAd(it)
+            }
+            .build()
+        adLoader.loadAd(AdRequest.Builder().build())
+
+        val windowManager = requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        size = Point()
+        display.getSize(size)
+
+        close_app_btn.setOnClickListener {
+            (activity as MainActivity).finish()
         }
 
-        cancelBtn.setOnClickListener {
+        close_app_cancel_btn.setOnClickListener {
             dismiss()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val params: ViewGroup.LayoutParams? = dialog?.window?.attributes
+        val deviceWidth = size.x
+        params?.width = (deviceWidth * 0.9).toInt()
+        dialog?.window?.attributes = params as WindowManager.LayoutParams
     }
 
 }

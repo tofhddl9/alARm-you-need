@@ -14,16 +14,14 @@ import kotlinx.android.synthetic.main.activity_onboarding.*
 class OnboardingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (restorePreferenceData()) {
+        val isReview = intent.getBooleanExtra("isReview", false)
+        if (isOnboardingOpenedBefore() && !isReview) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        Thread.sleep(1500)
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_onboarding)
 
         val list = ArrayList<ScreenItem>()
@@ -67,23 +65,27 @@ class OnboardingActivity : AppCompatActivity() {
         })
 
         btn_get_started.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            if (isReview)
+                onBackPressed()
+            else {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                saveIsOnboardingOpenedBeforeTrue()
+                finish()
+            }
 
-            savePreferenceData()
         }
     }
 
-    private fun restorePreferenceData(): Boolean {
+    private fun isOnboardingOpenedBefore(): Boolean {
         val sharedPreference = applicationContext.getSharedPreferences("onboardingPref", Context.MODE_PRIVATE)
-
-        return sharedPreference.getBoolean("isOnboardingOpened", false)
+        return sharedPreference.getBoolean("isOnboardingOpenedBefore", false)
     }
 
-    private fun savePreferenceData() {
+    private fun saveIsOnboardingOpenedBeforeTrue() {
         val sharedPreference = applicationContext.getSharedPreferences("onboardingPref", Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
-        editor.putBoolean("isOnboardingOpened", true)
+        editor.putBoolean("isOnboardingOpenedBefore", true)
         editor.apply()
     }
 

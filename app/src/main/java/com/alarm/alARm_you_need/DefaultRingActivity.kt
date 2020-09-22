@@ -2,6 +2,8 @@ package com.alarm.alARm_you_need
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_default_ring.*
 
 class DefaultRingActivity : BaseRingActivity() {
@@ -10,6 +12,10 @@ class DefaultRingActivity : BaseRingActivity() {
         Log.d("DEBUGGING LOG", "DefaultRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_default_ring)
+
+        MobileAds.initialize(this) {}
+        val adRequest = AdRequest.Builder().build()
+        adview_banner.loadAd(adRequest)
 
         alarm_off.setOnClickListener {
             alarmRingOff()

@@ -1,3 +1,4 @@
+include ':nativetemplates'
 include ':app'
 rootProject.name = "alARm"
 
