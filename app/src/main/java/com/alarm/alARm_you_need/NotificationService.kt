@@ -20,7 +20,7 @@ class NotificationService : Service() {
             )
 
         val upcomingAlarmInMillis = intent.getLongExtra("upcomingTime", 0L)
-        val notification = NotificationCompat.Builder(this, AlarmTool.CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, AlarmTool.NOTIFICATION_CHANNEL_ID)
             .setContentTitle("AR람")
             .setContentText(AlarmTool.convertMillisToTimeFormat(upcomingAlarmInMillis))
             .setSmallIcon(R.mipmap.alarm_you_need_icon)

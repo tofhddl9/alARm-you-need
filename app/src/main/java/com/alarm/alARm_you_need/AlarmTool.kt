@@ -16,9 +16,9 @@ import java.util.*
 class AlarmTool : BroadcastReceiver() {
 
     companion object {
-        const val CHANNEL_ID = "다음 알람"
+        const val NOTIFICATION_CHANNEL_ID = "다음 알람"
         const val ACTION_RUN_ALARM = "RUN_ALARM"
-        const val DAY_OF_WEEK_BASE = 4
+        private const val DAY_OF_WEEK_BASE = 4
         ////1970.01.01 == Thursday
 
         private val DAY_OF_WEEK = arrayOf("일", "월", "화", "수", "목", "금", "토")
@@ -77,7 +77,7 @@ class AlarmTool : BroadcastReceiver() {
         }
 
         fun updateAlarmNotification(context: Context) {
-            createNotificationChannel(context)
+            createNotificationChannel(context, NOTIFICATION_CHANNEL_ID)
             val notificationIntent = Intent(context, NotificationService::class.java)
             val timeOfUpcomingAlarm = findTimeOfUpcomingAlarm(false)
 
@@ -88,6 +88,18 @@ class AlarmTool : BroadcastReceiver() {
                 val isNotificationSwitchOn = sharedPreference.getBoolean("isNotifying", false)
                 if (isNotificationSwitchOn)
                     context.startForegroundService(notificationIntent)
+            }
+        }
+
+        fun hideAlarmNotification(context: Context) {
+            createNotificationChannel(context, NOTIFICATION_CHANNEL_ID)
+            val notificationIntent = Intent(context, NotificationService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val sharedPreference =
+                    context.getSharedPreferences("notifyPref", Context.MODE_PRIVATE)
+                val isNotificationSwitchOn = sharedPreference.getBoolean("isNotifying", false)
+                if (isNotificationSwitchOn)
+                    context.stopService(notificationIntent)
             }
         }
 
@@ -205,11 +217,15 @@ class AlarmTool : BroadcastReceiver() {
             return targetDays
         }
 
-        private fun createNotificationChannel(context: Context) {
+        private fun createNotificationChannel(context: Context, channelId: String) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                var channelName = ""
+                when (channelId) {
+                    NOTIFICATION_CHANNEL_ID -> channelName = "다음 알람"
+                }
                 val notificationChannel = NotificationChannel(
-                    CHANNEL_ID,
-                    "Notification Service Channel",
+                    channelId,
+                    channelName,
                     NotificationManager.IMPORTANCE_NONE
                 )
                 val notificationManager = context.getSystemService(NotificationManager::class.java)
@@ -217,10 +233,10 @@ class AlarmTool : BroadcastReceiver() {
             }
         }
 
-        private fun deleteNotificationChannel(context: Context) {
+        private fun deleteNotificationChannel(context: Context, channelId: String) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val notificationManager = context.getSystemService(NotificationManager::class.java)
-                notificationManager.deleteNotificationChannel(CHANNEL_ID)
+                notificationManager.deleteNotificationChannel(channelId)
             }
 
         }
@@ -232,15 +248,15 @@ class AlarmTool : BroadcastReceiver() {
         fun hideUpcomingAlarmNotification(context: Context) {
             val notificationIntent = Intent(context, NotificationService::class.java)
             context.stopService(notificationIntent)
-
-            deleteNotificationChannel(context)
+            deleteNotificationChannel(context, NOTIFICATION_CHANNEL_ID)
         }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        Log.d("DEBUGGING LOG", "onReceive: ${intent.action}")
         when (intent.action) {
             ACTION_RUN_ALARM -> {
-                if (AlarmService.service != null) return;
+                //if (AlarmService.service != null) return
                 val alarmId: String? = intent.getStringExtra("ALARM_ID")
                 val realm = Realm.getDefaultInstance()
                 val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)

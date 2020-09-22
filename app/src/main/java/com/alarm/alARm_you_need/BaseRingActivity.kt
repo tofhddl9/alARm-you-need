@@ -16,6 +16,7 @@ open class BaseRingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("DEBUGGING LOG", "BaseRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
+        AlarmTool.hideAlarmNotification(this)
         alarmId = intent.getStringExtra("ALARM_ID")
 
         window.decorView.systemUiVisibility =
