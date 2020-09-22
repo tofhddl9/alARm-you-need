@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "alARm.you.need"
+        applicationId "com.alarm.alARm_you_need"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
