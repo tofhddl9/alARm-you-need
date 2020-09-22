@@ -1,7 +1,9 @@
 package com.alarm.alARm_you_need
 
-import android.app.*
-import android.content.Context
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -24,25 +26,28 @@ class RestartAlarmService : Service() {
     @Override
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d("DEBUGGING LOG", "RestartAlarmService::onStartCommand()")
-        val builder = NotificationCompat.Builder(this, "default")
 
-        Log.d("DEBUGGING LOG", "RESTART!")
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-        builder.setContentIntent(pendingIntent)
-
-        val manager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            manager.createNotificationChannel(
-                NotificationChannel(
-                    "",
-                    "기타",
-                    NotificationManager.IMPORTANCE_NONE
-                )
+            val notificationChannel = NotificationChannel(
+                "restart",
+                "restart",
+                NotificationManager.IMPORTANCE_NONE
             )
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        val notification = NotificationCompat.Builder(this, "restart")
+            .setContentIntent(pendingIntent)
+            .build()
 
-        val notification: Notification = builder.build()
         startForeground(9, notification)
 
         val alarmId = intent.getStringExtra("ALARM_ID")
@@ -54,7 +59,6 @@ class RestartAlarmService : Service() {
 
         stopForeground(true)
         stopSelf()
-
         return START_NOT_STICKY
     }
 
