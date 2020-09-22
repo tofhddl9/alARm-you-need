@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">AR람</string>
     <string name="remain_time">등록된 알람이 없습니다.</string>
+    <string name="admob_app_id">ca-app-pub-1719157373734547~4794765830</string>
+    <string name="admob_app_id_for_test">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_native_unit_id">ca-app-pub-1719157373734547/3133865039</string>
+    <string name="admob_native_unit_id_for_test">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="admob_banner_unit_id">ca-app-pub-1719157373734547/2782828470</string>
+    <string name="admob_banner_unit_id_for_test">ca-app-pub-3940256099942544/6300978111</string>
 
     <string name="title_activity_main">alARm</string>
     <string name="title_activity_configuration">설정</string>
@@ -41,6 +47,11 @@
         1.미로 안의 공을 탈출시키면 알람이 꺼집니다.\n\n
         2.미로가 생성되지 않으면 알람을 끌 수 없으니.\n  꼭 프리뷰를 확인하세요!\n\n
         [Tip] 해당 이미지를 침실에서 멀리 두세요</string>
+
+    <string name="close_dialog_title">앱을 종료할까요?</string>
+    <string name="close_dialog_msg">오늘도 좋은하루 되세요!</string>
+    <string name="close_dialog_yes_btn">종료</string>
+    <string name="close_dialog_no_btn">취소</string>
 
     <string name="goodMorningMsg">좋은 아침입니다. 잘 일어나셨어요!</string>
 
