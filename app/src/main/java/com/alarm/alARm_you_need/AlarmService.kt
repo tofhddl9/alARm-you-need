@@ -45,12 +45,21 @@ class AlarmService : Service() {
         val isAlwaysMaxVolumeSet = sharedPreferences.getBoolean("pref_always_max_volume", false)
 
         mediaPlayer = MediaPlayer.create(this, Uri.parse(alarmData.uriRingtone))
-        mediaPlayer.setVolume(1.0F * alarmData.volume, 1.0F * alarmData.volume)
         mediaPlayer.isLooping = true
 
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         if (isAlwaysMaxVolumeSet) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 15, AudioManager.FLAG_PLAY_SOUND)
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                15,
+                AudioManager.FLAG_PLAY_SOUND
+            )
+        } else {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                alarmData.volume,
+                AudioManager.FLAG_PLAY_SOUND
+            )
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
