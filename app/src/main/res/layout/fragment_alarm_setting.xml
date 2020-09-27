@@ -168,6 +168,7 @@
 
             <SeekBar
                 android:id="@+id/volume_bar"
+                android:max="15"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"/>
 

@@ -1,4 +1,5 @@
 package com.alarm.alARm_you_need
+
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.MediaStore
 import android.util.Log
 import io.realm.Realm
 import java.util.*
@@ -18,7 +20,8 @@ class AlarmService : Service() {
     private lateinit var vibrator: Vibrator
     private lateinit var alarmId: String
     private val ACTION_RUN_ALARM = "RUN_ALARM"
-    companion object  {
+
+    companion object {
         var service: Intent? = null
         var normalExit: Boolean = false
     }
@@ -31,21 +34,33 @@ class AlarmService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        service = intent
-
         Log.d("DEBUGGING LOG", "AlarmService::onStartCommand() is called")
+
+        service = intent
         alarmId = intent.getStringExtra("ALARM_ID")!!
         val realm = Realm.getDefaultInstance()
         val alarmData = AlarmDao(realm).selectAlarm(alarmId)
-
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 15, AudioManager.FLAG_PLAY_SOUND)
-        }
+        val sharedPreferences =
+            getSharedPreferences("configurationPreference", Context.MODE_PRIVATE)
+        val isAlwaysMaxVolumeSet = sharedPreferences.getBoolean("pref_always_max_volume", false)
 
         mediaPlayer = MediaPlayer.create(this, Uri.parse(alarmData.uriRingtone))
-        mediaPlayer.setVolume(1.0F * alarmData.volume, 1.0F * alarmData.volume)
         mediaPlayer.isLooping = true
+
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (isAlwaysMaxVolumeSet) {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                15,
+                AudioManager.FLAG_PLAY_SOUND
+            )
+        } else {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                alarmData.volume,
+                AudioManager.FLAG_PLAY_SOUND
+            )
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(500, 500), 0))
@@ -67,7 +82,7 @@ class AlarmService : Service() {
         mediaPlayer.release()
         vibrator.cancel()
 
-        if (!normalExit){
+        if (!normalExit) {
             setAlarmTimer()
         }
     }
@@ -83,7 +98,11 @@ class AlarmService : Service() {
         intent.action = ACTION_RUN_ALARM
         val sender = PendingIntent.getBroadcast(this, 0, intent, 0)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, sender)
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            sender
+        )
     }
 }
 

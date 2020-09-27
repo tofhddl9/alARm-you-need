@@ -84,8 +84,9 @@ class AlarmTool : BroadcastReceiver() {
             notificationIntent.putExtra("upcomingTime", timeOfUpcomingAlarm)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val sharedPreference =
-                    context.getSharedPreferences("notifyPref", Context.MODE_PRIVATE)
-                val isNotificationSwitchOn = sharedPreference.getBoolean("isNotifying", false)
+                    context.getSharedPreferences("configurationPreference", Context.MODE_PRIVATE)
+                val isNotificationSwitchOn =
+                    sharedPreference.getBoolean("pref_status_bar_notification", false)
                 if (isNotificationSwitchOn)
                     context.startForegroundService(notificationIntent)
             }
@@ -97,7 +98,8 @@ class AlarmTool : BroadcastReceiver() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val sharedPreference =
                     context.getSharedPreferences("notifyPref", Context.MODE_PRIVATE)
-                val isNotificationSwitchOn = sharedPreference.getBoolean("isNotifying", false)
+                val isNotificationSwitchOn =
+                    sharedPreference.getBoolean("configurationPreference", false)
                 if (isNotificationSwitchOn)
                     context.stopService(notificationIntent)
             }

@@ -24,7 +24,7 @@
         android:id="@+id/close_dialog_ad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ads:adUnitId="@string/admob_ad_unit_id"
+        ads:adUnitId="@string/admob_ad_unit_id_for_test"
         app:gnt_template_type="@layout/gnt_medium_template_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

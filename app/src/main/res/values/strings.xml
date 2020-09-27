@@ -21,6 +21,8 @@
     <string name="pref_status_bar_notification_summary">상단바에 다음 알람시간을 표시합니다.</string>
     <string name="pref_disturb_mode_title">방해금지모드에서도 알람 허용</string>
     <string name="pref_disturb_mode_summary">방해금지모드에서도 알람이 울립니다</string>
+    <string name="pref_always_max_volume_title">언제나 최대 볼륨</string>
+    <string name="pref_always_max_volume_summary">알람이 항상 최대 볼륨으로 울립니다</string>
     <string name="pref_onboarding_title">AR 도움말 다시보기</string>
     <string name="pref_app_info_title">앱 정보</string>
 

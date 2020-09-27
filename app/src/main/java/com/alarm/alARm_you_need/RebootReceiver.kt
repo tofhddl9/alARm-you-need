@@ -40,7 +40,8 @@ class RebootReceiver : BroadcastReceiver() {
     }
 
     private fun isStatusbarNotificationSwtichOn(context: Context): Boolean {
-        val sharedPreference = context.getSharedPreferences("notifyPref", Context.MODE_PRIVATE)
+        val sharedPreference =
+            context.getSharedPreferences("configurationPreference", Context.MODE_PRIVATE)
         return sharedPreference.getBoolean("isNotifying", false)
     }
 
