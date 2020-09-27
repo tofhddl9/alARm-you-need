@@ -6,14 +6,17 @@
         <SwitchPreference
             app:key="pref_status_bar_notification"
             app:title="@string/pref_status_bar_notification_title"
-            app:summary="@string/pref_status_bar_notification_summary"
-            app:useSimpleSummaryProvider="true" />
+            app:summary="@string/pref_status_bar_notification_summary"/>
+
+        <SwitchPreference
+            app:key="pref_always_max_volume"
+            app:title="@string/pref_always_max_volume_title"
+            app:summary="@string/pref_always_max_volume_summary"/>
 
         <Preference
             app:key="pref_disturb_mode"
             app:title="@string/pref_disturb_mode_title"
-            app:summary="@string/pref_disturb_mode_summary"
-            app:useSimpleSummaryProvider="true" />
+            app:summary="@string/pref_disturb_mode_summary"/>
 
     </PreferenceCategory>
 
