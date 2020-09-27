@@ -14,39 +14,53 @@ class ConfigurationFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences_setting, rootKey)
     }
 
-    @Override
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         Log.d("DEBUGGING LOG", "onPreferenceTreeClick()")
-        if (preference.key == "pref_status_bar_notification") {
-
-            val sharedPreference =
-                requireContext().getSharedPreferences("notifyPref", Context.MODE_PRIVATE)
-            val isNotificationSwitchOn = sharedPreference.getBoolean("isNotifying", false)
-            val editor = sharedPreference.edit()
-
-            if (!isNotificationSwitchOn) {
-                Log.d("DEBUGGING LOG", "hide noti")
-                editor.putBoolean("isNotifying", true)
-                editor.apply()
-                showNotification()
-            } else {
-                Log.d("DEBUGGING LOG", "show noti")
-                editor.putBoolean("isNotifying", false)
-                editor.apply()
-                hideNotification()
+        when (preference.key) {
+            "pref_status_bar_notification", "pref_always_max_volume"-> {
+                toggleSwitchPreference(preference.key)
             }
-        } else if (preference.key == "pref_disturb_mode") {
-            startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
-        } else if (preference.key == "pref_onboarding") {
-            val onboardingIntent = Intent(requireContext(), OnboardingActivity::class.java)
-            onboardingIntent.putExtra("isReview", true)
-            startActivity(onboardingIntent)
-        } else if (preference.key == "pref_app_info") {
-            val appInfoIntent = Intent(requireContext(), AppInfoActivity::class.java)
-            startActivity(appInfoIntent)
+            "pref_disturb_mode"-> {
+                startActivity(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS))
+            }
+            "pref_onboarding"-> {
+                val onboardingIntent = Intent(requireContext(), OnboardingActivity::class.java)
+                onboardingIntent.putExtra("isReview", true)
+                startActivity(onboardingIntent)
+            }
+            "pref_app_info"-> {
+                val appInfoIntent = Intent(requireContext(), AppInfoActivity::class.java)
+                startActivity(appInfoIntent)
+            }
         }
 
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private fun toggleSwitchPreference(key: String) {
+        val sharedPreference =
+            requireContext().getSharedPreferences("configurationPreference", Context.MODE_PRIVATE)
+        val isSwitchOn = sharedPreference.getBoolean(key, false)
+
+        val editor = sharedPreference.edit()
+        editor.putBoolean(key, !isSwitchOn)
+        editor.apply()
+
+        when (key) {
+            "pref_status_bar_notification" -> {
+                toggleNotification(!isSwitchOn)
+            }
+            "pref_always_max_volume" -> {
+                //nothing to do
+            }
+        }
+    }
+
+    private fun toggleNotification(isSwitchOn: Boolean) {
+        if (isSwitchOn)
+            showNotification()
+        else
+            hideNotification()
     }
 
     private fun showNotification() {
