@@ -27,7 +27,7 @@ open class BaseRingActivity : AppCompatActivity() {
 
     open fun alarmRingOff() {
         Log.d("DEBUGGING LOG", "BaseRingActivity::AlarmRingOff()")
-        AlarmService.service.let {
+        AlarmService.service?.let {
             stopService(it)
             AlarmService.normalExit = true
         }

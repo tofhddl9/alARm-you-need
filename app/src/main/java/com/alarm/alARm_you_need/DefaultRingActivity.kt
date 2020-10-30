@@ -35,7 +35,8 @@ class DefaultRingActivity : BaseRingActivity() {
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         Log.d("DEBUGGING LOG", "DefaultRingActivity::onUserLeaveHint()")
-        if (AlarmService.service != null) {
+
+        AlarmService.service?.let{
             val intent = Intent(this, DefaultRingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)

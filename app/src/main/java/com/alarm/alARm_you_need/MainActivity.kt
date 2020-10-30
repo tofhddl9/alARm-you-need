@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var viewModel: ListViewModel? = null
+    private lateinit var viewModel: ListViewModel
     private val overlayPermissionResultCode = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.contentLayout, AlarmListFragment())
             .commit()
 
-        viewModel = application!!.let {
+        viewModel = application.let {
             ViewModelProvider(viewModelStore, ViewModelProvider.AndroidViewModelFactory(it))
                 .get(ListViewModel::class.java)
         }

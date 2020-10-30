@@ -1,5 +1,6 @@
 package com.alarm.alARm_you_need
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,7 +21,7 @@ class AlarmSettingActivity : AppCompatActivity() {
             .replace(R.id.content_alarm_setting, alarmSettingFragment)
             .commit()
 
-        viewModel = application!!.let {
+        viewModel = application.let {
             ViewModelProvider(
                 viewModelStore,
                 ViewModelProvider.AndroidViewModelFactory(it)
@@ -29,7 +30,7 @@ class AlarmSettingActivity : AppCompatActivity() {
         }
 
         val alarmId = intent.getStringExtra("ALARM_ID")
-        if (alarmId != null) {
+        alarmId?.let {
             val args = Bundle()
             args.putString("ALARM_ID", alarmId)
             alarmSettingFragment.arguments = args

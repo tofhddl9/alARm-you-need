@@ -25,8 +25,8 @@ class RebootReceiver : BroadcastReceiver() {
         val realm = Realm.getDefaultInstance()
         val activeAlarms = AlarmDao(realm).getActiveAlarms()
 
-        if (activeAlarms != null) {
-            for (alarmData in activeAlarms) {
+        activeAlarms?.let {
+            for (alarmData in it) {
                 AlarmTool.addAlarm(context, alarmData.alarmId, alarmData.hour, alarmData.minute)
             }
         }

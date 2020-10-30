@@ -15,12 +15,12 @@ class GoodMorningActivity : AppCompatActivity() {
         setContentView(R.layout.activity_good_morning)
 
         val realm = Realm.getDefaultInstance()
-        val alarmId = intent.getStringExtra("ALARM_ID")
-        val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
+        val alarmId = intent.getStringExtra("ALARM_ID")!!
+        val alarmData = AlarmDao(realm).selectAlarm(alarmId)
 
         val title = alarmData.title
         val apm = alarmData.apm
-        val time = "${apm} ${alarmData.hour}시 ${alarmData.minute}분"
+        val time = "$apm ${alarmData.hour}시 ${alarmData.minute}분"
 
         alarm_title.text = title
         clock.text = time

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_alarm_list.*
 
 class AlarmListFragment : Fragment() {
     private lateinit var listAdapter: AlarmListAdapter
-    private var viewModel: ListViewModel? = null
+    private lateinit var viewModel: ListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +27,7 @@ class AlarmListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = requireActivity().application!!.let {
+        viewModel = requireActivity().application.let {
             ViewModelProvider(
                 requireActivity().viewModelStore,
                 ViewModelProvider.AndroidViewModelFactory(it)
@@ -35,7 +35,7 @@ class AlarmListFragment : Fragment() {
                 .get(ListViewModel::class.java)
         }
 
-        viewModel!!.let {
+        viewModel.let {
             it.alarmLiveData.value?.let {
                 listAdapter = AlarmListAdapter(it)
                 alarmListView.layoutManager =
@@ -49,7 +49,7 @@ class AlarmListFragment : Fragment() {
                 }
 
                 listAdapter.checkBoxClickListener = {
-                    viewModel!!.toggleAlarm(it)
+                    viewModel.toggleAlarm(it)
                     AlarmTool.updateAlarmNotification(requireContext())
                 }
 
