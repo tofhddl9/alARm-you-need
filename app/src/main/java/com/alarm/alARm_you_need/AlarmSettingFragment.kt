@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +22,7 @@ import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import kotlinx.android.synthetic.main.fragment_alarm_setting.*
 
 class AlarmSettingFragment : Fragment(), ImageDialogListener {
-    private var viewModel: AlarmSettingViewModel? = null
+    private lateinit var viewModel: AlarmSettingViewModel
     private var alarmId: String? = null
 
     private var uriArImage: String? = null
@@ -53,7 +54,7 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = requireActivity().application!!.let {
+        viewModel = requireActivity().application.let {
             ViewModelProvider(
                 viewModelStore,
                 ViewModelProvider.AndroidViewModelFactory(it)
@@ -61,7 +62,7 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
                 .get(AlarmSettingViewModel::class.java)
         }
 
-        viewModel!!.let {
+        viewModel.let {
             it.title.observe(requireActivity(), Observer { alarm_title.setText(it) })
             it.hour.observe(requireActivity(), Observer { timePicker.hour = it })
             it.minute.observe(requireActivity(), Observer { timePicker.minute = it })
@@ -113,8 +114,8 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
         alarm_type_btn.text = AlarmData.TYPE_DEFAULT
 
         alarmId = arguments?.getString("ALARM_ID")
-        if (alarmId != null) {
-            loadAlarm(alarmId!!)
+        alarmId?.let {
+            loadAlarm(it)
         }
 
         setOnClickListeners()
@@ -136,21 +137,19 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
     }
 
     private fun loadAlarm(id: String) {
-        viewModel!!.loadAlarm(id)
-        val uri = Uri.parse(viewModel!!.uriRingtone.value)
-        writeRingtoneTitle(uri!!)
+        viewModel.loadAlarm(id)
+        val uri = Uri.parse(viewModel.uriRingtone.value)
+        writeRingtoneTitle(uri)
 
-        writeAlarmTypeTitle(viewModel!!.alarmType.value)
+        writeAlarmTypeTitle(viewModel.alarmType.value)
 
-        if (viewModel!!.uriImage.value != null) {
-            if (viewModel!!.alarmType.value == AlarmData.TYPE_AR)
+        viewModel.uriImage.value?.let{
+            if (viewModel.alarmType.value == AlarmData.TYPE_AR)
                 ar_image.visibility = View.VISIBLE
-            val uri2 = Uri.parse(viewModel!!.uriImage.value)
-            if (uri2 != null) {
-                Log.d("DEBUGGING LOG", "Loaded image uri : " + uri2)
+            val uri2 = Uri.parse(viewModel.uriImage.value)
+            uri2?.let {
+                Log.d("DEBUGGING LOG", "Loaded image uri : $uri2")
                 setArImage(uri2)
-            } else {
-                Log.d("DEBUGGING LOG", "No ARimage was selected : " + uri2)
             }
         }
     }
@@ -181,17 +180,17 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
             when (requestCode) {
                 REQ_RINGTONE_SELECT -> {
                     val uri =
-                        data!!.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                        data?.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
                     Log.d("DEBUGGING LOG", "selected ringtone URI : $uri")
-                    if (uri != null) {
-                        uriRingtone = uri.toString()
+                    uri?.let {
+                        uriRingtone = it.toString()
                         writeRingtoneTitle(uri)
                     }
                 }
 
                 REQ_GALLERY_OPEN -> {
                     val uri = data?.data
-                    Log.d("DEBUGGING LOG", "selected image URI : ${uri}")
+                    Log.d("DEBUGGING LOG", "selected image URI : $uri")
                     try {
                         setArImage(uri!!)
                     } catch (e: Exception) {
@@ -231,7 +230,7 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
 
         builder.setPositiveButton("확인") { _, _ ->
             Log.d("DEBUGGING LOG", "Id:[${alarmId}] alarm is deleted")
-            viewModel?.deleteAlarm(requireContext(), alarmId)
+            viewModel.deleteAlarm(requireContext(), alarmId)
             requireActivity().finish()
         }
         builder.setNegativeButton("취소") { _, _ ->

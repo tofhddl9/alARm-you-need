@@ -110,8 +110,8 @@ class AlarmTool : BroadcastReceiver() {
             val alarmData = AlarmDao(realm).getActiveAlarms()
             var upcomingTime: Long = Long.MAX_VALUE
 
-            if (alarmData != null) {
-                for (alarm in alarmData) {
+            alarmData?.let {
+                for (alarm in it) {
                     val remainTime = findTimeOfAlarm(
                         getTargetDays(alarm),
                         alarm.hour,
@@ -258,10 +258,9 @@ class AlarmTool : BroadcastReceiver() {
         Log.d("DEBUGGING LOG", "onReceive: ${intent.action}")
         when (intent.action) {
             ACTION_RUN_ALARM -> {
-                //if (AlarmService.service != null) return
-                val alarmId: String? = intent.getStringExtra("ALARM_ID")
+                val alarmId = intent.getStringExtra("ALARM_ID")!!
                 val realm = Realm.getDefaultInstance()
-                val alarmData = AlarmDao(realm).selectAlarm(alarmId!!)
+                val alarmData = AlarmDao(realm).selectAlarm(alarmId)
                 Log.d(
                     "DEBUGGING LOG",
                     "[Received ACTION_RUN_ALARM info]" +

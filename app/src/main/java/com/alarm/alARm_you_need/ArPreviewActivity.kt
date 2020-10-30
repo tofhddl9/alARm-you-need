@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_augmented_image.*
 import java.util.HashMap
 
 class ArPreviewActivity : AppCompatActivity() {
-    private var arFragment: AugmentedImageFragment? = null
+    private lateinit var arFragment: AugmentedImageFragment
     private val augmentedImageMap: MutableMap<AugmentedImage, AugmentedImageNode> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,10 +25,11 @@ class ArPreviewActivity : AppCompatActivity() {
         val targetImageUri = intent.getStringExtra("IMAGE_URI")
 
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as AugmentedImageFragment
-        arFragment!!.setAugmentedTargetImage(Uri.parse(targetImageUri))
-
-        arFragment!!.arSceneView.scene.addOnUpdateListener { frameTime: FrameTime ->
-            onUpdateFrame(frameTime)
+        arFragment.let{
+            it.setAugmentedTargetImage(Uri.parse(targetImageUri))
+            it.arSceneView.scene.addOnUpdateListener {
+                onUpdateFrame()
+            }
         }
 
         init_btn.visibility = View.GONE
@@ -50,8 +51,8 @@ class ArPreviewActivity : AppCompatActivity() {
         }
     }
 
-    private fun onUpdateFrame(frameTime: FrameTime) {
-        val frame = arFragment!!.arSceneView.arFrame
+    private fun onUpdateFrame() {
+        val frame = arFragment.arSceneView.arFrame
 
         if (frame == null || frame.camera.trackingState != TrackingState.TRACKING) {
             return
@@ -72,7 +73,7 @@ class ArPreviewActivity : AppCompatActivity() {
                         val node = AugmentedImageNode(this)
                         node.setImage(augmentedImage, true)
                         augmentedImageMap[augmentedImage] = node
-                        arFragment!!.arSceneView.scene.addChild(node)
+                        arFragment.arSceneView.scene.addChild(node)
                     }
                 }
             }

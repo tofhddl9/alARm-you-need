@@ -35,9 +35,9 @@ import java.util.*
  * tracking functionality.
  */
 class ArRingActivity : BaseRingActivity() {
-    private var arFragment: AugmentedImageFragment? = null
-    private var physicsController: PhysicsController? = null
-    private var isInit: Boolean? = null
+    private lateinit var arFragment: AugmentedImageFragment
+    private lateinit var physicsController: PhysicsController
+    private var isInit: Boolean = false
 
     // Augmented image and its associated center pose anchor, keyed by the augmented image in the database.
     private val augmentedImageMap: MutableMap<AugmentedImage, AugmentedImageNode> = HashMap()
@@ -46,17 +46,16 @@ class ArRingActivity : BaseRingActivity() {
         Log.d("DEBUGGING LOG", "ArRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_augmented_image)
-
         isInit = false
 
         val realm = Realm.getDefaultInstance()
-        val targetImageUri = AlarmDao(realm).selectAlarm(alarmId!!).uriImage
+        val targetImageUri = AlarmDao(realm).selectAlarm(alarmId).uriImage
 
         arFragment = supportFragmentManager.findFragmentById(R.id.ux_fragment) as AugmentedImageFragment
-        arFragment!!.setAugmentedTargetImage(Uri.parse(targetImageUri))
+        arFragment.setAugmentedTargetImage(Uri.parse(targetImageUri))
 
-        arFragment!!.arSceneView.scene.addOnUpdateListener { frameTime: FrameTime ->
-            onUpdateFrame(frameTime)
+        arFragment.arSceneView.scene.addOnUpdateListener {
+            onUpdateFrame()
         }
 
         init_btn.setOnClickListener { isInit = true; }
@@ -78,6 +77,7 @@ class ArRingActivity : BaseRingActivity() {
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
         Log.d("DEBUGGING LOG", "ArRingActivity::onUserLeaveHint()")
+        AlarmService
         if (AlarmService.service != null) {
             val intent = Intent(this, ArRingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -94,8 +94,8 @@ class ArRingActivity : BaseRingActivity() {
      * Registered with the Sceneform Scene object, this method is called at the start of each frame.
      * @param frameTime - time since last frame.
      */
-    private fun onUpdateFrame(frameTime: FrameTime) {
-        val frame = arFragment!!.arSceneView.arFrame
+    private fun onUpdateFrame() {
+        val frame = arFragment.arSceneView.arFrame
 
         // If there is no frame or ARCore is not tracking yet, just return.
         if (frame == null || frame.camera.trackingState != TrackingState.TRACKING) {
@@ -122,38 +122,38 @@ class ArRingActivity : BaseRingActivity() {
                         val node = AugmentedImageNode(this)
                         node.setImage(augmentedImage, false)
                         augmentedImageMap[augmentedImage] = node
-                        arFragment!!.arSceneView.scene.addChild(node)
+                        arFragment.arSceneView.scene.addChild(node)
                         physicsController = PhysicsController(this)
                     } else {
                         // If the image anchor is already created
                         val node = augmentedImageMap[augmentedImage]
-                        var ball_pose: Pose?
+                        var ball_pose: Pose
 
-                        if (isInit!!) {
-                            physicsController!!.DeleteBallRigidBody()
-                            node!!.AddBall()
-                            ball_pose = physicsController!!.getBallPose(true)
-                            physicsController!!.AddBallRigidBody()
+                        if (isInit) {
+                            physicsController.DeleteBallRigidBody()
+                            node?.AddBall()
+                            ball_pose = physicsController.getBallPose(true)
+                            physicsController.AddBallRigidBody()
                             isInit = false
                         } else {
-                            ball_pose = physicsController!!.getBallPose(false)
+                            ball_pose = physicsController.getBallPose(false)
                         }
 
                         node!!.updateBallPose(ball_pose)
-                        if (physicsController!!.isEscape(ball_pose)) {
+                        if (physicsController.isEscape(ball_pose)) {
                             alarmRingOff()
                         }
                         val worldGravityPose = Pose.makeTranslation(0f, -9.8f, 0f)
                         val mazeGravityPose = augmentedImage.centerPose.inverse().compose(worldGravityPose)
                         val mazeGravity = mazeGravityPose.translation
-                        physicsController!!.applyGravityToBall(mazeGravity)
-                        physicsController!!.updatePhysics()
+                        physicsController.applyGravityToBall(mazeGravity)
+                        physicsController.updatePhysics()
                     }
                 }
                 TrackingState.STOPPED -> {
                     val node = augmentedImageMap[augmentedImage]
                     augmentedImageMap.remove(augmentedImage)
-                    arFragment!!.arSceneView.scene.removeChild(node)
+                    arFragment.arSceneView.scene.removeChild(node)
                     SnackbarHelper.getInstance().hide(this)
                 }
             }
