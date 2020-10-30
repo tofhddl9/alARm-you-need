@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 
 open class BaseRingActivity : AppCompatActivity() {
 
-    open var alarmId : String? = null
+    open lateinit var alarmId : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("DEBUGGING LOG", "BaseRingActivity::onCreate is called")
         super.onCreate(savedInstanceState)
         AlarmTool.hideAlarmNotification(this)
-        alarmId = intent.getStringExtra("ALARM_ID")
+        alarmId = intent.getStringExtra("ALARM_ID")!!
 
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -27,9 +27,10 @@ open class BaseRingActivity : AppCompatActivity() {
 
     open fun alarmRingOff() {
         Log.d("DEBUGGING LOG", "BaseRingActivity::AlarmRingOff()")
-        stopService(AlarmService.service)
-        AlarmService.service = null
-        AlarmService.normalExit = true
+        AlarmService.service.let {
+            stopService(it)
+            AlarmService.normalExit = true
+        }
         finish()
 
         val intent = Intent(this, GoodMorningActivity::class.java)
@@ -67,20 +68,9 @@ open class BaseRingActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("DEBUGGING LOG", "BaseRingActivity::onDestroy is called")
-
-        if (!AlarmService.normalExit) {
-            Log.d("DEBUGGING LOG", "BaseRingActivity ...  abnormal exit")
-            if (AlarmService.service != null) {
-                stopService(AlarmService.service)
-            }
-        }
-        else {
-            Log.d("DEBUGGING LOG", "BaseRingActivity ... normal exit")
-            if (AlarmService.service != null) {
-                stopService(AlarmService.service)
-                AlarmService.service = null
-            }
+        Log.d("DEBUGGING LOG", "BaseRingActivity::onDestroy() status:${AlarmService.normalExit}")
+        AlarmService.service?.let {
+            stopService(it)
         }
     }
 
