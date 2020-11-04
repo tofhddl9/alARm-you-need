@@ -20,13 +20,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Pose
 import com.google.ar.core.TrackingState
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import com.google.ar.core.examples.java.common.helpers.SnackbarHelper
-import com.google.ar.sceneform.FrameTime
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_augmented_image.*
 import java.util.*

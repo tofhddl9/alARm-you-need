@@ -194,35 +194,4 @@ public class AugmentedImageFragment extends ArFragment {
     return null;
   }
 
-  /*
-  public void chooseNewImage() {
-    android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_GET_CONTENT);
-    intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
-    intent.setType("image/*");
-    startActivityForResult(
-            android.content.Intent.createChooser(intent, "Select target augmented image"),
-            REQUEST_CODE_CHOOSE_IMAGE);
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    try {
-      if (resultCode == android.app.Activity.RESULT_OK) {
-        if (requestCode == REQUEST_CODE_CHOOSE_IMAGE) {
-          // Get the Uri of target image
-          chosenImageUri = data.getData();
-
-          // Reconfig ARCore session to use the new image
-          Session arcoreSession = getArSceneView().getSession();
-          Config config = getSessionConfiguration(arcoreSession);
-          config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
-          arcoreSession.configure(config);
-        }
-      }
-    } catch (Exception e) {
-      Log.e(TAG, "onActivityResult - target image selection error ", e);
-    }
-  }
-  */
 }

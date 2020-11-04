@@ -239,11 +239,19 @@ class AlarmSettingFragment : Fragment(), ImageDialogListener {
         builder.show()
     }
 
+
+
     private fun setArImage(uriImage: Uri) {
         uriArImage = uriImage.toString()
+        /* what's the difference?
         val input = requireActivity().contentResolver.openInputStream(uriImage)
         val image = BitmapFactory.decodeStream(input)
-        ar_image.setImageBitmap(image)
+        */
+        val parcelFileDescriptor = requireActivity()
+            .contentResolver
+            .openFileDescriptor(uriImage, "r")
+        val fileDescriptor = parcelFileDescriptor?.fileDescriptor
+        val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
         Glide.with(this).load(image).into(ar_image)
     }
 
