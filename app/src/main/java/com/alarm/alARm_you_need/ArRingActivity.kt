@@ -37,7 +37,6 @@ class ArRingActivity : BaseRingActivity() {
     private lateinit var arFragment: AugmentedImageFragment
     private lateinit var physicsController: PhysicsController
     private var isInit: Boolean = false
-    private var tmp: Boolean = false
 
     // Augmented image and its associated center pose anchor, keyed by the augmented image in the database.
     private val augmentedImageMap: MutableMap<AugmentedImage, AugmentedImageNode> = HashMap()
@@ -47,7 +46,6 @@ class ArRingActivity : BaseRingActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_augmented_image)
         isInit = false
-        tmp = false
 
         val realm = Realm.getDefaultInstance()
         val targetImageUri = AlarmDao(realm).selectAlarm(alarmId).uriImage
@@ -59,8 +57,7 @@ class ArRingActivity : BaseRingActivity() {
             onUpdateFrame()
         }
 
-        init_ball_btn.setOnClickListener { isInit = true }
-        reload_maze_btn.setOnClickListener { tmp = true }
+        init_btn.setOnClickListener { isInit = true }
     }
 
     override fun onResume() {
@@ -72,8 +69,7 @@ class ArRingActivity : BaseRingActivity() {
         }
         if (augmentedImageMap.isEmpty()) {
             image_view_fit_to_scan.visibility = View.VISIBLE
-            init_ball_btn.visibility = View.GONE
-            reload_maze_btn.visibility = View.GONE
+            init_btn.visibility = View.GONE
         }
     }
 
@@ -116,18 +112,17 @@ class ArRingActivity : BaseRingActivity() {
                     SnackbarHelper.getInstance().showMessage(this, text)
                 }
                 TrackingState.TRACKING -> {
-                    if (tmp) {
+                    if (isInit) {
                         val node = augmentedImageMap[augmentedImage]
                         augmentedImageMap.remove(augmentedImage)
                         arFragment.arSceneView.scene.removeChild(node)
                         SnackbarHelper.getInstance().hide(this)
-                        tmp = false
+                        isInit = false
                     }
 
                     // Have to switch to UI Thread to update View.
                     image_view_fit_to_scan.visibility = View.GONE
-                    init_ball_btn.visibility = View.VISIBLE
-                    reload_maze_btn.visibility = View.VISIBLE
+                    init_btn.visibility = View.VISIBLE
 
                     // Create a new anchor for newly found images.
                     if (!augmentedImageMap.containsKey(augmentedImage)) {
@@ -139,17 +134,8 @@ class ArRingActivity : BaseRingActivity() {
                     } else {
                         // If the image anchor is already created
                         val node = augmentedImageMap[augmentedImage]
-                        var ball_pose: Pose
 
-                        if (isInit) {
-                            physicsController.DeleteBallRigidBody()
-                            node?.AddBall()
-                            ball_pose = physicsController.getBallPose(true)
-                            physicsController.AddBallRigidBody()
-                            isInit = false
-                        } else {
-                            ball_pose = physicsController.getBallPose(false)
-                        }
+                        val ball_pose = physicsController.getBallPose(false)
 
                         node!!.updateBallPose(ball_pose)
                         if (physicsController.isEscape(ball_pose)) {

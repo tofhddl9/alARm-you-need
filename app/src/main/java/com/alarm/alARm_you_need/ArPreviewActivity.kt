@@ -32,7 +32,7 @@ class ArPreviewActivity : AppCompatActivity() {
             }
         }
 
-        init_ball_btn.visibility = View.GONE
+        init_btn.visibility = View.GONE
     }
 
     override fun onDestroy() {
